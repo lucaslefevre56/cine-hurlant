@@ -1,0 +1,17 @@
+{
+    "name": "kerx30/cine-hurlant",
+    "autoload": {
+        "psr-4": {
+            "Kerx30\\CineHurlant\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "lucas lefevre",
+            "email": "dioburando@hotmail.fr"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

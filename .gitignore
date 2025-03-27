@@ -1,0 +1,9 @@
+# empêche de suivre le fichier ci-dessous (données sensibles)
+.env
+
+# dossier contenant les dépendances installées avec composer
+/vendor/
+
+# configuration spécifique à VS code
+.vscode/
+
