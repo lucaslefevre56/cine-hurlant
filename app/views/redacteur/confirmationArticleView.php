@@ -1,0 +1,1 @@
+<!-- app/views/redacteur/confirmationArticleView.php -->

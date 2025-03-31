@@ -1,5 +1,5 @@
 <?php
-// app/controllers/AccueilController.php
+// app/controllers/accueilController.php
 
 // Je crée ma classe AccueilController
 class AccueilController

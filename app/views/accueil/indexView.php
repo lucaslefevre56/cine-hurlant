@@ -1,13 +1,8 @@
-<!-- app/views/accueil/index.php -->
+<!-- app/views/accueil/indexView.php -->
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Accueil - Ciné-Hurlant</title>
-</head>
-<body>
-    <h1>Bienvenue dans Ciné-Hurlant</h1>
-    <p>Ca fonctionne !! 🎉</p>
-</body>
-</html>
+<?php require_once ROOT . '/app/views/templates/header.php'; ?>
+
+<h2>Bienvenue dans Ciné-Hurlant</h2>
+<p>Ça fonctionne !! 🎉</p>
+
+<?php require_once ROOT . '/app/views/templates/footer.php'; ?>

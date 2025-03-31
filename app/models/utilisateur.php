@@ -27,7 +27,11 @@ class Utilisateur
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    // FETCH_ASSOC, c’est la version propre et logique pour lire les résultats SQL.
+    // Je veux des tableaux avec des noms, pas des chiffres incompréhensibles.
+    // Et c’est ce que j’utilise dans tout mon site, car je travaille avec des données claires.
 
+    
     // Je récupère un utilisateur en base à partir de son email
     // (pratique pour la connexion ou vérifier si l’email est déjà pris à l’inscription)
     public function getByEmail($email)

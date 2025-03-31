@@ -1,81 +1,75 @@
 <?php
 // app/core/Router.php
 
-// Je crée une classe appelée Router
-// En PHP, une classe sert à regrouper du code sous forme de blocs logiques 
-// (ici, tout ce qui concerne le routing du site)
+// J'inclus les helpers liés aux erreurs (notamment la fonction render404)
+require_once ROOT . '/app/helpers/errorHelper.php';
+
+
+// Je crée une classe Router qui va gérer toutes les URL du site
+// Elle sera appelée dans index.php pour savoir quel contrôleur utiliser
 class Router
 {
-    // Je crée une fonction dans cette classe qu’on appelle une "méthode"
-    // Elle s’appelle handleRequest() = "gérer la requête"
-    // C’est cette méthode que je vais appeler depuis index.php pour démarrer le routage
+    // Méthode principale appelée depuis index.php
     public function handleRequest()
     {
-        // Je récupère l'URL complète demandée par l'utilisateur
+        // Je récupère l’URL tapée dans le navigateur
+        // Exemple : /cine-hurlant/public/redacteur/ajouterOeuvre
         $uri = $_SERVER['REQUEST_URI'];
 
-        // Je nettoie l'URL pour enlever tout ce qui précède "vraiment" ma route
-        // Exemple : /cine-hurlant/public/article/show/4 → je vire /cine-hurlant/public/
+        // Je nettoie l’URL pour enlever la partie fixe "/cine-hurlant/public/"
+        // Résultat après nettoyage : "redacteur/ajouterOeuvre"
         $uri = str_replace('/cine-hurlant/public/', '', $uri);
 
-        // Je découpe le reste de l'URL en segments
-        // Exemple : article/show/4 → ['article', 'show', '4']
+        // Je découpe le reste de l’URL en morceaux grâce au slash
+        // Exemple : "redacteur/ajouterOeuvre" → ['redacteur', 'ajouterOeuvre']
         $segments = explode('/', trim($uri, '/'));
 
-        // Si l'utilisateur n’a rien tapé dans l’URL (genre juste "/"), je le redirige vers 
-        // la page d’accueil
+        // Si aucun segment n’est présent (genre juste "/"), je redirige vers la page d’accueil
         if (empty($segments[0])) {
-            $controllerName = 'AccueilController';
-            $method = 'index';
-            $params = [];
+            $controllerName = 'AccueilController'; // Contrôleur par défaut
+            $method = 'index'; // Méthode par défaut
+            $params = []; // Aucun paramètre
         } else {
-            // Je transforme le premier segment en nom de contrôleur
-            // ex : 'article' → 'ArticleController'
+            // Je transforme le 1er segment en nom de contrôleur
+            // 'redacteur' → 'RedacteurController'
             $controllerName = ucfirst($segments[0]) . 'Controller';
 
-            // Je regarde si une méthode est précisée (2e segment), sinon je mets 'index' par défaut
+            // Je regarde si le 2e segment existe pour savoir quelle méthode appeler
+            // Si rien, je mets "index" par défaut
             $method = isset($segments[1]) ? $segments[1] : 'index';
 
-            // Tout ce qui vient après (3e segment et suivants), ce sont les paramètres
+            // Le reste (3e, 4e, etc.) ce sont les éventuels paramètres
             $params = array_slice($segments, 2);
         }
 
-        // Je construis le chemin vers le fichier du contrôleur
-        // $controllerName contient déjà le nom exact de la classe (ex : ArticleController)
-        // Je le transforme en chemin de fichier .php pour l’inclure
-        // Et avec ROOT, je suis à la racine du projet, donc je peux pointer où je veux
-        // sans dépendre de mon dossier actuel.
+        // Je construis le chemin vers le fichier PHP du contrôleur
         $controllerFile = ROOT . "/app/controllers/$controllerName.php";
 
-        // Je vérifie si le fichier du contrôleur existe
+        // Je vérifie que le fichier existe bien
         if (file_exists($controllerFile)) {
             require_once $controllerFile;
 
-            // Je vérifie si la classe existe bien
+            // Je vérifie que la classe existe dans le fichier
             if (class_exists($controllerName)) {
+                // Je crée une instance de cette classe
                 $controller = new $controllerName();
 
-                // Je vérifie si la méthode demandée existe dans cette classe
+                // Je vérifie que la méthode demandée existe dans la classe
                 if (method_exists($controller, $method)) {
-                    // J'appelle dynamiquement la méthode avec les paramètres (même s’il y en a plusieurs)
+                    // J'appelle cette méthode avec les éventuels paramètres (ex : show(4))
                     call_user_func_array([$controller, $method], $params);
                 } else {
-                    // Méthode inconnue → erreur 404
-                    echo "Erreur 404 : méthode '$method' introuvable dans le contrôleur $controllerName.";
+                    // Si la méthode n’existe pas → erreur 404
+                    render404("Méthode '$method' introuvable dans $controllerName");
                 }
             } else {
-                // Classe inconnue → erreur
-                echo "Erreur : la classe '$controllerName' n’existe pas.";
+                // Si la classe n’existe pas → erreur
+                render404("Classe '$controllerName' inexistante");
             }
         } else {
-            // Fichier de contrôleur inexistant → erreur
-            echo "Erreur : le fichier du contrôleur '$controllerName.php' est introuvable.";
+            // Si le fichier du contrôleur n’existe pas → erreur
+            render404("Fichier du contrôleur '$controllerName.php' introuvable");
         }
     }
+   
 }
-
-
-// Ici je définis une classe nommée Router,
-// et une méthode publique handleRequest() que je pourrai appeler depuis index.php.
-// Cette méthode contiendra toute ma logique de routing : lire l’URL, découper, 
-// appeler le bon contrôleur.

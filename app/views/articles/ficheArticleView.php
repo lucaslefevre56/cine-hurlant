@@ -1,0 +1,1 @@
+<!-- app/views/articles/ficheArticleView.php -->

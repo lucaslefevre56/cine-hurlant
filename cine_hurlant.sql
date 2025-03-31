@@ -4,19 +4,22 @@ CREATE TABLE Utilisateur(
    email VARCHAR(100)  NOT NULL,
    password VARCHAR(255)  NOT NULL,
    date_enregistrement DATETIME DEFAULT CURRENT_TIMESTAMP,
-   role ENUM ('utilisateur', 'redacteur', 'admin') DEFAULT 'utilisateur';
+   role ENUM ('utilisateur', 'redacteur', 'admin') DEFAULT 'utilisateur',
    PRIMARY KEY(id_utilisateur),
    UNIQUE(email)
 );
 
-CREATE TABLE article(
+CREATE TABLE article (
    id_article INT AUTO_INCREMENT,
-   titre VARCHAR(255)  NOT NULL,
+   titre VARCHAR(255) NOT NULL,
    contenu TEXT NOT NULL,
+   image VARCHAR(255),
    date_redaction DATETIME DEFAULT CURRENT_TIMESTAMP,
    id_utilisateur INT NOT NULL,
+   id_oeuvre INT,
    PRIMARY KEY(id_article),
-   FOREIGN KEY(id_utilisateur) REFERENCES Utilisateur(id_utilisateur)
+   FOREIGN KEY(id_utilisateur) REFERENCES Utilisateur(id_utilisateur),
+   FOREIGN KEY(id_oeuvre) REFERENCES oeuvre(id_oeuvre)
 );
 
 CREATE TABLE commentaire(
@@ -62,7 +65,7 @@ CREATE TABLE oeuvre(
    titre VARCHAR(50)  NOT NULL,
    auteur VARCHAR(50)  NOT NULL,
    annee YEAR,
-   media VARCHAR(50) ,
+   media TEXT,
    analyse TEXT,
    date_creation DATETIME DEFAULT CURRENT_TIMESTAMP,
    id_type INT NOT NULL,

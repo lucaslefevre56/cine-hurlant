@@ -1,0 +1,1 @@
+<!-- app/views/redacteur/ajouterArticleView.php -->
