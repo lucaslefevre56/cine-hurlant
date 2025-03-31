@@ -1,5 +1,6 @@
 <?php
 // app/helpers/errorHelper.php
+namespace App\Helpers;
 
 // Cette fonction me permet d’afficher une vraie page 404 personnalisée
 // Elle peut être appelée depuis n’importe quel contrôleur ou depuis le routeur

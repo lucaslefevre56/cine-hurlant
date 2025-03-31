@@ -1,8 +1,13 @@
 <?php
 // app/controllers/oeuvreController.php
 
+namespace App\Controllers;
+
+// Chargement automatique du modèle via Composer
+use App\Models\Oeuvre; 
+
 // J'inclus les helpers liés aux erreurs (notamment la fonction render404)
-require_once ROOT . '/app/helpers/errorHelper.php';
+use function App\Helpers\render404;
 
 // -----------------------------------------------------------
 // CONTRÔLEUR ŒUVRE – GÈRE LES ACTIONS LIÉES AUX ŒUVRES
@@ -21,10 +26,6 @@ class OeuvreController
     // Méthode appelée quand l’URL est /oeuvre/liste
     public function liste()
     {
-        // 1. J'inclus le modèle associé aux œuvres
-        // Il contient les méthodes pour interagir avec la BDD (récupérer, ajouter…)
-        require_once ROOT . '/app/models/oeuvre.php';
-
         // 2. Je crée une instance du modèle Oeuvre
         // Je lui passe la connexion à la BDD (déjà stockée dans $GLOBALS['conn'])
         $oeuvre = new Oeuvre($GLOBALS['conn']);
@@ -46,9 +47,6 @@ class OeuvreController
 
     public function fiche($id)
     {
-        // 1. J'inclus le modèle Oeuvre pour accéder aux méthodes liées à la BDD
-        require_once ROOT . '/app/models/oeuvre.php';
-
         // 2. Je crée une instance du modèle
         $oeuvreModel = new Oeuvre($GLOBALS['conn']);
 

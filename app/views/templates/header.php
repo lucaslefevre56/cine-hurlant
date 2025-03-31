@@ -1,8 +1,8 @@
 <?php
 // app/views/templates/header.php
 
-// Je charge mes fonctions d’authentification (isLoggedIn, isUserRedacteur, etc.)
-require_once ROOT . '/app/helpers/authHelpers.php';
+// Je charge la classe AuthHelper (isLoggedIn, isUserRedacteur, etc.)
+use App\Helpers\AuthHelper;
 ?>
 
 <!DOCTYPE html>
@@ -15,47 +15,51 @@ require_once ROOT . '/app/helpers/authHelpers.php';
 
 <body>
 
-    <!-- En-tête du site avec fond sombre -->
     <header style="background: #222; color: white; padding: 1rem;">
-
         <h1>
-            <a href="/cine-hurlant/public/" style="color: white; text-decoration: none;">Ciné-Hurlant</a>
+            <a href="/cine-hurlant/public/" style="color: white; text-decoration: none;">
+                Ciné-Hurlant
+            </a>
         </h1>
 
-        <!-- Lien vers la liste des œuvres -->
-        <nav>
-            <a href="/cine-hurlant/public/oeuvre/liste" style="color: white; margin-left: 1rem;">Les œuvres</a>
+        <nav style="margin-top: 0.5rem;">
+            <a href="/cine-hurlant/public/oeuvre/liste" style="color: white; margin-right: 1rem;">Les œuvres</a>
+
+            <?php if (AuthHelper::isLoggedIn()) : ?>
+                <span style="margin-right: 1rem;">|</span>
+                <a href="/cine-hurlant/public/auth/logout" style="color: #faa;">Se déconnecter</a>
+            <?php else : ?>
+                <a href="/cine-hurlant/public/auth/login" style="color: #0af;">Se connecter</a> |
+                <a href="/cine-hurlant/public/auth/register" style="color: #0af;">S'inscrire</a>
+            <?php endif; ?>
         </nav>
 
+        <?php if (AuthHelper::isLoggedIn()) : ?>
+            <p style="margin-top: 0.5rem;">
+                Bienvenue <strong><?= htmlspecialchars($_SESSION['user']['nom']) ?></strong> !
 
-        <?php if (isset($_SESSION['user'])) : ?>
-            <!-- Si un utilisateur est connecté, j’affiche son nom -->
-            <?php if (!empty($_SESSION['user']['nom'])) : ?>
-                <p>Bienvenue <?= htmlspecialchars($_SESSION['user']['nom']) ?> !</p>
-            <?php endif; ?>
+                <a href="/cine-hurlant/public/utilisateur/profil" style="color: #0af; margin-left: 1rem;">
+                    Mon profil
+                </a>
 
-            <!-- Lien de déconnexion -->
-            <a href="/cine-hurlant/public/auth/logout">Se déconnecter</a>
+                <span style="color: lime; margin-left: 1rem;">Connecté ✔</span>
+            </p>
 
-            <!-- Message de confirmation de connexion -->
-            <?php if (isLoggedIn()) : ?>
-                <p style="color: lime;">Connecté ✔</p>
-            <?php endif; ?>
+            <nav style="margin-top: 0.5rem;">
+                <?php if (AuthHelper::isUserAdmin()) : ?>
+                    <a href="/cine-hurlant/public/admin" style="color: orange; margin-right: 1rem;">
+                        Admin Panel
+                    </a>
+                <?php endif; ?>
 
-            <!-- Si l’utilisateur est admin, j’affiche un lien vers le panel admin -->
-            <?php if (isUserAdmin()) : ?>
-                <a href="/cine-hurlant/public/admin">Admin Panel</a>
-            <?php endif; ?>
-
-            <!-- Si l’utilisateur est rédacteur, il peut ajouter une œuvre ou un article -->
-            <?php if (isUserRedacteur()) : ?>
-                <a href="/cine-hurlant/public/redacteur/ajouterOeuvre">Ajouter une œuvre</a>
-                <a href="/cine-hurlant/public/redacteur">Ajouter un article</a>
-            <?php endif; ?>
-
-        <?php else : ?>
-            <!-- Si personne n’est connecté → je propose de se connecter ou s’inscrire -->
-            <a href="/cine-hurlant/public/auth/login">Se connecter</a> |
-            <a href="/cine-hurlant/public/auth/register">S'inscrire</a>
+                <?php if (AuthHelper::isUserRedacteur()) : ?>
+                    <a href="/cine-hurlant/public/redacteur/ajouterOeuvre" style="color: lightgreen; margin-right: 1rem;">
+                        Ajouter une œuvre
+                    </a>
+                    <a href="/cine-hurlant/public/redacteur" style="color: lightgreen;">
+                        Ajouter un article
+                    </a>
+                <?php endif; ?>
+            </nav>
         <?php endif; ?>
     </header>

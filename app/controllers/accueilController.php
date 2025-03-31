@@ -1,6 +1,8 @@
 <?php
 // app/controllers/accueilController.php
 
+namespace App\Controllers;
+
 // Je crée ma classe AccueilController
 class AccueilController
 {

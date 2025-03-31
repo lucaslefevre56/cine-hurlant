@@ -27,6 +27,9 @@ session_start();
 // Très pratique pour inclure des fichiers propres depuis n’importe où
 define('ROOT', dirname(__DIR__));
 
+// Chargement de l'autoloader Composer
+require_once ROOT . '/vendor/autoload.php';
+
 // 3. Connexion à la base de données + chargement du fichier .env
 // Le fichier connexion.php va : 
 // - charger les variables d’environnement (host, utilisateur, mot de passe...)
@@ -83,7 +86,7 @@ try {
 // -> RedacteurController.php
 // -> méthode ajouterOeuvre()
 // ----------------------------------------------------
-require_once ROOT . '/app/core/Router.php';
+use App\Core\Router;
 
 $router = new Router();        // J’instancie mon routeur
 $router->handleRequest();      // Et je lui demande de traiter la requête

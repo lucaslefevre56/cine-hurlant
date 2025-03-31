@@ -1,8 +1,10 @@
 <?php
 // app/controllers/AuthController.php
 
-// Je rends dispo le modèle Utilisateur dans tout ce contrôleur (register, login, etc.)
-require_once ROOT . '/app/models/utilisateur.php';
+namespace App\Controllers;
+
+ // Chargement automatique via Composer
+use App\Models\Utilisateur;
 
 // Ce contrôleur gère tout ce qui touche à l’authentification : inscription, connexion, déconnexion
 

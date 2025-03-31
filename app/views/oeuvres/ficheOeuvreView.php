@@ -22,9 +22,9 @@
 <!-- J’affiche l’année de création/publication -->
 <p><strong>Année :</strong> <?= htmlspecialchars($oeuvre['annee']) ?></p>
 
-<!-- Si un média (image) est disponible, je l’affiche -->
+<!-- Si un média (image) est disponible, je l’affiche uniquement lorsqu'elle entre dans la zone visible de l'ecran avec lazy loading-->
 <?php if (!empty($oeuvre['media'])) : ?>
-    <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="300">
+    <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="300" loading="lazy">
 <?php endif; ?>
 
 <!-- Partie analyse rédigée par le rédacteur -->

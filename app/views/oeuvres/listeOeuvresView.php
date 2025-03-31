@@ -37,9 +37,9 @@
                 <!-- J’affiche l’année de publication -->
                 <p><strong>Année :</strong> <?= htmlspecialchars($oeuvre['annee']) ?></p>
 
-                <!-- Si un média est présent (image ou autre), je l’affiche -->
+                <!-- Si un média est présent (image ou autre), je l’affiche uniquement lorsqu'elle entre dans la zone visible de l'ecran avec lazy loading -->
                 <?php if (!empty($oeuvre['media'])) : ?>
-                    <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200">
+                    <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
                 <?php endif; ?>
 
                 <!-- Je montre un extrait de l’analyse (juste les 150 premiers caractères) -->

@@ -1,8 +1,12 @@
 <?php
 // app/controllers/redacteurController.php
+namespace App\Controllers;
+
+use App\Models\Oeuvre; // J'importe le modèle via Composer
 
 // J’inclus mes fonctions de sécurité pour vérifier le rôle de l’utilisateur connecté
-require_once ROOT . '/app/helpers/authHelpers.php';
+use App\Helpers\AuthHelper;
+
 
 // Ce contrôleur est dédié aux rédacteurs (ou aux admins)
 // Il permet d’ajouter des œuvres et d’accéder à des vues spécifiques
@@ -13,7 +17,7 @@ class RedacteurController
     {
         // Avant toute chose, je vérifie que l’utilisateur est bien un rédacteur
         // Sinon → je le renvoie vers la page d’accueil
-        if (!isUserRedacteur()) {
+        if (!AuthHelper::isUserRedacteur()) {
             header('Location: /cine-hurlant/public/');
             exit;
         }
@@ -52,8 +56,8 @@ class RedacteurController
                 return;
             }
 
-            // Je charge le modèle Oeuvre pour accéder à la méthode d’ajout
-            require_once ROOT . '/app/models/oeuvre.php';
+            // Je crée une instance du modèle Oeuvre, en lui passant la connexion à la base de données
+            // Grâce à Composer, la classe est automatiquement chargée depuis app/models/Oeuvre.php
             $oeuvre = new Oeuvre($GLOBALS['conn']);
 
             // Je récupère l’ID de l’utilisateur connecté pour le lier à l’œuvre ajoutée

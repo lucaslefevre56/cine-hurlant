@@ -2,8 +2,11 @@
     "name": "kerx30/cine-hurlant",
     "autoload": {
         "psr-4": {
-            "Kerx30\\CineHurlant\\": "src/"
-        }
+            "App\\": "app/"
+        },
+        "files": [
+        "app/Helpers/ErrorHelper.php"
+    ]
     },
     "authors": [
         {

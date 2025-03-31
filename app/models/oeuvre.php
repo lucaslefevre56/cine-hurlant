@@ -1,6 +1,11 @@
 <?php
 // app/models/oeuvre.php
 
+// Nécessaire pour l'autoload PSR-4 avec Composer
+namespace App\Models; 
+
+use PDO;
+
 class Oeuvre
 {
     private $conn;
@@ -26,11 +31,11 @@ class Oeuvre
 
         // Je l’exécute avec les données du formulaire
         $success = $stmt->execute([
-            ':titre' => htmlspecialchars($titre),
-            ':auteur' => htmlspecialchars($auteur),
+            ':titre' => $titre,
+            ':auteur' => $auteur,
             ':annee' => (int)$annee,
-            ':media' => htmlspecialchars($media),
-            ':analyse' => htmlspecialchars($analyse),
+            ':media' => $media,
+            ':analyse' => $analyse,
             ':id_type' => (int)$id_type,
             ':id_utilisateur' => (int)$id_utilisateur
         ]);

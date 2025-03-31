@@ -1,6 +1,10 @@
 <?php
 // app/models/Utilisateur.php
 
+namespace App\Models;
+
+use PDO;
+
 // Cette classe gère tout ce qui concerne un utilisateur côté base de données.
 // Elle regroupe les fonctions liées à ses infos, son rôle, ses commentaires,
 // et ce qu'il peut publier s'il est rédacteur ou admin.
