@@ -22,10 +22,30 @@
 <!-- J’affiche l’année de création/publication -->
 <p><strong>Année :</strong> <?= htmlspecialchars($oeuvre['annee']) ?></p>
 
-<!-- Si un média (image) est disponible, je l’affiche uniquement lorsqu'elle entre dans la zone visible de l'ecran avec lazy loading-->
-<?php if (!empty($oeuvre['media'])) : ?>
-    <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="300" loading="lazy">
+<!-- Affichage de l’image associée si elle existe -->
+<?php if (!empty($oeuvre['media']) && filter_var($oeuvre['media'], FILTER_VALIDATE_URL)) : ?>
+    <!-- Si le média est une URL externe valide, on l’utilise telle quelle -->
+    <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
+<?php elseif (!empty($oeuvre['media'])) : ?>
+    <!-- Sinon, on considère qu’il s’agit d’une image locale dans /public/images -->
+    <img src="/cine-hurlant/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="300" loading="lazy">
 <?php endif; ?>
+
+<!-- Si une vidéo est associée à cette œuvre, je l'affiche -->
+<?php if (!empty($oeuvre['video_url']) && preg_match('#(?:youtu\.be/|youtube\.com/watch\?v=)([\w\-]+)#', $oeuvre['video_url'], $matches)) : ?>
+    <h3>Vidéo associée</h3>
+    <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/<?= htmlspecialchars($matches[1]) ?>"
+        title="Vidéo associée"
+        frameborder="0"
+        allowfullscreen>
+    </iframe>
+<?php else : ?>
+    <?php if (!empty($oeuvre['video_url'])) : ?>
+        <p><a href="<?= htmlspecialchars($oeuvre['video_url']) ?>" target="_blank">Voir la vidéo</a></p>
+    <?php endif; ?>
+<?php endif; ?>
+
 
 <!-- Partie analyse rédigée par le rédacteur -->
 <h3>Analyse</h3>

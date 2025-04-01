@@ -4,6 +4,7 @@
 namespace App\Models;
 
 use PDO;
+use App\Core\Database; // J’importe ma classe Database (singleton) pour me connecter proprement
 
 // Cette classe gère tout ce qui concerne un utilisateur côté base de données.
 // Elle regroupe les fonctions liées à ses infos, son rôle, ses commentaires,
@@ -11,14 +12,6 @@ use PDO;
 
 class Utilisateur
 {
-    private $conn; // Je garde ici la connexion PDO pour exécuter mes requêtes SQL
-
-    // Quand je crée un nouvel objet Utilisateur, je lui donne la connexion PDO
-    public function __construct($conn)
-    {
-        $this->conn = $conn;
-    }
-
     // ----------------------------------------
     // PARTIE 1 : INFOS UTILISATEUR
     // ----------------------------------------
@@ -26,23 +19,25 @@ class Utilisateur
     // Je récupère un utilisateur en base à partir de son ID
     public function getById($id)
     {
+        $db = Database::getInstance();
+
         $sql = "SELECT * FROM Utilisateur WHERE id_utilisateur = ?";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute([$id]);
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    // FETCH_ASSOC, c’est la version propre et logique pour lire les résultats SQL.
-    // Je veux des tableaux avec des noms, pas des chiffres incompréhensibles.
-    // Et c’est ce que j’utilise dans tout mon site, car je travaille avec des données claires.
 
-    
     // Je récupère un utilisateur en base à partir de son email
     // (pratique pour la connexion ou vérifier si l’email est déjà pris à l’inscription)
     public function getByEmail($email)
     {
+        $db = Database::getInstance();
+
         $sql = "SELECT * FROM Utilisateur WHERE email = ?";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute([$email]);
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -50,8 +45,11 @@ class Utilisateur
     // Le mot de passe est déjà hashé avant d’arriver ici
     public function add($nom, $email, $hashedPassword)
     {
+        $db = Database::getInstance();
+
         $sql = "INSERT INTO Utilisateur (nom, email, password) VALUES (?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
+
         return $stmt->execute([$nom, $email, $hashedPassword]);
     }
 
@@ -78,8 +76,11 @@ class Utilisateur
     // Permet à un admin de changer le rôle d’un utilisateur (ex : le promouvoir rédacteur)
     public function updateRole($id, $newRole)
     {
+        $db = Database::getInstance();
+
         $sql = "UPDATE Utilisateur SET role = ? WHERE id_utilisateur = ?";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
+
         return $stmt->execute([$newRole, $id]);
     }
 
@@ -90,17 +91,23 @@ class Utilisateur
     // Je récupère tous les commentaires postés par un utilisateur
     public function getCommentaires($id_utilisateur)
     {
+        $db = Database::getInstance();
+
         $sql = "SELECT * FROM Commentaire WHERE id_utilisateur = ?";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute([$id_utilisateur]);
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Je supprime un commentaire (le contrôleur doit vérifier que l’utilisateur en a le droit)
     public function deleteCommentaire($id_commentaire)
     {
+        $db = Database::getInstance();
+
         $sql = "DELETE FROM Commentaire WHERE id_commentaire = ?";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
+
         return $stmt->execute([$id_commentaire]);
     }
 
@@ -111,25 +118,29 @@ class Utilisateur
     // Je récupère toutes les œuvres publiées par un utilisateur
     public function getOeuvres($id_utilisateur)
     {
+        $db = Database::getInstance();
+
         $sql = "SELECT * FROM Oeuvre WHERE id_utilisateur = ?";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute([$id_utilisateur]);
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Je récupère tous les articles publiés par un utilisateur
     public function getArticles($id_utilisateur)
     {
+        $db = Database::getInstance();
+
         $sql = "SELECT * FROM Article WHERE id_utilisateur = ?";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute([$id_utilisateur]);
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 
-
 // Cette classe Utilisateur, c’est mon lien entre le code et la base pour tout ce qui touche à un utilisateur.
 // Elle regroupe ses infos, ses rôles, ses commentaires, et ce qu’il publie.
-// Tout est bien organisé par blocs, et chaque méthode fait une seule chose bien précise, avec la connexion PDO toujours à dispo.
-// Je peux maintenant utiliser cette classe dans mes contrôleurs pour récupérer ou modifier des données liées aux utilisateurs, sans jamais avoir à toucher à SQL en dehors de ce fichier.
-// Bref, c’est propre, modulaire, prêt à être utilisé partout dans mon site
+// Tout est bien organisé par blocs, et chaque méthode fait une seule chose bien précise, avec la connexion PDO toujours à dispo via le singleton.
+// Je peux maintenant utiliser cette classe dans mes contrôleurs sans me soucier de la connexion : c’est clair, modulaire et pro.

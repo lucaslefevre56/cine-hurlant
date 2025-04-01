@@ -1,10 +1,10 @@
 <?php
-// app/controllers/oeuvreController.php
+// app/controllers/OeuvreController.php
 
 namespace App\Controllers;
 
-// Chargement automatique du modèle via Composer
-use App\Models\Oeuvre; 
+// Chargement automatique du modèle Oeuvre via Composer (PSR-4)
+use App\Models\Oeuvre;
 
 // J'inclus les helpers liés aux erreurs (notamment la fonction render404)
 use function App\Helpers\render404;
@@ -12,13 +12,10 @@ use function App\Helpers\render404;
 // -----------------------------------------------------------
 // CONTRÔLEUR ŒUVRE – GÈRE LES ACTIONS LIÉES AUX ŒUVRES
 // -----------------------------------------------------------
-//
-// Ce fichier appartient à la couche "Contrôleur" du MVC.
 // Il sert d'intermédiaire entre :
-//  → les modèles (ici : Oeuvre.php qui dialogue avec la BDD)
-//  → les vues (ici : listeOeuvresView.php pour afficher les œuvres)
-//
-// Objectif : afficher la liste des œuvres enregistrées dans la base
+//  → le modèle Oeuvre (accès à la base de données)
+//  → les vues (liste et fiche)
+// Son objectif : afficher toutes les œuvres ou une fiche précise
 // -----------------------------------------------------------
 
 class OeuvreController
@@ -26,43 +23,50 @@ class OeuvreController
     // Méthode appelée quand l’URL est /oeuvre/liste
     public function liste()
     {
-        // 2. Je crée une instance du modèle Oeuvre
-        // Je lui passe la connexion à la BDD (déjà stockée dans $GLOBALS['conn'])
-        $oeuvre = new Oeuvre($GLOBALS['conn']);
+        // 1. Je crée une instance du modèle Oeuvre (plus besoin de connexion à passer)
+        $oeuvre = new Oeuvre();
 
-        // 3. J'appelle la méthode getAll() pour récupérer toutes les œuvres
-        // Cette méthode me renvoie un tableau associatif contenant les œuvres
+        // 2. Je récupère toutes les œuvres enregistrées dans la base
         $oeuvres = $oeuvre->getAll();
 
-        // 4. Pour chaque œuvre, je vais chercher les genres associés
-        // Je complète chaque œuvre avec un tableau "genres" grâce à la méthode getGenresByOeuvre()
+        // 3. Pour chaque œuvre, je vais chercher les genres associés
         foreach ($oeuvres as &$o) {
             $o['genres'] = $oeuvre->getGenresByOeuvre($o['id_oeuvre']);
         }
-        
-        // 5. J'affiche la vue associée à cette action
-        // → Le tableau $oeuvres sera accessible dans la vue pour affichage
+
+        // 4. J'affiche la vue associée avec le tableau $oeuvres
         require_once ROOT . '/app/views/oeuvres/listeOeuvresView.php';
     }
 
+    // Méthode appelée quand l’URL est /oeuvre/fiche/:id
     public function fiche($id)
     {
-        // 2. Je crée une instance du modèle
-        $oeuvreModel = new Oeuvre($GLOBALS['conn']);
+        // 1. Je crée une instance du modèle Oeuvre
+        $oeuvreModel = new Oeuvre();
 
-        // 3. Je récupère les infos de l’œuvre grâce à son ID
+        // 2. Je récupère les infos de l’œuvre demandée
         $oeuvre = $oeuvreModel->getById($id);
 
-        // 4. Si l’œuvre n’existe pas, redirection vers la page 404 en utilisant la methode render404
+        // 3. Si elle n’existe pas, je déclenche une erreur 404
         if (!$oeuvre) {
             render404("Œuvre introuvable");
             return;
         }
 
-        // 5. Je récupère la liste des genres associés à cette œuvre (SF, Western…)
+        // 4. Je récupère les genres liés à cette œuvre
         $genres = $oeuvreModel->getGenresByOeuvre($id);
 
-        // 6. J'appelle la vue pour afficher la fiche détaillée
+        // Si l'œuvre a un lien vidéo, je récupère cette information également
+        $video_url = $oeuvre['video_url'] ?? null;
+
+        // 5. J'affiche la vue de fiche détaillée
         require_once ROOT . '/app/views/oeuvres/ficheOeuvreView.php';
+    }
+
+    public function index()
+    {
+        // Redirection vers la liste des œuvres
+        header('Location: /cine-hurlant/public/oeuvre/liste');
+        exit;
     }
 }

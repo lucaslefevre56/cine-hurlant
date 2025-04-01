@@ -24,6 +24,7 @@ use App\Helpers\AuthHelper;
 
         <nav style="margin-top: 0.5rem;">
             <a href="/cine-hurlant/public/oeuvre/liste" style="color: white; margin-right: 1rem;">Les œuvres</a>
+            <a href="/cine-hurlant/public/article/liste" style="color: white; margin-right: 1rem;">Les articles</a>
 
             <?php if (AuthHelper::isLoggedIn()) : ?>
                 <span style="margin-right: 1rem;">|</span>
@@ -56,7 +57,7 @@ use App\Helpers\AuthHelper;
                     <a href="/cine-hurlant/public/redacteur/ajouterOeuvre" style="color: lightgreen; margin-right: 1rem;">
                         Ajouter une œuvre
                     </a>
-                    <a href="/cine-hurlant/public/redacteur" style="color: lightgreen;">
+                    <a href="/cine-hurlant/public/redacteur/ajouterArticle" style="color: lightgreen;">
                         Ajouter un article
                     </a>
                 <?php endif; ?>

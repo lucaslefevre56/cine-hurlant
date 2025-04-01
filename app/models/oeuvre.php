@@ -1,33 +1,30 @@
 <?php
-// app/models/oeuvre.php
+// app/models/Oeuvre.php
 
-// Nécessaire pour l'autoload PSR-4 avec Composer
-namespace App\Models; 
+// Je définis le namespace pour l’autoload PSR-4
+namespace App\Models;
 
+// J’importe la classe PDO (pour fetchAll, etc.) et ma classe Database (singleton)
 use PDO;
+use App\Core\Database;
 
 class Oeuvre
 {
-    private $conn;
-
-    // Quand je crée un objet Oeuvre, je lui passe la connexion à la base de données
-    public function __construct($db)
-    {
-        $this->conn = $db;
-    }
-
     /**
      * Je crée une nouvelle œuvre dans la BDD, avec tous ses détails (titre, auteur, type, etc.)
      * et je lui associe un ou plusieurs genres sélectionnés dans le formulaire
      */
-    public function add($titre, $auteur, $id_type, $annee, $analyse, $media, $id_utilisateur, $genres = [])
+    public function add($titre, $auteur, $id_type, $annee, $analyse, $media, $video_url, $id_utilisateur, $genres = [])
     {
+        // Je récupère la connexion PDO via le singleton
+        $db = Database::getInstance();
+
         // Étape 1 : j’insère les infos principales dans la table "oeuvre"
-        $sql = "INSERT INTO oeuvre (titre, auteur, annee, media, analyse, id_type, id_utilisateur)
-                VALUES (:titre, :auteur, :annee, :media, :analyse, :id_type, :id_utilisateur)";
+        $sql = "INSERT INTO oeuvre (titre, auteur, annee, media, video_url, analyse, id_type, id_utilisateur)
+                VALUES (:titre, :auteur, :annee, :media, :video_url, :analyse, :id_type, :id_utilisateur)";
 
         // Je prépare la requête pour sécuriser les données
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
 
         // Je l’exécute avec les données du formulaire
         $success = $stmt->execute([
@@ -35,6 +32,7 @@ class Oeuvre
             ':auteur' => $auteur,
             ':annee' => (int)$annee,
             ':media' => $media,
+            ':video_url' => $video_url,  // Ajout de l'URL vidéo
             ':analyse' => $analyse,
             ':id_type' => (int)$id_type,
             ':id_utilisateur' => (int)$id_utilisateur
@@ -43,12 +41,12 @@ class Oeuvre
         // Si l’insertion a bien fonctionné, je continue
         if ($success) {
             // Je récupère l’ID de l’œuvre qu’on vient d’insérer
-            $id_oeuvre = $this->conn->lastInsertId();
+            $id_oeuvre = $db->lastInsertId();
 
             // Étape 2 : j’insère chaque genre sélectionné dans la table "appartenir"
             foreach ($genres as $id_genre) {
                 $sqlGenre = "INSERT INTO appartenir (id_oeuvre, id_genre) VALUES (:id_oeuvre, :id_genre)";
-                $stmtGenre = $this->conn->prepare($sqlGenre);
+                $stmtGenre = $db->prepare($sqlGenre);
 
                 $ok = $stmtGenre->execute([
                     ':id_oeuvre' => $id_oeuvre,
@@ -75,12 +73,17 @@ class Oeuvre
      */
     public function getAll()
     {
+        // Je récupère la connexion
+        $db = Database::getInstance();
+
+        // Requête SQL avec jointure vers "type" (nom du type)
         $sql = "SELECT oeuvre.*, type.nom
                 FROM oeuvre
                 JOIN type ON oeuvre.id_type = type.id_type
                 ORDER BY oeuvre.titre ASC";
 
-        $stmt = $this->conn->query($sql);
+        // J’exécute la requête et je renvoie le tableau associatif des résultats
+        $stmt = $db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -90,12 +93,14 @@ class Oeuvre
      */
     public function getById($id)
     {
+        $db = Database::getInstance();
+
         $sql = "SELECT oeuvre.*, type.nom 
                 FROM oeuvre 
                 JOIN type ON oeuvre.id_type = type.id_type
                 WHERE oeuvre.id_oeuvre = :id";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute([':id' => $id]);
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -107,12 +112,14 @@ class Oeuvre
      */
     public function getGenresByOeuvre($id_oeuvre)
     {
+        $db = Database::getInstance();
+
         $sql = "SELECT genre.nom 
                 FROM appartenir 
                 JOIN genre ON appartenir.id_genre = genre.id_genre 
                 WHERE appartenir.id_oeuvre = :id";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute([':id' => $id_oeuvre]);
 
         // Je renvoie juste la liste des noms (pas un tableau complet)

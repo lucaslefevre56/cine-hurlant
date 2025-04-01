@@ -1,5 +1,3 @@
-<!-- app/views/redacteur/ajouterOeuvreView.php -->
- 
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <?php if (!empty($erreur)): ?>
@@ -8,7 +6,8 @@
 
 <h2>Ajouter une œuvre</h2>
 
-<form method="POST" action="/cine-hurlant/public/redacteur/ajouterOeuvre">
+<!-- Formulaire avec enctype pour permettre l'upload de fichiers -->
+<form method="POST" action="/cine-hurlant/public/redacteur/ajouterOeuvre" enctype="multipart/form-data">
 
     <!-- Titre -->
     <label for="titre">Titre</label>
@@ -60,9 +59,14 @@
     <label for="analyse">Analyse</label>
     <textarea name="analyse" id="analyse" rows="5" required><?= htmlspecialchars($_POST['analyse'] ?? '') ?></textarea>
 
-    <!-- Média associé -->
-    <label for="media">Média associé (URL)</label>
-    <input type="url" name="media" id="media" value="<?= htmlspecialchars($_POST['media'] ?? '') ?>" required>
+    <!-- Média associé (upload de l'image) -->
+    <label for="image">Image</label>
+    <input type="file" name="media" id="image" accept="image/*" required>
+
+    <!-- Lien vidéo (facultatif, exemple : YouTube) -->
+    <label for="video_url">Lien vidéo (facultatif)</label>
+    <input type="url" name="video_url" id="video_url" value="<?= htmlspecialchars($_POST['video_url'] ?? '') ?>"
+           placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX">
 
     <!-- Bouton -->
     <button type="submit">Ajouter l'œuvre</button>
