@@ -4,10 +4,13 @@
 namespace App\Controllers;
 
 // J’importe le modèle Article pour interagir avec la BDD
-use App\Models\Article; 
+use App\Models\Article;
+
+// Modèle utilisé pour récupérer les commentaires liés à l'article
+use App\Models\Commentaire; 
 
 // J’importe la fonction qui affiche une erreur 404 personnalisée
-use function App\Helpers\render404; 
+use function App\Helpers\render404;
 
 // -----------------------------------------------------------
 // CONTRÔLEUR ARTICLE – GÈRE LA CONSULTATION DES ARTICLES
@@ -21,7 +24,8 @@ use function App\Helpers\render404;
 // - Afficher une fiche article complète à partir de son ID
 // -----------------------------------------------------------
 
-class ArticleController {
+class ArticleController
+{
 
     // Méthode appelée quand l’URL est /articles/liste
     public function liste()
@@ -57,7 +61,11 @@ class ArticleController {
         // 5. Je récupère l'URL de la vidéo si elle existe
         $video_url = $article['video_url'] ?? null;  // On récupère l'URL de la vidéo associée, si présente
 
-        // 6. Si tout est OK, j’affiche la fiche détaillée de l’article
+        // 6. Je récupère les commentaires liés à cet article
+        $commentaireModel = new Commentaire();
+        $commentaires = $commentaireModel->getByArticle($id);
+
+        // 7. Si tout est OK, j’affiche la fiche détaillée de l’article
         require_once ROOT . '/app/views/articles/ficheArticleView.php';
     }
 

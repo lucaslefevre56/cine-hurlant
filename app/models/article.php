@@ -135,3 +135,5 @@ class Article
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
+
+?>

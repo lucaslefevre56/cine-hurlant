@@ -4,5 +4,8 @@
     <p>&copy; 2025 - Ciné-Hurlant</p>
 </footer>
 
+<script src="/cine-hurlant/public/js/commentaires.js"></script>
+
+
 </body>
 </html>

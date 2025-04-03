@@ -28,7 +28,7 @@ CREATE TABLE commentaire(
    id_commentaire INT AUTO_INCREMENT,
    contenu TEXT,
    date_redaction DATETIME DEFAULT CURRENT_TIMESTAMP,
-   valider BOOLEAN,
+   valider BOOLEAN NOT NULL DEFAULT 1, -- Les commentaires sont validés par défaut (affichage direct)
    id_article INT NOT NULL,
    id_utilisateur INT NOT NULL,
    PRIMARY KEY(id_commentaire),

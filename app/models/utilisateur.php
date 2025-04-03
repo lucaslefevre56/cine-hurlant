@@ -144,3 +144,5 @@ class Utilisateur
 // Elle regroupe ses infos, ses rôles, ses commentaires, et ce qu’il publie.
 // Tout est bien organisé par blocs, et chaque méthode fait une seule chose bien précise, avec la connexion PDO toujours à dispo via le singleton.
 // Je peux maintenant utiliser cette classe dans mes contrôleurs sans me soucier de la connexion : c’est clair, modulaire et pro.
+
+?>
