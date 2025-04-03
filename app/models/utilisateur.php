@@ -1,5 +1,5 @@
 <?php
-// app/models/Utilisateur.php
+// app/Models/Utilisateur.php
 
 namespace App\Models;
 

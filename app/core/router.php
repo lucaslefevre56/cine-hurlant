@@ -1,5 +1,5 @@
 <?php
-// app/core/Router.php
+// app/Core/Router.php
 namespace App\Core;
 
 // J'inclus les helpers liés aux erreurs (la fonction render404)

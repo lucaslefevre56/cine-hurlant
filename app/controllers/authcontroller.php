@@ -1,5 +1,5 @@
 <?php
-// app/controllers/AuthController.php
+// app/Controllers/AuthController.php
 
 namespace App\Controllers;
 

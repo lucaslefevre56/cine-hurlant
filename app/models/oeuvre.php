@@ -1,5 +1,5 @@
 <?php
-// app/models/Oeuvre.php
+// app/Models/Oeuvre.php
 
 // Je définis le namespace pour l’autoload PSR-4
 namespace App\Models;

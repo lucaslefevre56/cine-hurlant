@@ -1,5 +1,5 @@
 <?php
-// app/controllers/ArticleController.php
+// app/Controllers/ArticleController.php
 
 namespace App\Controllers;
 

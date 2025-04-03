@@ -1,5 +1,5 @@
 <?php
-// app/models/article.php
+// app/Models/Article.php
 
 // Nécessaire pour l'autoload PSR-4 avec Composer
 namespace App\Models;

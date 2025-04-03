@@ -1,5 +1,5 @@
 <?php
-// app/controllers/OeuvreController.php
+// app/Controllers/OeuvreController.php
 
 namespace App\Controllers;
 

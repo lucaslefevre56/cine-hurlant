@@ -1,5 +1,5 @@
 <?php
-// app/core/Database.php
+// app/Core/Database.php
 
 // Déclaration du namespace pour l'autoload (PSR-4 via Composer)
 namespace App\Core;
