@@ -115,15 +115,10 @@ class Commentaire
     {
         $db = Database::getInstance();
 
-        // Requête SQL pour supprimer un commentaire spécifique
-        $sql = "DELETE FROM commentaire
-                WHERE id_commentaire = :id";
-
+        $sql = "DELETE FROM commentaire WHERE id_commentaire = :id";
         $stmt = $db->prepare($sql);
         $ok = $stmt->execute([':id' => $id_commentaire]);
 
         return $ok;
     }
 }
-
-?>

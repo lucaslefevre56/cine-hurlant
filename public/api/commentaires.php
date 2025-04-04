@@ -1,92 +1,94 @@
 <?php
+// public/api/commentaires.php
 
-// ini_set('display_errors', 1); ===============================A ENLEVER EN PROD !!!!! ===============================
+// ini_set('display_errors', 1); // =============================== A ENLEVER EN PROD ===============================
 // error_reporting(E_ALL);
 
-// Je définis manuellement la constante ROOT pour cette API
 define('ROOT', dirname(__DIR__, 2));
-
-// J’indique que toutes les réponses de ce fichier seront envoyées au format JSON
-// → C’est essentiel pour que le JavaScript qui appelle ce fichier sache comment lire la réponse
 header('content-type: application/json');
 
-// Je charge l’autoloader généré par Composer, qui me permet d’utiliser mes classes avec les namespaces
-// → ROOT est une constante définie dans le projet qui pointe vers la racine
 require_once ROOT . '/vendor/autoload.php';
-
-// J’importe la classe Commentaire de mon dossier Models
-// → Cela me permettra d’utiliser new Commentaire() plus bas
 use App\Models\Commentaire;
 
-// Je démarre la session PHP pour accéder aux informations de l’utilisateur connecté
-// → Sans ça, $_SESSION['utilisateur'] sera vide
 session_start();
-
-// Je récupère la méthode HTTP utilisée pour appeler ce fichier (POST, GET, DELETE, etc.)
-// → Ici, on attend un POST (ajout de commentaire)
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Je vérifie que l’utilisateur est connecté
-// → Si la clé 'utilisateur' n’est pas présente dans $_SESSION, je bloque l’accès
 if (!isset($_SESSION['user'])) {
-    // Je renvoie un code HTTP 401 (non autorisé)
     http_response_code(401);
-    // Je renvoie un message JSON compréhensible par le frontend
     echo json_encode(['error' => 'Utilisateur non connecté']);
-    exit; // Je stoppe l’exécution du script
+    exit;
 }
 
-// Je récupère l’id de l’utilisateur connecté depuis la session
 $id_utilisateur = $_SESSION['user']['id'];
-
-// Je récupère les données envoyées par le frontend via JavaScript (au format JSON)
-// → 'php://input' lit le corps brut de la requête HTTP
-// → json_decode(..., true) transforme ce JSON en tableau associatif PHP
 $data = json_decode(file_get_contents('php://input'), true);
-
-// J’instancie mon modèle Commentaire, pour pouvoir utiliser ses méthodes (comme add)
 $commentaire = new Commentaire();
 
-// Je récupère les champs envoyés : le contenu du commentaire, et l’id de l’article concerné
-// → Si une des deux clés n’existe pas, je mets une valeur par défaut (chaîne vide ou null)
+// 🔁 PRIORITÉ : si c’est une demande de suppression, on traite et on sort
+if (!empty($data['action']) && $data['action'] === 'delete') {
+    $id_commentaire = $data['id_commentaire'] ?? null;
+
+    if (!$id_commentaire) {
+        http_response_code(400);
+        echo json_encode(['error' => 'ID du commentaire manquant']);
+        exit;
+    }
+
+    $commentaireCible = $commentaire->getById($id_commentaire);
+
+    if (!$commentaireCible) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Commentaire introuvable']);
+        exit;
+    }
+
+    $estAuteur = $commentaireCible['id_utilisateur'] == $id_utilisateur;
+    $estAdmin = ($_SESSION['user']['role'] ?? '') === 'admin';
+
+    if (!$estAuteur && !$estAdmin) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Action non autorisée']);
+        exit;
+    }
+
+    $success = $commentaire->deleteById($id_commentaire);
+
+    if ($success) {
+        echo json_encode(['success' => true, 'message' => 'Commentaire supprimé']);
+    } else {
+        http_response_code(500);
+        echo json_encode(['error' => 'Échec de la suppression']);
+    }
+
+    exit; // ⛔ STOP ici, on ne passe pas à l'ajout
+}
+
+// 🟢 Sinon, on continue avec l’AJOUT
 $contenu = $data['contenu'] ?? '';
 $id_article = $data['id_article'] ?? null;
 
-// Je vérifie que les deux champs sont bien remplis
-// → Je ne veux pas autoriser l’ajout de commentaires vides ou sans article associé
-if (empty($contenu) || empty($id_article)) {
-    // Je retourne un code 400 = requête mal formée
+if (!isset($data['contenu'], $data['id_article']) || trim($contenu) === '') {
     http_response_code(400);
-    // Et un message d’erreur clair pour le frontend
-    echo json_encode(['error' => 'Champs manquants']);
-    exit; // Je stoppe le script, car on ne va pas plus loin si les champs sont invalides
+    echo json_encode(['error' => 'Champs manquants ou invalides']);
+    exit;
 }
 
-// J’appelle la méthode add() de mon modèle Commentaire pour insérer les données en BDD
-// → Si l’insertion réussit, je récupère l’ID du nouveau commentaire
-// → Sinon, $id_commentaire vaudra false
 $id_commentaire = $commentaire->add($contenu, $id_article, $id_utilisateur);
 
-// Si l’ajout a fonctionné (la BDD a bien enregistré le commentaire)
 if ($id_commentaire) {
-    // Je renvoie une réponse JSON contenant :
-    // - un indicateur de succès
-    // - les infos du commentaire (id, contenu, article, auteur, date)
-    // → Ces infos seront utiles pour que le JavaScript puisse directement l’afficher
     echo json_encode([
         'success' => true,
         'id_commentaire' => $id_commentaire,
         'contenu' => $contenu,
         'id_article' => $id_article,
-        'auteur' => $_SESSION['user']['nom'], // À adapter selon ce que tu stockes côté utilisateur
-        'date' => date('Y-m-d H:i:s') // Génère la date actuelle au moment de l’ajout
+        'auteur' => $_SESSION['user']['nom'],
+        'date' => date('Y-m-d H:i:s')
     ]);
 } else {
-    // Si l’ajout a échoué, je renvoie un code 500 = erreur serveur
     http_response_code(500);
-    // Et un message clair pour le JS
     echo json_encode(['error' => "Echec de l'ajout"]);
 }
+
+
 
 /**
  * ----------------------------------------------------------------------------
