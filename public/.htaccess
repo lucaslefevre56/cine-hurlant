@@ -14,7 +14,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 # Alors je redirige tout vers index.php
 # L’URL tapée dans le navigateur est transmise à index.php, c’est lui qui décidera quoi faire
 # QSA : je garde les paramètres éventuels (ex : ?id=4), L : c’est la dernière règle exécutée
-RewriteRule ^(.*)$ index.php [QSA,L]
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
 
 # Je bloque l’accès direct à certains fichiers sensibles (ex : .env, .gitignore, .sql, .php...)
 # Ces fichiers ne doivent pas être consultables depuis un navigateur

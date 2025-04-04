@@ -12,6 +12,16 @@ use App\Models\Commentaire;
 
 session_start();
 $method = $_SERVER['REQUEST_METHOD'];
+$commentaire = new Commentaire();
+
+// 📥 Si c’est une demande AJAX de récupération des commentaires d’un article
+if ($method === 'GET' && isset($_GET['id_article'])) {
+    $id_article = (int) $_GET['id_article'];
+    $commentaires = $commentaire->getByArticle($id_article);
+
+    echo json_encode($commentaires);
+    exit;
+}
 
 if (!isset($_SESSION['user'])) {
     http_response_code(401);
@@ -61,6 +71,49 @@ if (!empty($data['action']) && $data['action'] === 'delete') {
 
     exit; // ⛔ STOP ici, on ne passe pas à l'ajout
 }
+
+// ✏️ Si c’est une demande de modification, on la traite ici
+if (!empty($data['action']) && $data['action'] === 'edit') {
+    $id_commentaire = $data['id_commentaire'] ?? null;
+    $nouveau_contenu = trim($data['nouveau_contenu'] ?? '');
+
+    if (!$id_commentaire || $nouveau_contenu === '') {
+        http_response_code(400);
+        echo json_encode(['error' => 'Champs manquants ou contenu vide']);
+        exit;
+    }
+
+    $commentaireCible = $commentaire->getById($id_commentaire);
+
+    if (!$commentaireCible) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Commentaire introuvable']);
+        exit;
+    }
+
+    if ($commentaireCible['id_utilisateur'] != $id_utilisateur) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Modification non autorisée']);
+        exit;
+    }
+
+    $ok = $commentaire->updateContenu($id_commentaire, $nouveau_contenu);
+
+    if ($ok) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Commentaire modifié',
+            'nouveau_contenu' => $nouveau_contenu,
+            'date' => date('Y-m-d H:i:s')
+        ]);
+    } else {
+        http_response_code(500);
+        echo json_encode(['error' => 'Echec de la modification']);
+    }
+
+    exit;
+}
+
 
 // 🟢 Sinon, on continue avec l’AJOUT
 $contenu = $data['contenu'] ?? '';

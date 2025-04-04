@@ -98,7 +98,7 @@ $bds   = array_filter($oeuvres, fn($o) => strtolower($o['type']) === 'bd');
                     — <?= $com['date_redaction'] ?>
                 </p>
                 <!-- Contenu du commentaire, avec conservation des retours à la ligne -->
-                <p><?= nl2br(htmlspecialchars($com['contenu'])) ?></p>
+                <p class="contenu-commentaire"><?= nl2br(htmlspecialchars($com['contenu'])) ?></p>
             </div>
         <?php endforeach; ?>
     </div>

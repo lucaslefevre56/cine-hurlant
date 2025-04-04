@@ -125,6 +125,43 @@ class Oeuvre
         // Je renvoie juste la liste des noms (pas un tableau complet)
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
+
+    /**
+ * Je récupère les œuvres de manière paginée
+ * → utilisé pour afficher les œuvres page par page (6 par 6, etc.)
+ */
+public function getPaginated($limit, $offset)
+{
+    $db = Database::getInstance();
+
+    $sql = "SELECT oeuvre.*, type.nom
+            FROM oeuvre
+            JOIN type ON oeuvre.id_type = type.id_type
+            ORDER BY oeuvre.titre ASC
+            LIMIT :limit OFFSET :offset";
+
+    $stmt = $db->prepare($sql);
+
+    // ⚠️ On utilise bindValue avec PDO::PARAM_INT pour éviter les erreurs SQL
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Je compte combien d’œuvres existent en base
+ * → utilisé pour calculer le nombre total de pages
+ */
+public function countAll()
+{
+    $db = Database::getInstance();
+
+    $sql = "SELECT COUNT(*) FROM oeuvre";
+    return (int) $db->query($sql)->fetchColumn();
+}
+
 }
 
 ?>

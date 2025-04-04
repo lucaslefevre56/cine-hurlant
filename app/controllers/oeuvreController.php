@@ -20,25 +20,7 @@ use function App\Helpers\render404;
 
 class OeuvreController
 {
-    // Méthode appelée quand l’URL est /oeuvre/liste
-    public function liste()
-    {
-        // 1. Je crée une instance du modèle Oeuvre (plus besoin de connexion à passer)
-        $oeuvre = new Oeuvre();
-
-        // 2. Je récupère toutes les œuvres enregistrées dans la base
-        $oeuvres = $oeuvre->getAll();
-
-        // 3. Pour chaque œuvre, je vais chercher les genres associés
-        foreach ($oeuvres as &$o) {
-            $o['genres'] = $oeuvre->getGenresByOeuvre($o['id_oeuvre']);
-        }
-
-        // 4. J'affiche la vue associée avec le tableau $oeuvres
-        require_once ROOT . '/app/views/oeuvres/listeOeuvresView.php';
-    }
-
-    // Méthode appelée quand l’URL est /oeuvre/fiche/:id
+  // Méthode appelée quand l’URL est /oeuvre/fiche/:id
     public function fiche($id)
     {
         // 1. Je crée une instance du modèle Oeuvre
@@ -62,6 +44,30 @@ class OeuvreController
         // 5. J'affiche la vue de fiche détaillée
         require_once ROOT . '/app/views/oeuvres/ficheOeuvreView.php';
     }
+
+    public function liste() {
+        // 1. Récupération de la page (défaut = 1)
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        if ($page < 1) $page = 1;
+    
+        // 2. Nombre d’œuvres par page
+        $parPage = 6;
+    
+        // 3. Offset SQL (décalage)
+        $offset = ($page - 1) * $parPage;
+    
+        // 4. Appels au modèle
+        $modele = new Oeuvre();
+        $oeuvres = $modele->getPaginated($parPage, $offset);
+        $total = $modele->countAll();
+    
+        // 5. Calcul du nombre de pages totales
+        $totalPages = ceil($total / $parPage);
+    
+        // 6. Envoi à la vue
+        require ROOT . '/app/views/oeuvres/listeOeuvresView.php';
+    }
+    
 
     public function index()
     {

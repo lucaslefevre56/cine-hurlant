@@ -134,6 +134,42 @@ class Article
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    /**
+ * Je récupère une portion paginée des articles
+ * → utilisée pour afficher la liste avec pagination
+ */
+public function getPaginated($limit, $offset)
+{
+    $db = Database::getInstance();
+
+    $sql = "SELECT article.*, utilisateur.nom AS auteur
+            FROM article
+            JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
+            ORDER BY date_redaction DESC
+            LIMIT :limit OFFSET :offset";
+
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+
+    $stmt->execute();
+    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+}
+
+
+/**
+ * Je compte combien d’articles existent en base
+ * → utilisé pour calculer le nombre total de pages
+ */
+public function countAll()
+{
+    $db = Database::getInstance();
+
+    $sql = "SELECT COUNT(*) FROM article";
+    return (int) $db->query($sql)->fetchColumn();
+}
+
 }
 
 ?>

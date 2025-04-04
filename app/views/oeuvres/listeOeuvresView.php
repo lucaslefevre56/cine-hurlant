@@ -55,6 +55,15 @@
         <?php endforeach; ?>
     </div>
 
+    <!-- Bloc de pagination -->
+    <div class="pagination">
+      <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+        <a href="/cine-hurlant/public/oeuvre/liste?page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>">
+          <?= $i ?>
+        </a>
+      <?php endfor; ?>
+    </div>
+
     <!-- Si aucune œuvre n’est présente, j’affiche un message d’attente -->
 <?php else : ?>
     <p>Aucune œuvre enregistrée pour le moment</p>

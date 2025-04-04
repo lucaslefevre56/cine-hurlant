@@ -121,4 +121,24 @@ class Commentaire
 
         return $ok;
     }
+
+      /**
+     * Je mets à jour le contenu d’un commentaire existant
+     * → uniquement utilisé si l’utilisateur est l’auteur du commentaire
+     * → met aussi à jour la date de rédaction avec NOW()
+     */
+    public function updateContenu($id_commentaire, $nouveau_contenu)
+    {
+        $db = Database::getInstance();
+
+        $sql = "UPDATE commentaire
+                SET contenu = :contenu, date_redaction = NOW()
+                WHERE id_commentaire = :id";
+
+        $stmt = $db->prepare($sql);
+        return $stmt->execute([
+            ':contenu' => $nouveau_contenu,
+            ':id' => $id_commentaire
+        ]);
+    }
 }

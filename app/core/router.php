@@ -11,14 +11,9 @@ class Router
     // Méthode principale appelée depuis index.php
     public function handleRequest()
     {
-        // Je récupère l’URL tapée dans le navigateur
-        $uri = $_SERVER['REQUEST_URI'];
+        $url = $_GET['url'] ?? 'accueil/index';
+        $segments = explode('/', trim($url, '/'));
 
-        // Je nettoie l’URL pour enlever la partie fixe "/cine-hurlant/public/"
-        $uri = str_replace('/cine-hurlant/public/', '', $uri);
-
-        // Je découpe l’URL : "redacteur/ajouterOeuvre" → ['redacteur', 'ajouterOeuvre']
-        $segments = explode('/', trim($uri, '/'));
 
         // Valeurs par défaut
         $controllerName = 'AccueilController';

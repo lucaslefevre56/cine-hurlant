@@ -7,7 +7,7 @@ namespace App\Controllers;
 use App\Models\Article;
 
 // Modèle utilisé pour récupérer les commentaires liés à l'article
-use App\Models\Commentaire; 
+use App\Models\Commentaire;
 
 // J’importe la fonction qui affiche une erreur 404 personnalisée
 use function App\Helpers\render404;
@@ -27,18 +27,30 @@ use function App\Helpers\render404;
 class ArticleController
 {
 
-    // Méthode appelée quand l’URL est /articles/liste
     public function liste()
     {
-        // 1. Je crée une instance du modèle Article
-        $article = new Article();
+        // 1. Récupération de la page (défaut = 1)
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        if ($page < 1) $page = 1;
 
-        // 2. Je récupère tous les articles de la base (titre, auteur, extrait, œuvre liée…)
-        $articles = $article->getAll();
+        // 2. Nombre d’articles par page
+        $parPage = 6;
 
-        // 3. J’inclus la vue correspondante pour afficher les articles
-        require_once ROOT . '/app/views/articles/listeArticlesView.php';
+        // 3. Offset SQL (décalage)
+        $offset = ($page - 1) * $parPage;
+
+        // 4. Appels au modèle
+        $modele = new Article();
+        $articles = $modele->getPaginated($parPage, $offset);
+        $total = $modele->countAll();
+
+        // 5. Calcul du nombre de pages totales
+        $totalPages = ceil($total / $parPage);
+
+        // 6. Envoi à la vue
+        require ROOT . '/app/views/articles/listeArticlesView.php';
     }
+
 
     // Méthode appelée quand l’URL est /articles/fiche/:id
     public function fiche($id)

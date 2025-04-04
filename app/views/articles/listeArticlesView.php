@@ -17,13 +17,12 @@
 
                 <!-- Si l’article a une image, je l’affiche -->
                 <?php if (!empty($article['image'])) : ?>
-                    <img 
-                        src="/cine-hurlant/public/images/<?= htmlspecialchars($article['image']) ?>" 
+                    <img
+                        src="/cine-hurlant/public/images/<?= htmlspecialchars($article['image']) ?>"
                         alt="Illustration de l'article"
                         class="image-article"
                         width="200"
-                        loading="lazy"
-                    >
+                        loading="lazy">
                 <?php endif; ?>
 
                 <!-- Je montre le titre de l’article -->
@@ -39,7 +38,7 @@
 
                 <!-- Je vérifie si l’article est lié à une œuvre -->
                 <?php if (!empty($article['titre_oeuvre'])) : ?>
-                    <p>Analyse liée à : 
+                    <p>Analyse liée à :
                         <strong><?= htmlspecialchars($article['titre_oeuvre']) ?></strong>
                     </p>
                 <?php endif; ?>
@@ -53,7 +52,17 @@
         <?php endforeach; ?>
     </div>
 
-<!-- Si aucun article n’est présent, j’affiche un message d’attente -->
+    <!-- Bloc de pagination -->
+    <div class="pagination">
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="/cine-hurlant/public/article/liste?page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </div>
+
+
+    <!-- Si aucun article n’est présent, j’affiche un message d’attente -->
 <?php else : ?>
     <p>Aucun article enregistré pour le moment</p>
 <?php endif; ?>
