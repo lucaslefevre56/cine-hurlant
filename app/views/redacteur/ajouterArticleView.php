@@ -9,7 +9,7 @@
 <h2>Ajouter un article</h2>
 
 <!-- Formulaire d'ajout d'article avec enctype pour permettre l'upload de fichiers -->
-<form method="POST" action="/cine-hurlant/public/redacteur/ajouterArticle" enctype="multipart/form-data">
+<form method="POST" action="<?= BASE_URL ?>/redacteur/ajouterArticle" enctype="multipart/form-data">
 
     <!-- Titre de l’article -->
     <label for="titre">Titre</label>

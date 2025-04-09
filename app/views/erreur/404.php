@@ -6,7 +6,6 @@ require_once ROOT . '/app/views/templates/header.php';
 ?>
 
 <div class="erreur-404" style="text-align: center; padding: 50px;">
-
     <!-- Titre principal de la page 404 -->
     <h1>404 - Page introuvable</h1>
 
@@ -19,7 +18,7 @@ require_once ROOT . '/app/views/templates/header.php';
     <?php endif; ?>
 
     <!-- Lien de retour vers la page d’accueil -->
-    <p><a href="/cine-hurlant/public/">Retour à l’accueil</a></p>
+    <p><a href="<?= BASE_URL ?>/">Retour à l’accueil</a></p>
 </div>
 
 <?php 

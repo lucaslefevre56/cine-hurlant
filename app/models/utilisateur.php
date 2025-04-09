@@ -4,20 +4,14 @@
 namespace App\Models;
 
 use PDO;
-use App\Core\Database; // J’importe ma classe Database (singleton) pour me connecter proprement
-
-// Cette classe gère tout ce qui concerne un utilisateur côté base de données.
-// Elle regroupe les fonctions liées à ses infos, son rôle, ses commentaires,
-// et ce qu'il peut publier s'il est rédacteur ou admin.
+use App\Core\Database;
 
 class Utilisateur
 {
-    // ----------------------------------------
-    // PARTIE 1 : INFOS UTILISATEUR
-    // ----------------------------------------
-
-    // Je récupère un utilisateur en base à partir de son ID
-    public function getById($id)
+    /**
+     * Récupère un utilisateur par son ID
+     */
+    public function getById(int $id): array|false
     {
         $db = Database::getInstance();
 
@@ -28,9 +22,10 @@ class Utilisateur
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Je récupère un utilisateur en base à partir de son email
-    // (pratique pour la connexion ou vérifier si l’email est déjà pris à l’inscription)
-    public function getByEmail($email)
+    /**
+     * Récupère un utilisateur par son email
+     */
+    public function getByEmail(string $email): array|false
     {
         $db = Database::getInstance();
 
@@ -41,9 +36,10 @@ class Utilisateur
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // J’ajoute un utilisateur dans la base
-    // Le mot de passe est déjà hashé avant d’arriver ici
-    public function add($nom, $email, $hashedPassword)
+    /**
+     * Ajoute un nouvel utilisateur en base (mot de passe déjà hashé)
+     */
+    public function add(string $nom, string $email, string $hashedPassword): bool
     {
         $db = Database::getInstance();
 
@@ -53,28 +49,60 @@ class Utilisateur
         return $stmt->execute([$nom, $email, $hashedPassword]);
     }
 
-    // ----------------------------------------
-    // PARTIE 2 : ROLES ET DROITS
-    // ----------------------------------------
-
-    // Je vérifie si l’utilisateur est admin
-    // Utile pour autoriser des actions réservées comme supprimer des utilisateurs ou changer des rôles
-    public function isAdmin($id)
+    public function deleteById(int $id): bool
     {
-        $user = $this->getById($id);
-        return $user && $user['role'] === 'admin';
+        $db = Database::getInstance();
+
+        $sql = "DELETE FROM Utilisateur WHERE id_utilisateur = ?";
+        $stmt = $db->prepare($sql);
+
+        return $stmt->execute([$id]);
     }
 
-    // Je vérifie si l’utilisateur est rédacteur
-    // Attention : les admins ont aussi les droits des rédacteurs, donc je les inclus ici
-    public function isRedacteur($id)
+    public function updatePassword(int $id, string $hashedPassword): bool
     {
-        $user = $this->getById($id);
-        return $user && ($user['role'] === 'redacteur' || $user['role'] === 'admin');
+        $db = Database::getInstance();
+
+        $sql = "UPDATE Utilisateur SET password = ? WHERE id_utilisateur = ?";
+        $stmt = $db->prepare($sql);
+
+        return $stmt->execute([$hashedPassword, $id]);
     }
 
-    // Permet à un admin de changer le rôle d’un utilisateur (ex : le promouvoir rédacteur)
-    public function updateRole($id, $newRole)
+
+    // ----------------------------------------
+    // RÔLES & DROITS
+    // ----------------------------------------
+
+    /**
+     * Vérifie si un utilisateur a un rôle donné
+     */
+    public function hasRole(int $id, string $role): bool
+    {
+        $user = $this->getById($id);
+        return $user && strtolower($user['role']) === strtolower($role);
+    }
+
+    public function isAdmin(int $id): bool
+    {
+        return $this->hasRole($id, 'admin');
+    }
+
+    public function isRedacteur(int $id): bool
+    {
+        $user = $this->getById($id);
+        return $user && in_array($user['role'], ['redacteur', 'admin']);
+    }
+
+    public function isUtilisateur(int $id): bool
+    {
+        return $this->hasRole($id, 'utilisateur');
+    }
+
+    /**
+     * Change le rôle d’un utilisateur
+     */
+    public function updateRole(int $id, string $newRole): bool
     {
         $db = Database::getInstance();
 
@@ -84,12 +112,25 @@ class Utilisateur
         return $stmt->execute([$newRole, $id]);
     }
 
+    /**
+     * Récupère tous les utilisateurs (id, nom, email, rôle)
+     */
+    public function getAll(): array
+    {
+        $db = Database::getInstance();
+
+        $sql = "SELECT id_utilisateur, nom, email, role FROM Utilisateur ORDER BY nom ASC";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // ----------------------------------------
-    // PARTIE 3 : COMMENTAIRES
+    // COMMENTAIRES
     // ----------------------------------------
 
-    // Je récupère tous les commentaires postés par un utilisateur
-    public function getCommentaires($id_utilisateur)
+    public function getCommentaires(int $id_utilisateur): array
     {
         $db = Database::getInstance();
 
@@ -100,8 +141,7 @@ class Utilisateur
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Je supprime un commentaire (le contrôleur doit vérifier que l’utilisateur en a le droit)
-    public function deleteCommentaire($id_commentaire)
+    public function deleteCommentaire(int $id_commentaire): bool
     {
         $db = Database::getInstance();
 
@@ -112,11 +152,10 @@ class Utilisateur
     }
 
     // ----------------------------------------
-    // PARTIE 4 : PUBLICATIONS DE L'UTILISATEUR (OEUVRES ET ARTICLES)
+    // PUBLICATIONS
     // ----------------------------------------
 
-    // Je récupère toutes les œuvres publiées par un utilisateur
-    public function getOeuvres($id_utilisateur)
+    public function getOeuvres(int $id_utilisateur): array
     {
         $db = Database::getInstance();
 
@@ -127,8 +166,7 @@ class Utilisateur
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Je récupère tous les articles publiés par un utilisateur
-    public function getArticles($id_utilisateur)
+    public function getArticles(int $id_utilisateur): array
     {
         $db = Database::getInstance();
 
@@ -139,10 +177,3 @@ class Utilisateur
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-
-// Cette classe Utilisateur, c’est mon lien entre le code et la base pour tout ce qui touche à un utilisateur.
-// Elle regroupe ses infos, ses rôles, ses commentaires, et ce qu’il publie.
-// Tout est bien organisé par blocs, et chaque méthode fait une seule chose bien précise, avec la connexion PDO toujours à dispo via le singleton.
-// Je peux maintenant utiliser cette classe dans mes contrôleurs sans me soucier de la connexion : c’est clair, modulaire et pro.
-
-?>

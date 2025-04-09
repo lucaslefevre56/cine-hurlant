@@ -1,46 +1,48 @@
 <?php
 // app/Core/Router.php
+
 namespace App\Core;
 
-// J'inclus les helpers liés aux erreurs (la fonction render404)
-use function App\Helpers\render404;
-
-// Je crée une classe Router qui va gérer toutes les URL du site
 class Router
 {
-    // Méthode principale appelée depuis index.php
-    public function handleRequest()
+    public function handleRequest(): void
     {
-        $url = $_GET['url'] ?? 'accueil/index';
+        //  1. Récupère l'URL demandée (ex: /cine-hurlant/oeuvre/fiche/2)
+        $uri = $_SERVER['REQUEST_URI'];
+
+        //  2. Enlève les éventuels paramètres GET
+        $uri = strtok($uri, '?');
+
+        //  3. Récupère le dossier de base dynamiquement (ex: /cine-hurlant)
+        $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+
+        //  4. Retire le chemin de base de l'URI (ex: /oeuvre/fiche/2)
+        $url = '/' . ltrim(str_replace($basePath, '', $uri), '/');
+
+        //  5. Découpe l’URL en segments
         $segments = explode('/', trim($url, '/'));
 
+        //  6. Contrôleur, méthode, paramètres
+        $controllerName = !empty($segments[0]) ? ucfirst($segments[0]) . 'Controller' : 'AccueilController';
 
-        // Valeurs par défaut
-        $controllerName = 'AccueilController';
-        $method = 'index';
-        $params = [];
+        $method = !empty($segments[1]) ? $segments[1] : 'index';
 
-        // Si des segments sont présents, je les utilise
-        if (!empty($segments[0])) {
-            $controllerName = ucfirst($segments[0]) . 'Controller';
-            $method = isset($segments[1]) ? $segments[1] : 'index';
-            $params = array_slice($segments, 2);
-        }
+        $params = array_slice($segments, 2);
 
-        // Je construis dynamiquement le nom complet de la classe avec namespace
+        //  7. Construction du nom complet de classe
         $controllerClass = 'App\\Controllers\\' . $controllerName;
 
-        // Je vérifie que la classe existe (chargée automatiquement par Composer)
+        //  8. Exécution
         if (class_exists($controllerClass)) {
             $controller = new $controllerClass();
 
             if (method_exists($controller, $method)) {
                 call_user_func_array([$controller, $method], $params);
             } else {
-                render404("Méthode '$method' introuvable dans $controllerClass");
+                ErrorHandler::render404("Méthode '$method' introuvable dans $controllerClass");
             }
         } else {
-            render404("Classe '$controllerClass' inexistante");
+            ErrorHandler::render404("Contrôleur '$controllerClass' inexistant");
         }
     }
 }

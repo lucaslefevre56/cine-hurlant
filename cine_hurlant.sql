@@ -128,3 +128,29 @@ CREATE TABLE analyser (
     FOREIGN KEY (id_article) REFERENCES article(id_article) ON DELETE CASCADE,
     FOREIGN KEY (id_oeuvre) REFERENCES oeuvre(id_oeuvre) ON DELETE CASCADE
 );
+
+-- Initialisation des données dans la table 'type'
+INSERT INTO type (id_type, nom) 
+SELECT 1, 'film'
+WHERE NOT EXISTS (SELECT 1 FROM type WHERE nom = 'film');
+
+INSERT INTO type (id_type, nom) 
+SELECT 2, 'bd'
+WHERE NOT EXISTS (SELECT 1 FROM type WHERE nom = 'bd');
+
+-- Initialisation des données dans la table 'genre'
+INSERT INTO genre (id_genre, nom) 
+SELECT 1, 'Science-fiction'
+WHERE NOT EXISTS (SELECT 1 FROM genre WHERE nom = 'Science-fiction');
+
+INSERT INTO genre (id_genre, nom) 
+SELECT 2, 'Fantastique'
+WHERE NOT EXISTS (SELECT 1 FROM genre WHERE nom = 'Fantastique');
+
+INSERT INTO genre (id_genre, nom) 
+SELECT 3, 'Western'
+WHERE NOT EXISTS (SELECT 1 FROM genre WHERE nom = 'Western');
+
+INSERT INTO genre (id_genre, nom) 
+SELECT 4, 'Cyberpunk'
+WHERE NOT EXISTS (SELECT 1 FROM genre WHERE nom = 'Cyberpunk');

@@ -1,5 +1,6 @@
 <!-- app/views/articles/ficheArticleView.php -->
 
+<?php $loadCommentairesJs = true; ?>
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <!-- J’affiche le titre principal de l’article -->
@@ -14,7 +15,7 @@
 <!-- Si une image est associée à l’article, je l’affiche -->
 <?php if (!empty($article['image'])) : ?>
     <img
-        src="/cine-hurlant/public/images/<?= htmlspecialchars($article['image']) ?>"
+        src="<?= BASE_URL ?>/public/images/<?= htmlspecialchars($article['image']) ?>"
         alt="Illustration de l'article"
         class="image-article"
         width="300"
@@ -54,7 +55,7 @@ $bds   = array_filter($oeuvres, fn($o) => strtolower($o['type']) === 'bd');
     <ul>
         <?php foreach ($films as $oeuvre) : ?>
             <li>
-                <a href="/cine-hurlant/public/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">
+            <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">
                     <?= htmlspecialchars($oeuvre['titre']) ?>
                 </a>
             </li>
@@ -68,7 +69,7 @@ $bds   = array_filter($oeuvres, fn($o) => strtolower($o['type']) === 'bd');
     <ul>
         <?php foreach ($bds as $oeuvre) : ?>
             <li>
-                <a href="/cine-hurlant/public/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">
+            <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">
                     <?= htmlspecialchars($oeuvre['titre']) ?>
                 </a>
             </li>
@@ -127,7 +128,7 @@ $bds   = array_filter($oeuvres, fn($o) => strtolower($o['type']) === 'bd');
 
 <!-- Lien de retour vers la liste complète des articles -->
 <p>
-    <a href="/cine-hurlant/public/article/liste">← Retour à la liste des articles</a>
+    <a href="<?= BASE_URL ?>/article/liste">← Retour à la liste des articles</a>
 </p>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

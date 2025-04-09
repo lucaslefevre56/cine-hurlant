@@ -1,78 +1,54 @@
 <?php
-// app/Controllers/OeuvreController.php
 
+// app/Controllers/OeuvreController.php
 namespace App\Controllers;
 
-// Chargement automatique du modèle Oeuvre via Composer (PSR-4)
 use App\Models\Oeuvre;
-
-// J'inclus les helpers liés aux erreurs (notamment la fonction render404)
-use function App\Helpers\render404;
-
-// -----------------------------------------------------------
-// CONTRÔLEUR ŒUVRE – GÈRE LES ACTIONS LIÉES AUX ŒUVRES
-// -----------------------------------------------------------
-// Il sert d'intermédiaire entre :
-//  → le modèle Oeuvre (accès à la base de données)
-//  → les vues (liste et fiche)
-// Son objectif : afficher toutes les œuvres ou une fiche précise
-// -----------------------------------------------------------
+use App\Core\View;
+use App\Core\ErrorHandler;
 
 class OeuvreController
 {
-  // Méthode appelée quand l’URL est /oeuvre/fiche/:id
-    public function fiche($id)
+    public function fiche(int $id): void
     {
-        // 1. Je crée une instance du modèle Oeuvre
         $oeuvreModel = new Oeuvre();
-
-        // 2. Je récupère les infos de l’œuvre demandée
         $oeuvre = $oeuvreModel->getById($id);
 
-        // 3. Si elle n’existe pas, je déclenche une erreur 404
         if (!$oeuvre) {
-            render404("Œuvre introuvable");
-            return;
+            ErrorHandler::render404("Œuvre introuvable");
         }
 
-        // 4. Je récupère les genres liés à cette œuvre
         $genres = $oeuvreModel->getGenresByOeuvre($id);
-
-        // Si l'œuvre a un lien vidéo, je récupère cette information également
         $video_url = $oeuvre['video_url'] ?? null;
 
-        // 5. J'affiche la vue de fiche détaillée
-        require_once ROOT . '/app/views/oeuvres/ficheOeuvreView.php';
+        View::render('oeuvres/ficheOeuvreView', [
+            'oeuvre' => $oeuvre,
+            'genres' => $genres,
+            'video_url' => $video_url
+        ]);
     }
 
-    public function liste() {
-        // 1. Récupération de la page (défaut = 1)
-        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-        if ($page < 1) $page = 1;
-    
-        // 2. Nombre d’œuvres par page
+    public function liste(): void
+    {
+        $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
         $parPage = 6;
-    
-        // 3. Offset SQL (décalage)
         $offset = ($page - 1) * $parPage;
-    
-        // 4. Appels au modèle
+
         $modele = new Oeuvre();
         $oeuvres = $modele->getPaginated($parPage, $offset);
         $total = $modele->countAll();
-    
-        // 5. Calcul du nombre de pages totales
         $totalPages = ceil($total / $parPage);
-    
-        // 6. Envoi à la vue
-        require ROOT . '/app/views/oeuvres/listeOeuvresView.php';
-    }
-    
 
-    public function index()
+        View::render('oeuvres/listeOeuvresView', [
+            'oeuvres' => $oeuvres,
+            'page' => $page,
+            'totalPages' => $totalPages
+        ]);
+    }
+
+    public function index(): void
     {
-        // Redirection vers la liste des œuvres
-        header('Location: /cine-hurlant/public/oeuvre/liste');
-        exit;
+        // Redirection logique interne vers liste()
+        $this->liste();
     }
 }

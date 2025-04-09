@@ -7,7 +7,7 @@
 <h2>Ajouter une œuvre</h2>
 
 <!-- Formulaire avec enctype pour permettre l'upload de fichiers -->
-<form method="POST" action="/cine-hurlant/public/redacteur/ajouterOeuvre" enctype="multipart/form-data">
+<form method="POST" action="<?= BASE_URL ?>/redacteur/ajouterOeuvre" enctype="multipart/form-data">
 
     <!-- Titre -->
     <label for="titre">Titre</label>

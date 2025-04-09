@@ -1,15 +1,12 @@
 <?php
-// app/Controllers/AccueilController.php
-
 namespace App\Controllers;
 
-// Je crée ma classe AccueilController
+use App\Core\View;
+
 class AccueilController
 {
-    // Méthode appelée quand on accède à /accueil ou à l’URL racine du site
-    public function index()
+    public function index(): void
     {
-        // Je charge la vue d’accueil
-        require_once ROOT . '/app/views/accueil/indexView.php';
+        View::render('accueil/indexView');
     }
 }

@@ -3,36 +3,28 @@
 
 namespace App\Controllers;
 
-// Chargement automatique du modèle Utilisateur
 use App\Models\Utilisateur;
+use App\Core\View;
+use App\Core\Database;
+use App\Helpers\PasswordHelper;
 
-// Ce contrôleur gère tout ce qui touche à l’authentification : inscription, connexion, déconnexion
 
 class AuthController
 {
-    // -----------------------------
-    // Connexion de l'utilisateur
-    // -----------------------------
-    public function login()
+    public function login(): void
     {
-        // Si le formulaire de connexion est soumis
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = trim($_POST['email'] ?? '');
+            $password = trim($_POST['password'] ?? '');
 
-            $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-            $password = isset($_POST['password']) ? trim($_POST['password']) : '';
-
-            // Je crée une instance du modèle (plus besoin de connexion à passer)
             $utilisateur = new Utilisateur();
             $user = $utilisateur->getByEmail($email);
 
-            // Vérifie l’existence de l’utilisateur et la validité du mot de passe
             if (!$user || !password_verify($password, $user['password'])) {
-                $erreur = "Email ou mot de passe incorrect.";
-                require ROOT . '/app/views/authentification/loginView.php';
+                View::render('authentification/loginView', ['erreur' => "Email ou mot de passe incorrect."]);
                 return;
             }
 
-            // Si tout est OK → je crée la session
             $_SESSION['user'] = [
                 'id' => $user['id_utilisateur'],
                 'nom' => $user['nom'],
@@ -40,102 +32,99 @@ class AuthController
                 'role' => $user['role']
             ];
 
-            // Redirection vers la page d’accueil
-            header('Location: /cine-hurlant/public/');
+            View::render('accueil/indexView');
             exit;
-        } else {
-            // Si c’est un GET → j’affiche le formulaire
-            $erreur = null;
-            require_once ROOT . '/app/views/authentification/loginView.php';
         }
+
+        View::render('authentification/loginView', ['erreur' => null]);
     }
 
-    // -----------------------------
-    // Déconnexion de l'utilisateur
-    // -----------------------------
-    public function logout()
+    public function logout(): void
     {
-        // Je vide la session manuellement
         $_SESSION = [];
-
-        // Puis je la détruis proprement
         session_unset();
         session_destroy();
 
-        // Je renvoie vers la page d’accueil
-        header('Location: /cine-hurlant/public/');
+        View::render('accueil/indexView');
         exit;
     }
 
-    // -----------------------------
-    // Inscription d'un nouvel utilisateur
-    // -----------------------------
-    public function register()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    public function register(): void
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $nom = trim($_POST['nom'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $confirm = $_POST['confirm'] ?? '';
 
-            $nom = $_POST['nom'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $password = $_POST['password'] ?? '';
-            $confirm = $_POST['confirm'] ?? '';
+        // Vérif confirmation
+        if ($password !== $confirm) {
+            View::render('authentification/registerView', [
+                'erreur' => "Les mots de passe ne correspondent pas.",
+                'nom' => $nom,
+                'email' => $email
+            ]);
+            return;
+        }
 
-            // Vérification des mots de passe
-            if ($password !== $confirm) {
-                $erreur = "Les mots de passe ne correspondent pas.";
-                require ROOT . '/app/views/authentification/registerView.php';
-                return;
-            }
+        // Vérif sécurité du mot de passe
+        $erreurs = PasswordHelper::isValid($password);
+        if (!empty($erreurs)) {
+            View::render('authentification/registerView', [
+                'erreur' => implode('<br>', $erreurs),
+                'nom' => $nom,
+                'email' => $email
+            ]);
+            return;
+        }
 
-            // Création d’une instance du modèle
-            $utilisateur = new Utilisateur();
+        $utilisateur = new Utilisateur();
+        $existant = $utilisateur->getByEmail($email);
 
-            // Vérifie si l’email est déjà utilisé
-            $existant = $utilisateur->getByEmail($email);
+        if ($existant) {
+            View::render('authentification/registerView', [
+                'erreur' => "Cet email est déjà utilisé.",
+                'nom' => $nom,
+                'email' => $email
+            ]);
+            return;
+        }
 
-            if ($existant) {
-                $erreur = "Cet email est déjà utilisé.";
-                require ROOT . '/app/views/authentification/registerView.php';
-                return;
-            }
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $ajout = $utilisateur->add($nom, $email, $hashedPassword);
 
-            // Hashage du mot de passe
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        if ($ajout) {
+            $id = Database::getInstance()->lastInsertId();
 
-            // Ajout du nouvel utilisateur
-            $ajout = $utilisateur->add($nom, $email, $hashedPassword);
+            $_SESSION['user'] = [
+                'id' => $id,
+                'nom' => $nom,
+                'email' => $email,
+                'role' => 'utilisateur'
+            ];
 
-            if ($ajout) {
-                // Je récupère l’ID du nouvel utilisateur via Database directement
-                $db = \App\Core\Database::getInstance();
-                $id = $db->lastInsertId();
-
-                // Création de la session utilisateur
-                $_SESSION['user'] = [
-                    'id' => $id,
-                    'nom' => $nom,
-                    'email' => $email,
-                    'role' => 'utilisateur'
-                ];
-
-                header('Location: /cine-hurlant/public/');
-                exit;
-            } else {
-                $erreur = "Erreur lors de l'inscription.";
-                require_once ROOT . '/app/views/authentification/registerView.php';
-                return;
-            }
+            View::render('accueil/indexView');
+            exit;
         } else {
-            // Affiche simplement le formulaire en GET
-            $erreur = null;
-            require_once ROOT . '/app/views/authentification/registerView.php';
+            View::render('authentification/registerView', [
+                'erreur' => "Erreur lors de l'inscription.",
+                'nom' => $nom,
+                'email' => $email
+            ]);
+            return;
         }
     }
 
-    public function index()
-{
-    // Redirection vers le formulaire de connexion
-    header('Location: /cine-hurlant/public/auth/login');
-    exit;
+    View::render('authentification/registerView', [
+        'erreur' => null,
+        'nom' => '',
+        'email' => ''
+    ]);
 }
 
+    public function index(): void
+    {
+        View::render('authentification/loginView', ['erreur' => null]);
+        exit;
+    }
 }

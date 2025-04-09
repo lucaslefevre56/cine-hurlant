@@ -41,7 +41,7 @@
                     <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
                 <?php elseif (!empty($oeuvre['media'])) : ?>
                     <!-- Sinon, on considère qu’il s’agit d’une image locale dans /public/images -->
-                    <img src="/cine-hurlant/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
+                    <img src="<?= BASE_URL ?>/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
                 <?php endif; ?>
 
 
@@ -49,7 +49,7 @@
                 <p><strong>Analyse :</strong> <?= htmlspecialchars(substr($oeuvre['analyse'], 0, 150)) ?>...</p>
 
                 <!-- Je propose un lien vers la fiche complète de l’œuvre -->
-                <a href="/cine-hurlant/public/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">Voir la fiche complète</a>
+                <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">Voir la fiche complète</a>
 
             </div>
         <?php endforeach; ?>
@@ -58,7 +58,7 @@
     <!-- Bloc de pagination -->
     <div class="pagination">
       <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-        <a href="/cine-hurlant/public/oeuvre/liste?page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>">
+        <a href="<?= BASE_URL ?>/oeuvre/liste?page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>">
           <?= $i ?>
         </a>
       <?php endfor; ?>

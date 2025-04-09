@@ -28,7 +28,7 @@
     <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
 <?php elseif (!empty($oeuvre['media'])) : ?>
     <!-- Sinon, on considère qu’il s’agit d’une image locale dans /public/images -->
-    <img src="/cine-hurlant/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="300" loading="lazy">
+    <img src="<?= BASE_URL ?>/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="300" loading="lazy">
 <?php endif; ?>
 
 <!-- Si une vidéo est associée à cette œuvre, je l'affiche -->
@@ -52,6 +52,6 @@
 <p><?= nl2br(htmlspecialchars($oeuvre['analyse'])) ?></p>
 
 <!-- Bouton pour revenir à la liste complète des œuvres -->
-<p><a href="/cine-hurlant/public/oeuvre/liste">Retour à la liste des œuvres</a></p>
+<p><a href="<?= BASE_URL ?>/oeuvre/liste">Retour à la liste des œuvres</a></p>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>
