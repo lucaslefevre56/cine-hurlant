@@ -1,6 +1,6 @@
 <!-- app/views/admin/adminAccueilView.php -->
 
-<?php require_once ROOT . '/app/views/templates/header.php'; ?>
+
 
 <!-- app/views/admin/adminAccueilView.php -->
 <div class="admin-accueil">
@@ -10,4 +10,4 @@
 </div>
 
 
-<?php require_once ROOT . '/app/views/templates/footer.php'; ?>
+

@@ -72,5 +72,3 @@ use App\Helpers\AuthHelper;
             </nav>
         <?php endif; ?>
     </header>
-
-    <main> <!-- 🆕 À ajouter ici -->

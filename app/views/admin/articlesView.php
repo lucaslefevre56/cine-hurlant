@@ -2,11 +2,9 @@
 
 <h2>Gestion des articles</h2>
 
-<?php if (!empty($_SESSION['message'])): ?>
-    <p style="color: green;"><?= htmlspecialchars($_SESSION['message']) ?></p>
-    <?php unset($_SESSION['message']); ?>
+<?php if (!empty($message)) : ?>
+    <div class="message-success"><?= htmlspecialchars($message) ?></div>
 <?php endif; ?>
-
 
 <table border="1" cellpadding="8" cellspacing="0">
     <thead>

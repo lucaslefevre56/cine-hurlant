@@ -1,9 +1,9 @@
 <!-- app/views/authentification/loginView.php -->
- 
+
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <?php if (!empty($erreur)) : ?>
-    <p style="color: red;"><?= $erreur ?></p>
+    <p style="color: red;"><?= htmlspecialchars($erreur) ?></p>
 <?php endif; ?>
 
 <h2>Connexion</h2>

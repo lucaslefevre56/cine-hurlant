@@ -2,17 +2,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const buttons = document.querySelectorAll(".tab-btn");
     const contentContainer = document.getElementById("admin-content");
 
-    // 1. Gestion du clic utilisateur sur les onglets principaux (Utilisateurs, Articles, etc.)
+    // 1. Gestion du clic utilisateur sur les onglets principaux
     buttons.forEach(button => {
         button.addEventListener("click", () => {
             const tab = button.dataset.tab;
 
-            // Visuel actif
+            // Mise à jour de l'onglet actif visuellement
             buttons.forEach(btn => btn.classList.remove("active"));
             button.classList.add("active");
 
-            // Chargement dynamique du contenu de l’onglet
-            fetch(`${BASE_URL}/admin/${tab}`)
+            // Chargement dynamique du contenu de l’onglet via fetch() avec header AJAX
+            fetch(`${BASE_URL}/admin/${tab}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Erreur lors du chargement du contenu.");
@@ -21,7 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .then(html => {
                     contentContainer.innerHTML = html;
-                    initSubtabs(); // Active les sous-onglets si présents
+                    initSubtabs(); // Réactive les sous-onglets (films/BD) si présents
+                    autoDismissMessages(); // Réactive l’auto-disparition après chargement dynamique
                 })
                 .catch(error => {
                     contentContainer.innerHTML = `<p style="color:red;">Erreur : ${error.message}</p>`;
@@ -29,13 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 2. Si un onglet est défini via PHP → clic automatique
-    if (typeof ongletParSession !== "undefined" && ongletParSession) {
-        const bouton = document.querySelector(`[data-tab="${ongletParSession}"]`);
-        if (bouton) bouton.click();
-    }
-
-    // 3. Activation des sous-onglets (films / bd) si présents dans la vue des œuvres
+    // 2. Activer les sous-onglets (films / BD) si présents dans la vue des œuvres
     function initSubtabs() {
         const sousOnglets = document.querySelectorAll(".subtab-btn");
         const contenus = document.querySelectorAll(".subtab-content");
@@ -44,6 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
             sousOnglets.forEach(btn => {
                 btn.addEventListener("click", () => {
                     const cible = btn.dataset.subtab;
+
+                    // 🔐 On mémorise le sous-onglet actif
+                    localStorage.setItem("ongletOeuvreActif", cible);
 
                     sousOnglets.forEach(b => b.classList.remove("active"));
                     btn.classList.add("active");
@@ -54,9 +56,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
 
-            // Onglet par défaut (films visible)
-            const boutonDefaut = document.querySelector('.subtab-btn[data-subtab="films"]');
-            if (boutonDefaut) boutonDefaut.click();
+            // ✅ Restauration de l’onglet actif après reload
+            const ongletSauvegarde = localStorage.getItem("ongletOeuvreActif");
+            const boutonCible = document.querySelector(`.subtab-btn[data-subtab="${ongletSauvegarde}"]`);
+
+            if (boutonCible) {
+                boutonCible.click();
+            } else {
+                const boutonDefaut = document.querySelector('.subtab-btn[data-subtab="films"]');
+                if (boutonDefaut) boutonDefaut.click();
+            }
         }
     }
+
+    // 3. Activation automatique des sous-onglets après chargement complet
+    initSubtabs();
+
+    // 4. Suppression auto des messages après 5 secondes (avec fondu)
+    function autoDismissMessages() {
+        setTimeout(() => {
+            const messages = document.querySelectorAll('.message-success, .message-error');
+            messages.forEach(msg => {
+                msg.style.transition = "opacity 0.5s ease";
+                msg.style.opacity = "0";
+                setTimeout(() => msg.remove(), 500); // Suppression après fade-out
+            });
+        }, 5000);
+    }
+
+    // Lancer la disparition si un message est déjà présent au premier chargement
+    autoDismissMessages();
 });

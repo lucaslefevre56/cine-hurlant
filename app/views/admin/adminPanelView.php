@@ -12,13 +12,11 @@
 </div>
 
 <div id="admin-content">
-    <?php require_once ROOT . '/app/views/admin/adminAccueilView.php'; ?>
+    <?php
+    $contenu ??= 'admin/adminAccueilView';
+    require_once ROOT . '/app/views/' . $contenu . '.php';
+    ?>
 </div>
-
-<script>
-    const ongletParSession = "<?= $_SESSION['onglet_actif'] ?? '' ?>";
-</script>
-<?php unset($_SESSION['onglet_actif']); ?>
 
 <script src="<?= BASE_URL ?>/public/js/admin.js"></script>
 

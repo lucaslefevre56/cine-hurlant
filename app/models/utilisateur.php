@@ -23,13 +23,14 @@ class Utilisateur
     }
 
     /**
-     * Récupère un utilisateur par son email
+     * Récupère un utilisateur actif par son email
+     * → utilisé pour la connexion
      */
     public function getByEmail(string $email): array|false
     {
         $db = Database::getInstance();
 
-        $sql = "SELECT * FROM Utilisateur WHERE email = ?";
+        $sql = "SELECT * FROM utilisateur WHERE email = ? AND actif = 1";
         $stmt = $db->prepare($sql);
         $stmt->execute([$email]);
 
@@ -119,11 +120,31 @@ class Utilisateur
     {
         $db = Database::getInstance();
 
-        $sql = "SELECT id_utilisateur, nom, email, role FROM Utilisateur ORDER BY nom ASC";
+        $sql = "SELECT id_utilisateur, nom, email, role, actif FROM utilisateur ORDER BY nom ASC";
         $stmt = $db->prepare($sql);
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function desactiver(int $id): bool
+    {
+        $db = Database::getInstance();
+
+        $sql = "UPDATE utilisateur SET actif = 0 WHERE id_utilisateur = :id";
+
+        $stmt = $db->prepare($sql);
+        return $stmt->execute([':id' => $id]);
+    }
+
+    public function reactiver(int $id): bool
+    {
+        $db = Database::getInstance();
+
+        $sql = "UPDATE utilisateur SET actif = 1 WHERE id_utilisateur = :id";
+        $stmt = $db->prepare($sql);
+        return $stmt->execute([':id' => $id]);
     }
 
     // ----------------------------------------

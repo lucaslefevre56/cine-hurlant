@@ -1,5 +1,7 @@
 <!-- app/views/admin/modifierOeuvreView.php -->
 
+<?php require_once ROOT . '/app/views/templates/header.php'; ?>
+
 <h2>Modifier l'œuvre</h2>
 
 <?php if (!empty($_SESSION['message'])): ?>
@@ -35,3 +37,5 @@
 
     <button type="submit">Modifier l'œuvre</button>
 </form>
+
+<?php require_once ROOT . '/app/views/templates/footer.php'; ?>

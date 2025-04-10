@@ -156,15 +156,14 @@ class Oeuvre
     }
 
     public function update(int $id_oeuvre, string $titre, string $auteur, int $annee, string $media, string $video_url, string $analyse, int $id_type): bool
-{
-    $db = Database::getInstance();
+    {
+        $db = Database::getInstance();
 
-    // Préparer la requête de mise à jour
-    $sql = "UPDATE oeuvre SET titre = ?, auteur = ?, annee = ?, media = ?, video_url = ?, analyse = ?, id_type = ? WHERE id_oeuvre = ?";
-    $stmt = $db->prepare($sql);
+        // Préparer la requête de mise à jour
+        $sql = "UPDATE oeuvre SET titre = ?, auteur = ?, annee = ?, media = ?, video_url = ?, analyse = ?, id_type = ? WHERE id_oeuvre = ?";
+        $stmt = $db->prepare($sql);
 
-    // Exécuter la requête avec les valeurs passées
-    return $stmt->execute([$titre, $auteur, $annee, $media, $video_url, $analyse, $id_type, $id_oeuvre]);
-}
-
+        // Exécuter la requête avec les valeurs passées
+        return $stmt->execute([$titre, $auteur, $annee, $media, $video_url, $analyse, $id_type, $id_oeuvre]);
+    }
 }

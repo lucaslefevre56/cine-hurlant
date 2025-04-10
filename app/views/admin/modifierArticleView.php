@@ -1,3 +1,7 @@
+<!-- app/views/admin/modifierArticleView.php -->
+
+<?php require_once ROOT . '/app/views/templates/header.php'; ?>
+
 <h2>Modifier l'article : <?= htmlspecialchars($article['titre']) ?></h2>
 
 <form action="" method="POST">
@@ -15,3 +19,5 @@
 
     <button type="submit">Modifier</button>
 </form>
+
+<?php require_once ROOT . '/app/views/templates/footer.php'; ?>

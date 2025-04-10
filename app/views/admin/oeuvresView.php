@@ -2,9 +2,8 @@
 
 <h2>Gestion des œuvres</h2>
 
-<?php if (!empty($_SESSION['message'])): ?>
-    <p style="color: green;"><?= htmlspecialchars($_SESSION['message']) ?></p>
-    <?php unset($_SESSION['message']); ?>
+<?php if (!empty($message)) : ?>
+    <div class="message-success"><?= htmlspecialchars($message) ?></div>
 <?php endif; ?>
 
 <!-- Sous-onglets -->
