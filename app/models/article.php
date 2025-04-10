@@ -136,40 +136,66 @@ class Article
     }
 
     /**
- * Je récupère une portion paginée des articles
- * → utilisée pour afficher la liste avec pagination
- */
-public function getPaginated($limit, $offset)
-{
-    $db = Database::getInstance();
+     * Je récupère une portion paginée des articles
+     * → utilisée pour afficher la liste avec pagination
+     */
+    public function getPaginated($limit, $offset)
+    {
+        $db = Database::getInstance();
 
-    $sql = "SELECT article.*, utilisateur.nom AS auteur
+        $sql = "SELECT article.*, utilisateur.nom AS auteur
             FROM article
             JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
             ORDER BY date_redaction DESC
             LIMIT :limit OFFSET :offset";
 
-    $stmt = $db->prepare($sql);
-    $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
 
-    $stmt->execute();
-    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+
+    /**
+     * Je compte combien d’articles existent en base
+     * → utilisé pour calculer le nombre total de pages
+     */
+    public function countAll()
+    {
+        $db = Database::getInstance();
+
+        $sql = "SELECT COUNT(*) FROM article";
+        return (int) $db->query($sql)->fetchColumn();
+    }
+
+    public function deleteById($id)
+    {
+        $db = \App\Core\Database::getInstance();
+
+        // Supprimer d'abord les commentaires associés à l'article
+        $sql = "DELETE FROM commentaire WHERE id_article = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([':id' => $id]);
+
+        // Maintenant, supprimer l'article
+        $sql = "DELETE FROM article WHERE id_article = :id";
+        $stmt = $db->prepare($sql);
+
+        return $stmt->execute([':id' => $id]);
+    }
+
+
+    public function update(int $id_article, string $titre, string $contenu, ?string $image, ?string $video_url): bool
+    {
+        $db = Database::getInstance();
+
+        // Préparer la requête de mise à jour
+        $sql = "UPDATE article SET titre = ?, contenu = ?, image = ?, video_url = ? WHERE id_article = ?";
+        $stmt = $db->prepare($sql);
+
+        // Exécuter la requête avec les valeurs passées
+        return $stmt->execute([$titre, $contenu, $image, $video_url, $id_article]);
+    }
 }
-
-
-/**
- * Je compte combien d’articles existent en base
- * → utilisé pour calculer le nombre total de pages
- */
-public function countAll()
-{
-    $db = Database::getInstance();
-
-    $sql = "SELECT COUNT(*) FROM article";
-    return (int) $db->query($sql)->fetchColumn();
-}
-
-}
-
-?>

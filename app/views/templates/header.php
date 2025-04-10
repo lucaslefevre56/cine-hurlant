@@ -56,7 +56,7 @@ use App\Helpers\AuthHelper;
 
             <nav style="margin-top: 0.5rem;">
                 <?php if (AuthHelper::isUserAdmin()) : ?>
-                    <a href="<?= BASE_URL ?>/admin/utilisateurs" style="color: orange; margin-right: 1rem;">
+                    <a href="<?= BASE_URL ?>/admin" style="color: orange; margin-right: 1rem;">
                         Admin Panel
                     </a>
                 <?php endif; ?>
@@ -72,3 +72,5 @@ use App\Helpers\AuthHelper;
             </nav>
         <?php endif; ?>
     </header>
+
+    <main> <!-- 🆕 À ajouter ici -->

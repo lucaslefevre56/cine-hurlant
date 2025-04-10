@@ -19,4 +19,19 @@ class View
             ErrorHandler::renderError("La vue demandée ($template) est introuvable.");
         }
     }
+
+    public static function renderPartial(string $template, array $data = []): void
+    {
+        extract($data);
+
+        // Même logique que render() pour obtenir le chemin complet
+        $viewPath = \App\Core\Config::getRoot() . '/app/views/' . $template . '.php';
+
+        if (file_exists($viewPath)) {
+            include $viewPath;
+        } else {
+            // Même gestion d’erreur élégante
+            ErrorHandler::renderError("La vue partielle demandée ($template) est introuvable.");
+        }
+    }
 }

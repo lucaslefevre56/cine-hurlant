@@ -1,7 +1,5 @@
 <!-- app/views/admin/listeUtilisateursView.php -->
 
-<?php require_once ROOT . '/app/views/templates/header.php'; ?>
-
 <?php
 // Tableau pour traduire les rôles en libellé humain (aligné avec la BDD)
 $labels = [
@@ -26,6 +24,7 @@ $labels = [
             <th>Email</th>
             <th>Rôle actuel</th>
             <th>Changer de rôle</th>
+            <th>Supprimer</th>
         </tr>
     </thead>
     <tbody>
@@ -54,9 +53,18 @@ $labels = [
                         Impossible de changer votre propre rôle...C'est comme ça...
                     <?php endif; ?>
                 </td>
+
+                <!-- Bouton de suppression -->
+                <td>
+                    <?php if ($u['id_utilisateur'] !== $_SESSION['user']['id']) : ?>
+                        <form action="<?= BASE_URL ?>/admin/supprimerUtilisateur/<?= $u['id_utilisateur'] ?>" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')">
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    <?php else: ?>
+                        Impossible de supprimer votre propre compte.
+                    <?php endif; ?>
+                </td>
             </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
-
-<?php require_once ROOT . '/app/views/templates/footer.php'; ?>

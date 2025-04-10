@@ -88,8 +88,8 @@ CREATE TABLE ajouter_favoris(
    id_oeuvre INT,
    date_ajout DATETIME DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY(id_utilisateur, id_oeuvre),
-   FOREIGN KEY(id_utilisateur) REFERENCES Utilisateur(id_utilisateur),
-   FOREIGN KEY(id_oeuvre) REFERENCES oeuvre(id_oeuvre)
+   FOREIGN KEY(id_utilisateur) REFERENCES Utilisateur(id_utilisateur) ON DELETE CASCADE,
+   FOREIGN KEY(id_oeuvre) REFERENCES oeuvre(id_oeuvre) ON DELETE CASCADE
 );
 
 -- Création de la table noter
@@ -98,8 +98,8 @@ CREATE TABLE noter(
    id_oeuvre INT,
    note INT CHECK(note BETWEEN 1 AND 5),
    PRIMARY KEY(id_utilisateur, id_oeuvre),
-   FOREIGN KEY(id_utilisateur) REFERENCES Utilisateur(id_utilisateur),
-   FOREIGN KEY(id_oeuvre) REFERENCES oeuvre(id_oeuvre)
+   FOREIGN KEY(id_utilisateur) REFERENCES Utilisateur(id_utilisateur) ON DELETE CASCADE,
+   FOREIGN KEY(id_oeuvre) REFERENCES oeuvre(id_oeuvre) ON DELETE CASCADE
 );
 
 -- Création de la table participer
@@ -116,7 +116,7 @@ CREATE TABLE appartenir(
    id_oeuvre INT,
    id_genre INT,
    PRIMARY KEY(id_oeuvre, id_genre),
-   FOREIGN KEY(id_oeuvre) REFERENCES oeuvre(id_oeuvre),
+   FOREIGN KEY(id_oeuvre) REFERENCES oeuvre(id_oeuvre) ON DELETE CASCADE,
    FOREIGN KEY(id_genre) REFERENCES genre(id_genre)
 );
 

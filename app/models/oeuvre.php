@@ -145,4 +145,26 @@ class Oeuvre
         $sql = "SELECT COUNT(*) FROM oeuvre";
         return (int) $db->query($sql)->fetchColumn();
     }
+
+    public function deleteById($id)
+    {
+        $db = \App\Core\Database::getInstance();
+
+        $sql = "DELETE FROM oeuvre WHERE id_oeuvre = :id";
+        $stmt = $db->prepare($sql);
+        return $stmt->execute([':id' => $id]);
+    }
+
+    public function update(int $id_oeuvre, string $titre, string $auteur, int $annee, string $media, string $video_url, string $analyse, int $id_type): bool
+{
+    $db = Database::getInstance();
+
+    // Préparer la requête de mise à jour
+    $sql = "UPDATE oeuvre SET titre = ?, auteur = ?, annee = ?, media = ?, video_url = ?, analyse = ?, id_type = ? WHERE id_oeuvre = ?";
+    $stmt = $db->prepare($sql);
+
+    // Exécuter la requête avec les valeurs passées
+    return $stmt->execute([$titre, $auteur, $annee, $media, $video_url, $analyse, $id_type, $id_oeuvre]);
+}
+
 }
