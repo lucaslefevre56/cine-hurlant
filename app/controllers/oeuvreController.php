@@ -39,8 +39,13 @@ class OeuvreController
         $total = $modele->countAll();
         $totalPages = ceil($total / $parPage);
 
+        // Séparation des types dans les œuvres récupérées
+        $films = array_filter($oeuvres, fn($o) => strtolower($o['nom']) === 'film');
+        $bds   = array_filter($oeuvres, fn($o) => strtolower($o['nom']) === 'bd');
+
         View::render('oeuvres/listeOeuvresView', [
-            'oeuvres' => $oeuvres,
+            'films' => $films,
+            'bds' => $bds,
             'page' => $page,
             'totalPages' => $totalPages
         ]);

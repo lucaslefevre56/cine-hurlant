@@ -3,70 +3,87 @@
 <!-- Titre principal de la page -->
 <h2>Les Œuvres</h2>
 
-<!-- Je vérifie qu’il y a bien des œuvres à afficher -->
-<?php if (!empty($oeuvres)) : ?>
+<!-- Sous-onglets -->
+<div class="subtabs" style="margin-bottom: 1rem;">
+    <button class="subtab-btn active" data-subtab="films">Films</button>
+    <button class="subtab-btn" data-subtab="bd">Bandes dessinées</button>
+</div>
 
-    <!-- J’affiche un conteneur pour toutes les cartes d’œuvres -->
-    <div class="liste-oeuvres">
+<!-- Contenu : Films -->
+<div id="films" class="subtab-content">
+    <!-- Je vérifie qu’il y a bien des œuvres à afficher -->
+    <?php if (!empty($films)) : ?>
 
-        <!-- Je parcours chaque œuvre pour créer une carte individuelle -->
-        <?php foreach ($oeuvres as $oeuvre) : ?>
-            <div class="carte-oeuvre">
+        <!-- J’affiche un conteneur pour toutes les cartes d’œuvres -->
+        <div class="liste-oeuvres">
 
-                <!-- Je montre le titre de l’œuvre -->
-                <h3><?= htmlspecialchars($oeuvre['titre']) ?></h3>
+            <!-- Je parcours chaque œuvre pour créer une carte individuelle -->
+            <?php foreach ($films as $oeuvre) : ?>
+                <div class="carte-oeuvre">
+                    <h3><?= htmlspecialchars($oeuvre['titre']) ?></h3>
+                    <p><strong>Auteur :</strong> <?= htmlspecialchars($oeuvre['auteur']) ?></p>
+                    <p><strong>Type :</strong> <?= htmlspecialchars($oeuvre['nom']) ?></p>
+                    <?php if (!empty($oeuvre['genres'])) : ?>
+                        <p><strong>Genres :</strong> <?= implode(', ', array_map('htmlspecialchars', $oeuvre['genres'])) ?></p>
+                    <?php else : ?>
+                        <p><em>Aucun genre associé</em></p>
+                    <?php endif; ?>
+                    <p><strong>Année :</strong> <?= htmlspecialchars($oeuvre['annee']) ?></p>
+                    <?php if (!empty($oeuvre['media']) && filter_var($oeuvre['media'], FILTER_VALIDATE_URL)) : ?>
+                        <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
+                    <?php elseif (!empty($oeuvre['media'])) : ?>
+                        <img src="<?= BASE_URL ?>/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
+                    <?php endif; ?>
+                    <p><strong>Analyse :</strong> <?= htmlspecialchars(substr($oeuvre['analyse'], 0, 150)) ?>...</p>
+                    <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">Voir la fiche complète</a>
+                </div>
+            <?php endforeach; ?>
+        </div>
 
-                <!-- Je précise l’auteur de l’œuvre -->
-                <p><strong>Auteur :</strong> <?= htmlspecialchars($oeuvre['auteur']) ?></p>
+    <?php else : ?>
+        <p>Aucun film enregistré pour le moment</p>
+    <?php endif; ?>
+</div>
 
-                <!-- Je précise le type (film ou BD) -->
-                <p><strong>Type :</strong> <?= htmlspecialchars($oeuvre['nom']) ?></p>
+<!-- Contenu : BD -->
+<div id="bd" class="subtab-content" style="display: none;">
+    <?php if (!empty($bds)) : ?>
+        <div class="liste-oeuvres">
+            <?php foreach ($bds as $oeuvre) : ?>
+                <div class="carte-oeuvre">
+                    <h3><?= htmlspecialchars($oeuvre['titre']) ?></h3>
+                    <p><strong>Auteur :</strong> <?= htmlspecialchars($oeuvre['auteur']) ?></p>
+                    <p><strong>Type :</strong> <?= htmlspecialchars($oeuvre['nom']) ?></p>
+                    <?php if (!empty($oeuvre['genres'])) : ?>
+                        <p><strong>Genres :</strong> <?= implode(', ', array_map('htmlspecialchars', $oeuvre['genres'])) ?></p>
+                    <?php else : ?>
+                        <p><em>Aucun genre associé</em></p>
+                    <?php endif; ?>
+                    <p><strong>Année :</strong> <?= htmlspecialchars($oeuvre['annee']) ?></p>
+                    <?php if (!empty($oeuvre['media']) && filter_var($oeuvre['media'], FILTER_VALIDATE_URL)) : ?>
+                        <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
+                    <?php elseif (!empty($oeuvre['media'])) : ?>
+                        <img src="<?= BASE_URL ?>/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
+                    <?php endif; ?>
+                    <p><strong>Analyse :</strong> <?= htmlspecialchars(substr($oeuvre['analyse'], 0, 150)) ?>...</p>
+                    <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">Voir la fiche complète</a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else : ?>
+        <p>Aucune BD enregistrée pour le moment</p>
+    <?php endif; ?>
+</div>
 
-                <!-- Je vérifie si l’œuvre a des genres associés -->
-                <?php if (!empty($oeuvre['genres'])) : ?>
-                    <p><strong>Genres :</strong>
-                        <!-- Je sécurise chaque genre et je les affiche séparés par des virgules -->
-                        <?= implode(', ', array_map('htmlspecialchars', $oeuvre['genres'])) ?>
-                    </p>
-                <?php else : ?>
-                    <p><em>Aucun genre associé</em></p>
-                <?php endif; ?>
-
-                <!-- J’affiche l’année de publication -->
-                <p><strong>Année :</strong> <?= htmlspecialchars($oeuvre['annee']) ?></p>
-
-                <!-- Affichage de l’image associée si elle existe -->
-                <?php if (!empty($oeuvre['media']) && filter_var($oeuvre['media'], FILTER_VALIDATE_URL)) : ?>
-                    <!-- Si le média est une URL externe valide, on l’utilise telle quelle -->
-                    <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
-                <?php elseif (!empty($oeuvre['media'])) : ?>
-                    <!-- Sinon, on considère qu’il s’agit d’une image locale dans /public/images -->
-                    <img src="<?= BASE_URL ?>/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
-                <?php endif; ?>
-
-
-                <!-- Je montre un extrait de l’analyse (juste les 150 premiers caractères) -->
-                <p><strong>Analyse :</strong> <?= htmlspecialchars(substr($oeuvre['analyse'], 0, 150)) ?>...</p>
-
-                <!-- Je propose un lien vers la fiche complète de l’œuvre -->
-                <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">Voir la fiche complète</a>
-
-            </div>
-        <?php endforeach; ?>
-    </div>
-
-    <!-- Bloc de pagination -->
-    <div class="pagination">
-      <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+<!-- Bloc de pagination -->
+<div class="pagination">
+    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
         <a href="<?= BASE_URL ?>/oeuvre/liste?page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>">
-          <?= $i ?>
+            <?= $i ?>
         </a>
-      <?php endfor; ?>
-    </div>
+    <?php endfor; ?>
+</div>
 
-    <!-- Si aucune œuvre n’est présente, j’affiche un message d’attente -->
-<?php else : ?>
-    <p>Aucune œuvre enregistrée pour le moment</p>
-<?php endif; ?>
+<script src="<?= BASE_URL ?>/public/js/listeOeuvres.js"></script>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>
