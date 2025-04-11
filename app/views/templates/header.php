@@ -62,6 +62,9 @@ use App\Helpers\AuthHelper;
                 <?php endif; ?>
 
                 <?php if (AuthHelper::hasAnyRole(['admin', 'redacteur'])) : ?>
+                    <a href="<?= BASE_URL ?>/redacteur/panel" style="color: lightgreen; margin-right: 1rem;">
+                        Rédacteur Panel
+                    </a>
                     <a href="<?= BASE_URL ?>/redacteur/ajouterOeuvre" style="color: lightgreen; margin-right: 1rem;">
                         Ajouter une œuvre
                     </a>
@@ -69,6 +72,7 @@ use App\Helpers\AuthHelper;
                         Ajouter un article
                     </a>
                 <?php endif; ?>
+
             </nav>
         <?php endif; ?>
     </header>

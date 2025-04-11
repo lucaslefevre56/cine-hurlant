@@ -68,7 +68,14 @@ class RedacteurController
                 $erreur = "Tous les champs sont obligatoires, y compris l'image.";
 
                 View::render('redacteur/ajouterOeuvreView', compact(
-                    'titre', 'auteur', 'annee', 'analyse', 'video_url', 'id_type', 'genres', 'erreur'
+                    'titre',
+                    'auteur',
+                    'annee',
+                    'analyse',
+                    'video_url',
+                    'id_type',
+                    'genres',
+                    'erreur'
                 ));
                 return;
             }
@@ -88,7 +95,14 @@ class RedacteurController
         }
 
         View::render('redacteur/ajouterOeuvreView', compact(
-            'titre', 'auteur', 'annee', 'analyse', 'video_url', 'id_type', 'genres', 'erreur'
+            'titre',
+            'auteur',
+            'annee',
+            'analyse',
+            'video_url',
+            'id_type',
+            'genres',
+            'erreur'
         ));
     }
 
@@ -140,7 +154,13 @@ class RedacteurController
                 $oeuvresListe = $oeuvreModel->getAll();
 
                 View::render('redacteur/ajouterArticleView', compact(
-                    'titre', 'contenu', 'video_url', 'oeuvresListe', 'oeuvres', 'image', 'erreur'
+                    'titre',
+                    'contenu',
+                    'video_url',
+                    'oeuvresListe',
+                    'oeuvres',
+                    'image',
+                    'erreur'
                 ));
                 return;
             }
@@ -163,7 +183,13 @@ class RedacteurController
         $oeuvresListe = $oeuvreModel->getAll();
 
         View::render('redacteur/ajouterArticleView', compact(
-            'titre', 'contenu', 'video_url', 'oeuvresListe', 'oeuvres', 'image', 'erreur'
+            'titre',
+            'contenu',
+            'video_url',
+            'oeuvresListe',
+            'oeuvres',
+            'image',
+            'erreur'
         ));
     }
 
@@ -183,15 +209,131 @@ class RedacteurController
 
     public function index(): void
     {
-        View::render('redacteur/ajouterOeuvreView', [
-            'titre' => '',
-            'auteur' => '',
-            'annee' => '',
-            'analyse' => '',
-            'video_url' => '',
-            'id_type' => null,
-            'genres' => [],
-            'erreur' => null
+        $this->panel();
+    }
+
+    public function panel(): void
+    {
+        if (!AuthHelper::isUserRedacteur()) {
+            View::render('accueil/indexView');
+            return;
+        }
+
+        $this->contenusAvecMessage();
+    }
+
+    public function supprimerOeuvre(int $id_oeuvre): void
+    {
+        $model = new Oeuvre();
+        $oeuvre = $model->getById($id_oeuvre);
+
+        if ($oeuvre && $oeuvre['id_utilisateur'] == $_SESSION['user']['id']) {
+            $model->deleteById($id_oeuvre);
+            $message = "Œuvre supprimée.";
+        } else {
+            $message = "Accès refusé ou œuvre introuvable.";
+        }
+
+        $this->contenusAvecMessage($message);
+    }
+
+    public function supprimerArticle(int $id_article): void
+    {
+        $model = new Article();
+        $article = $model->getById($id_article);
+
+        if ($article && $article['id_utilisateur'] == $_SESSION['user']['id']) {
+            $model->deleteById($id_article);
+            $message = "Article supprimé.";
+        } else {
+            $message = "Accès refusé ou article introuvable.";
+        }
+
+        $this->contenusAvecMessage($message);
+    }
+
+    public function modifierOeuvre(int $id_oeuvre): void
+    {
+        $model = new Oeuvre();
+        $oeuvre = $model->getById($id_oeuvre);
+
+        if (!$oeuvre || $oeuvre['id_utilisateur'] != $_SESSION['user']['id']) {
+            $this->contenusAvecMessage("Vous ne pouvez pas modifier cette œuvre.");
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ok = $model->update(
+                $id_oeuvre,
+                $_POST['titre'],
+                $_POST['auteur'],
+                $_POST['annee'],
+                $_POST['media'],
+                $_POST['video_url'],
+                $_POST['analyse'],
+                $_POST['id_type']
+            );
+
+            $message = $ok ? "Œuvre modifiée." : "Erreur lors de la modification.";
+            $this->contenusAvecMessage($message);
+            return;
+        }
+
+        View::render('admin/modifierOeuvreView', ['oeuvre' => $oeuvre]);
+    }
+
+    public function modifierArticle(int $id_article): void
+    {
+        $model = new Article();
+        $article = $model->getById($id_article);
+
+        if (!$article || $article['id_utilisateur'] != $_SESSION['user']['id']) {
+            $this->contenusAvecMessage("Vous ne pouvez pas modifier cet article.");
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ok = $model->update(
+                $id_article,
+                $_POST['titre'],
+                $_POST['contenu'],
+                $_POST['image'] ?? '',
+                $_POST['video_url'] ?? ''
+            );
+
+            $message = $ok ? "Article modifié." : "Erreur lors de la modification.";
+            $this->contenusAvecMessage($message);
+            return;
+        }
+
+        View::render('admin/modifierArticleView', ['article' => $article]);
+    }
+
+    private function contenusAvecMessage(string $message = ''): void
+    {
+        $id_utilisateur = $_SESSION['user']['id'] ?? null;
+        $oeuvres = (new Oeuvre())->getByAuteur($id_utilisateur);
+        $articles = (new Article())->getByAuteur($id_utilisateur);
+
+        $this->rendreVue('redacteur/redacteurPanelView', [
+            'oeuvres' => $oeuvres,
+            'articles' => $articles,
+            'message' => $message
         ]);
+    }
+
+    private function isAjaxRequest(): bool
+    {
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+    }
+
+    private function rendreVue(string $vue, array $data = []): void
+    {
+        if ($this->isAjaxRequest()) {
+            View::renderPartial($vue, $data);
+        } else {
+            View::render('redacteur/redacteurPanelView', array_merge($data, ['contenu' => $vue]));
+        }
     }
 }

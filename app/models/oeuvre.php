@@ -166,4 +166,23 @@ class Oeuvre
         // Exécuter la requête avec les valeurs passées
         return $stmt->execute([$titre, $auteur, $annee, $media, $video_url, $analyse, $id_type, $id_oeuvre]);
     }
+
+    /**
+     * Récupère toutes les œuvres ajoutées par un utilisateur donné
+     */
+    public function getByAuteur(int $id_utilisateur): array
+    {
+        $db = Database::getInstance();
+
+        $sql = "SELECT oeuvre.*, type.nom
+            FROM oeuvre
+            JOIN type ON oeuvre.id_type = type.id_type
+            WHERE oeuvre.id_utilisateur = :id_utilisateur
+            ORDER BY oeuvre.titre ASC";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute([':id_utilisateur' => $id_utilisateur]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

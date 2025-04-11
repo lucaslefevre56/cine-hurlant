@@ -1,6 +1,6 @@
 <!-- app/views/admin/commentairesView.php -->
 
-<h2>Gestion des commentaires</h2>
+<h2>Suppression des commentaires</h2>
 
 <?php if (!empty($message)) : ?>
     <div class="message-success"><?= htmlspecialchars($message) ?></div>

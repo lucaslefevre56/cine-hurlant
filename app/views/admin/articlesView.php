@@ -1,6 +1,6 @@
 <!-- app/views/admin/articlesView.php -->
 
-<h2>Gestion des articles</h2>
+<h2>Modification ou suppression des articles</h2>
 
 <?php if (!empty($message)) : ?>
     <div class="message-success"><?= htmlspecialchars($message) ?></div>

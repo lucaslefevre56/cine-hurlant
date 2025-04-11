@@ -1,10 +1,10 @@
-<!-- app/views/admin/oeuvresView.php -->
-
-<h2>Modification ou suppression des œuvres</h2>
+<!-- app/views/redacteur/mesOeuvresView.php -->
 
 <?php if (!empty($message)) : ?>
     <div class="message-success"><?= htmlspecialchars($message) ?></div>
 <?php endif; ?>
+
+<h2>Mes œuvres</h2>
 
 <!-- Sous-onglets -->
 <div class="subtabs" style="margin-bottom: 1rem;">
@@ -28,8 +28,8 @@
             </tr>
         </thead>
         <tbody>
-            <?php if (!empty($films)): ?>
-                <?php foreach ($films as $oeuvre): ?>
+            <?php if (!empty($films)) : ?>
+                <?php foreach ($films as $oeuvre) : ?>
                     <tr>
                         <td><?= $oeuvre['id_oeuvre'] ?></td>
                         <td><?= htmlspecialchars($oeuvre['titre']) ?></td>
@@ -37,17 +37,16 @@
                         <td><?= htmlspecialchars(ucfirst($oeuvre['nom'])) ?></td>
                         <td><?= htmlspecialchars($oeuvre['annee']) ?></td>
                         <td><a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>" target="_blank">Voir</a></td>
-                        <td><a href="<?= BASE_URL ?>/admin/modifierOeuvre/<?= $oeuvre['id_oeuvre'] ?>">Modifier</a></td>
+                        <td><a href="<?= BASE_URL ?>/redacteur/modifierOeuvre/<?= $oeuvre['id_oeuvre'] ?>">Modifier</a></td>
                         <td>
-                            <form action="<?= BASE_URL ?>/admin/oeuvres" method="POST" onsubmit="return confirm('Supprimer cette œuvre ?');">
-                                <input type="hidden" name="id_oeuvre" value="<?= $oeuvre['id_oeuvre'] ?>">
+                            <form action="<?= BASE_URL ?>/redacteur/supprimerOeuvre/<?= $oeuvre['id_oeuvre'] ?>" method="POST" onsubmit="return confirm('Supprimer cette œuvre ?');">
                                 <button type="submit" class="btn btn-danger">Supprimer</button>
                             </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
-            <?php else: ?>
-                <tr><td colspan="8">Aucune œuvre de type Film disponible.</td></tr>
+            <?php else : ?>
+                <tr><td colspan="8">Aucun film enregistré.</td></tr>
             <?php endif; ?>
         </tbody>
     </table>
@@ -69,8 +68,8 @@
             </tr>
         </thead>
         <tbody>
-            <?php if (!empty($bds)): ?>
-                <?php foreach ($bds as $oeuvre): ?>
+            <?php if (!empty($bds)) : ?>
+                <?php foreach ($bds as $oeuvre) : ?>
                     <tr>
                         <td><?= $oeuvre['id_oeuvre'] ?></td>
                         <td><?= htmlspecialchars($oeuvre['titre']) ?></td>
@@ -78,17 +77,16 @@
                         <td><?= htmlspecialchars(ucfirst($oeuvre['nom'])) ?></td>
                         <td><?= htmlspecialchars($oeuvre['annee']) ?></td>
                         <td><a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>" target="_blank">Voir</a></td>
-                        <td><a href="<?= BASE_URL ?>/admin/modifierOeuvre/<?= $oeuvre['id_oeuvre'] ?>">Modifier</a></td>
+                        <td><a href="<?= BASE_URL ?>/redacteur/modifierOeuvre/<?= $oeuvre['id_oeuvre'] ?>">Modifier</a></td>
                         <td>
-                            <form action="<?= BASE_URL ?>/admin/oeuvres" method="POST" onsubmit="return confirm('Supprimer cette œuvre ?');">
-                                <input type="hidden" name="id_oeuvre" value="<?= $oeuvre['id_oeuvre'] ?>">
+                            <form action="<?= BASE_URL ?>/redacteur/supprimerOeuvre/<?= $oeuvre['id_oeuvre'] ?>" method="POST" onsubmit="return confirm('Supprimer cette œuvre ?');">
                                 <button type="submit" class="btn btn-danger">Supprimer</button>
                             </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
-            <?php else: ?>
-                <tr><td colspan="8">Aucune œuvre de type BD disponible.</td></tr>
+            <?php else : ?>
+                <tr><td colspan="8">Aucune BD enregistrée.</td></tr>
             <?php endif; ?>
         </tbody>
     </table>

@@ -1,8 +1,5 @@
 <!-- app/views/admin/adminAccueilView.php -->
 
-
-
-<!-- app/views/admin/adminAccueilView.php -->
 <div class="admin-accueil">
     <h2>Bienvenue dans l'espace d'administration</h2>
     <p>Utilisez les onglets ci-dessus pour gérer les contenus du site.</p>
