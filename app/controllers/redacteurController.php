@@ -209,17 +209,12 @@ class RedacteurController
 
     public function index(): void
     {
-        $this->panel();
-    }
-
-    public function panel(): void
-    {
         if (!AuthHelper::isUserRedacteur()) {
             View::render('accueil/indexView');
             return;
         }
 
-        $this->contenusAvecMessage();
+        View::render('redacteur/redacteurPanelView');
     }
 
     public function supprimerOeuvre(int $id_oeuvre): void
@@ -234,7 +229,7 @@ class RedacteurController
             $message = "Accès refusé ou œuvre introuvable.";
         }
 
-        $this->contenusAvecMessage($message);
+        $this->mesOeuvresAvecMessage($message);
     }
 
     public function supprimerArticle(int $id_article): void
@@ -249,7 +244,7 @@ class RedacteurController
             $message = "Accès refusé ou article introuvable.";
         }
 
-        $this->contenusAvecMessage($message);
+        $this->mesArticlesAvecMessage($message);
     }
 
     public function modifierOeuvre(int $id_oeuvre): void
@@ -258,7 +253,7 @@ class RedacteurController
         $oeuvre = $model->getById($id_oeuvre);
 
         if (!$oeuvre || $oeuvre['id_utilisateur'] != $_SESSION['user']['id']) {
-            $this->contenusAvecMessage("Vous ne pouvez pas modifier cette œuvre.");
+            $this->mesOeuvresAvecMessage("Vous ne pouvez pas modifier cette œuvre.");
             return;
         }
 
@@ -275,11 +270,11 @@ class RedacteurController
             );
 
             $message = $ok ? "Œuvre modifiée." : "Erreur lors de la modification.";
-            $this->contenusAvecMessage($message);
+            $this->mesOeuvresAvecMessage($message);
             return;
         }
 
-        View::render('admin/modifierOeuvreView', ['oeuvre' => $oeuvre]);
+        View::render('redacteur/modifierOeuvreView', ['oeuvre' => $oeuvre]);
     }
 
     public function modifierArticle(int $id_article): void
@@ -288,7 +283,7 @@ class RedacteurController
         $article = $model->getById($id_article);
 
         if (!$article || $article['id_utilisateur'] != $_SESSION['user']['id']) {
-            $this->contenusAvecMessage("Vous ne pouvez pas modifier cet article.");
+            $this->mesArticlesAvecMessage("Vous ne pouvez pas modifier cet article.");
             return;
         }
 
@@ -302,22 +297,44 @@ class RedacteurController
             );
 
             $message = $ok ? "Article modifié." : "Erreur lors de la modification.";
-            $this->contenusAvecMessage($message);
+            $this->mesArticlesAvecMessage($message);
             return;
         }
 
-        View::render('admin/modifierArticleView', ['article' => $article]);
+        View::render('redacteur/modifierArticleView', ['article' => $article]);
     }
 
-    private function contenusAvecMessage(string $message = ''): void
+    public function mesOeuvres(): void
+    {
+        $this->mesOeuvresAvecMessage();
+    }
+
+    public function mesArticles(): void
+    {
+        $this->mesArticlesAvecMessage();
+    }
+
+    private function mesArticlesAvecMessage(string $message = ''): void
+    {
+        $id_utilisateur = $_SESSION['user']['id'] ?? null;
+        $articles = (new Article())->getByAuteur($id_utilisateur);
+
+        $this->rendreVue('redacteur/mesArticlesView', [
+            'articles' => $articles,
+            'message' => $message
+        ]);
+    }
+
+    private function mesOeuvresAvecMessage(string $message = ''): void
     {
         $id_utilisateur = $_SESSION['user']['id'] ?? null;
         $oeuvres = (new Oeuvre())->getByAuteur($id_utilisateur);
-        $articles = (new Article())->getByAuteur($id_utilisateur);
+        $films = array_filter($oeuvres, fn($o) => strtolower($o['nom']) === 'film');
+        $bds   = array_filter($oeuvres, fn($o) => strtolower($o['nom']) === 'bd');
 
-        $this->rendreVue('redacteur/redacteurPanelView', [
-            'oeuvres' => $oeuvres,
-            'articles' => $articles,
+        $this->rendreVue('redacteur/mesOeuvresView', [
+            'films' => $films,
+            'bds' => $bds,
             'message' => $message
         ]);
     }

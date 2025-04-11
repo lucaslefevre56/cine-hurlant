@@ -1,10 +1,10 @@
-<!-- app/views/admin/modifierOeuvreView.php -->
+<!-- app/views/redacteur/modifierOeuvreView.php -->
 
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <h2>Modifier l'œuvre</h2>
 
-<form action="<?= BASE_URL ?>/admin/modifierOeuvre/<?= $oeuvre['id_oeuvre'] ?>" method="POST">
+<form action="<?= BASE_URL ?>/redacteur/modifierOeuvre/<?= $oeuvre['id_oeuvre'] ?>" method="POST">
     <label for="titre">Titre :</label>
     <input type="text" id="titre" name="titre" value="<?= htmlspecialchars($oeuvre['titre']) ?>" required><br><br>
 
