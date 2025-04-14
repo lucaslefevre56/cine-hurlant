@@ -6,6 +6,7 @@ CREATE TABLE Utilisateur(
    password VARCHAR(255) NOT NULL,
    date_enregistrement DATETIME DEFAULT CURRENT_TIMESTAMP,
    role ENUM('utilisateur', 'redacteur', 'admin') DEFAULT 'utilisateur',
+   actif BOOLEAN DEFAULT 1,
    PRIMARY KEY(id_utilisateur),
    UNIQUE(email)
 );

@@ -1,3 +1,5 @@
+<!-- app/views/redacteur/ajouterOeuvreView.php -->
+
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <?php if (!empty($erreur)): ?>

@@ -27,8 +27,8 @@
     <!-- Si le média est une URL externe valide, on l’utilise telle quelle -->
     <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
 <?php elseif (!empty($oeuvre['media'])) : ?>
-    <!-- Sinon, on considère qu’il s’agit d’une image locale dans /public/images -->
-    <img src="<?= BASE_URL ?>/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="300" loading="lazy">
+    <!-- Sinon, on considère qu’il s’agit d’une image locale dans /public/upload -->
+    <img src="<?= BASE_URL ?>/public/upload/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="300" loading="lazy">
 <?php endif; ?>
 
 <!-- Si une vidéo est associée à cette œuvre, je l'affiche -->

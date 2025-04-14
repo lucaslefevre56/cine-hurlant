@@ -128,15 +128,43 @@ class AdminController
         if (!$article) ErrorHandler::render404("Article introuvable.");
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $ok = $model->update(
-                $id_article,
-                $_POST['titre'],
-                $_POST['contenu'],
-                $_POST['image'] ?? '',
-                $_POST['video_url'] ?? ''
-            );
+            $titre = $_POST['titre'] ?? '';
+            $contenu = $_POST['contenu'] ?? '';
+            $video_url = $_POST['video_url'] ?? '';
+            $imageActuelle = $_POST['image_actuelle'] ?? '';
+            $nouvelleImage = $imageActuelle;
 
-            $message = $ok ? "Article modifié avec succès." : "Erreur lors de la modification.";
+            // ⚠️ Traitement de l’upload si un fichier est envoyé
+            if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === 0) {
+                $tmpName = $_FILES['image']['tmp_name'];
+                $fileName = $_FILES['image']['name'];
+                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                $extensionsAutorisees = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                if (in_array($ext, $extensionsAutorisees)) {
+                    $nouveauNom = md5(time() . $fileName) . '.' . $ext;
+                    $cheminUpload = ROOT . '/public/upload/' . $nouveauNom;
+
+                    if (move_uploaded_file($tmpName, $cheminUpload)) {
+                        $nouvelleImage = $nouveauNom;
+
+                        // 🧹 Si ancienne image locale → suppression
+                        if (!empty($imageActuelle) && !filter_var($imageActuelle, FILTER_VALIDATE_URL)) {
+                            $ancienFichier = ROOT . '/public/upload/' . $imageActuelle;
+                            if (file_exists($ancienFichier)) {
+                                unlink($ancienFichier);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 🔄 Mise à jour finale
+            $ok = $model->update($id_article, $titre, $contenu, $nouvelleImage, $video_url);
+
+            $message = $ok
+                ? "Article modifié avec succès."
+                : "Erreur lors de la modification.";
             $this->articlesAvecMessage($message);
             return;
         }
@@ -171,15 +199,50 @@ class AdminController
         if (!$oeuvre) ErrorHandler::render404("Œuvre introuvable.");
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $titre = $_POST['titre'] ?? '';
+            $auteur = $_POST['auteur'] ?? '';
+            $annee = $_POST['annee'] ?? '';
+            $video_url = $_POST['video_url'] ?? '';
+            $analyse = $_POST['analyse'] ?? '';
+            $id_type = (int) ($_POST['id_type'] ?? 0);
+            $ancienneImage = $_POST['media_actuelle'] ?? '';
+            $nouvelleImage = $ancienneImage;
+
+            // Si une nouvelle image a été uploadée
+            if (!empty($_FILES['media']['name']) && $_FILES['media']['error'] === UPLOAD_ERR_OK) {
+                $tmpName = $_FILES['media']['tmp_name'];
+                $originalName = $_FILES['media']['name'];
+                $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                if (in_array($extension, $allowed)) {
+                    $newName = md5(time() . $originalName) . '.' . $extension;
+                    $dest = ROOT . '/public/upload/' . $newName;
+
+                    if (move_uploaded_file($tmpName, $dest)) {
+                        $nouvelleImage = $newName;
+
+                        // Suppression de l'ancienne image si locale
+                        if (!filter_var($ancienneImage, FILTER_VALIDATE_URL)) {
+                            $cheminAncien = ROOT . '/public/upload/' . $ancienneImage;
+                            if (file_exists($cheminAncien)) {
+                                unlink($cheminAncien);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Mise à jour de l’œuvre
             $ok = $model->update(
                 $id_oeuvre,
-                $_POST['titre'],
-                $_POST['auteur'],
-                $_POST['annee'],
-                $_POST['media'],
-                $_POST['video_url'],
-                $_POST['analyse'],
-                $_POST['id_type']
+                $titre,
+                $auteur,
+                $annee,
+                $nouvelleImage,
+                $video_url,
+                $analyse,
+                $id_type
             );
 
             $message = $ok ? "Œuvre modifiée avec succès." : "Erreur lors de la modification.";
@@ -252,7 +315,7 @@ class AdminController
     private function isAjaxRequest(): bool
     {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-               strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
 
     // 🧩 Méthode centrale pour éviter les répétitions de render/renderPartial

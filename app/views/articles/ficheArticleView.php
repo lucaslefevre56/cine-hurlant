@@ -15,7 +15,7 @@
 <!-- Si une image est associée à l’article, je l’affiche -->
 <?php if (!empty($article['image'])) : ?>
     <img
-        src="<?= BASE_URL ?>/public/images/<?= htmlspecialchars($article['image']) ?>"
+        src="<?= BASE_URL ?>/public/upload/<?= htmlspecialchars($article['image']) ?>"
         alt="Illustration de l'article"
         class="image-article"
         width="300"

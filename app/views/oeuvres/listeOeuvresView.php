@@ -32,7 +32,7 @@
                     <?php if (!empty($oeuvre['media']) && filter_var($oeuvre['media'], FILTER_VALIDATE_URL)) : ?>
                         <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
                     <?php elseif (!empty($oeuvre['media'])) : ?>
-                        <img src="<?= BASE_URL ?>/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
+                        <img src="<?= BASE_URL ?>/public/upload/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
                     <?php endif; ?>
                     <p><strong>Analyse :</strong> <?= htmlspecialchars(substr($oeuvre['analyse'], 0, 150)) ?>...</p>
                     <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">Voir la fiche complète</a>
@@ -63,7 +63,7 @@
                     <?php if (!empty($oeuvre['media']) && filter_var($oeuvre['media'], FILTER_VALIDATE_URL)) : ?>
                         <img src="<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
                     <?php elseif (!empty($oeuvre['media'])) : ?>
-                        <img src="<?= BASE_URL ?>/public/images/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
+                        <img src="<?= BASE_URL ?>/public/upload/<?= htmlspecialchars($oeuvre['media']) ?>" alt="Visuel de <?= htmlspecialchars($oeuvre['titre']) ?>" width="200" loading="lazy">
                     <?php endif; ?>
                     <p><strong>Analyse :</strong> <?= htmlspecialchars(substr($oeuvre['analyse'], 0, 150)) ?>...</p>
                     <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">Voir la fiche complète</a>

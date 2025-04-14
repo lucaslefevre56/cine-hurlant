@@ -17,17 +17,31 @@ class AuthController
             $email = trim($_POST['email'] ?? '');
             $password = trim($_POST['password'] ?? '');
 
-            // Cherche l'utilisateur par email
+            // Cherche l'utilisateur par email (qu’il soit actif ou non)
             $utilisateur = new Utilisateur();
-            $user = $utilisateur->getByEmail($email);  // Il n'est trouvé que si actif = 1
+            $user = $utilisateur->getByEmail($email);
 
-            // Si l'utilisateur n'existe pas ou mot de passe incorrect
-            if (!$user || !password_verify($password, $user['password'])) {
+            // Si aucun utilisateur trouvé
+            if (!$user) {
                 View::render('authentification/loginView', ['erreur' => "Email ou mot de passe incorrect."]);
                 return;
             }
 
-            // Si l'utilisateur est trouvé et actif, création de la session
+            // Si utilisateur trouvé mais inactif
+            if ((int)$user['actif'] !== 1) {
+                View::render('authentification/loginView', [
+                    'erreur' => "Ce compte a été désactivé par un administrateur."
+                ]);
+                return;
+            }
+
+            // Vérification du mot de passe
+            if (!password_verify($password, $user['password'])) {
+                View::render('authentification/loginView', ['erreur' => "Email ou mot de passe incorrect."]);
+                return;
+            }
+
+            // Connexion réussie : création de la session
             $_SESSION['user'] = [
                 'id' => $user['id_utilisateur'],
                 'nom' => $user['nom'],
@@ -35,12 +49,10 @@ class AuthController
                 'role' => $user['role']
             ];
 
-            // Redirection vers la page d'accueil
             View::render('accueil/indexView');
             exit;
         }
 
-        // Si la requête est GET, on affiche le formulaire de connexion sans erreur
         View::render('authentification/loginView', ['erreur' => null]);
     }
 

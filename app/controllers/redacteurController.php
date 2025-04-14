@@ -47,7 +47,7 @@ class RedacteurController
                 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
                 if (in_array($fileExtension, $allowedExtensions)) {
-                    $uploadDir = ROOT . '/public/images/';
+                    $uploadDir = ROOT . '/public/upload/';
                     $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
                     $destPath = $uploadDir . $newFileName;
 
@@ -133,7 +133,7 @@ class RedacteurController
                 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
                 if (in_array($fileExtension, $allowedExtensions)) {
-                    $uploadDir = ROOT . '/public/images/';
+                    $uploadDir = ROOT . '/public/upload/';
                     $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
                     $destPath = $uploadDir . $newFileName;
 
@@ -258,15 +258,44 @@ class RedacteurController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $media = $_POST['media_actuelle']; // Par défaut on garde l’ancienne image
+
+            // Si une nouvelle image est uploadée
+            if (!empty($_FILES['media']['name'])) {
+                $fileTmpPath = $_FILES['media']['tmp_name'];
+                $fileName = $_FILES['media']['name'];
+                $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                if (in_array($fileExtension, $allowedExtensions)) {
+                    $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+                    $uploadDir = ROOT . '/public/upload/';
+                    $destPath = $uploadDir . $newFileName;
+
+                    if (move_uploaded_file($fileTmpPath, $destPath)) {
+                        // Supprimer l’ancienne image si c’est un fichier local
+                        if (!empty($media) && !filter_var($media, FILTER_VALIDATE_URL)) {
+                            $ancienneImage = $uploadDir . $media;
+                            if (file_exists($ancienneImage)) {
+                                unlink($ancienneImage);
+                            }
+                        }
+
+                        // On remplace par la nouvelle
+                        $media = $newFileName;
+                    }
+                }
+            }
+
             $ok = $model->update(
                 $id_oeuvre,
                 $_POST['titre'],
                 $_POST['auteur'],
-                $_POST['annee'],
-                $_POST['media'],
+                (int) $_POST['annee'],
+                $media,
                 $_POST['video_url'],
                 $_POST['analyse'],
-                $_POST['id_type']
+                (int) $_POST['id_type']
             );
 
             $message = $ok ? "Œuvre modifiée." : "Erreur lors de la modification.";
@@ -288,13 +317,38 @@ class RedacteurController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $ok = $model->update(
-                $id_article,
-                $_POST['titre'],
-                $_POST['contenu'],
-                $_POST['image'] ?? '',
-                $_POST['video_url'] ?? ''
-            );
+            $titre = $_POST['titre'] ?? '';
+            $contenu = $_POST['contenu'] ?? '';
+            $video_url = $_POST['video_url'] ?? '';
+            $ancienneImage = $_POST['media_actuelle'] ?? '';
+            $nouvelleImage = $ancienneImage; // par défaut, on garde l’ancienne
+
+            // Traitement de l'image si un fichier a été uploadé
+            if (!empty($_FILES['media']['name']) && $_FILES['media']['error'] === 0) {
+                $fileTmpPath = $_FILES['media']['tmp_name'];
+                $fileName = $_FILES['media']['name'];
+                $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                if (in_array($fileExtension, $allowedExtensions)) {
+                    $uploadDir = ROOT . '/public/upload/';
+                    $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+                    $destPath = $uploadDir . $newFileName;
+
+                    if (move_uploaded_file($fileTmpPath, $destPath)) {
+                        // suppression de l'ancienne image si elle existe et est locale
+                        if (!empty($ancienneImage) && !filter_var($ancienneImage, FILTER_VALIDATE_URL)) {
+                            $ancienChemin = $uploadDir . $ancienneImage;
+                            if (file_exists($ancienChemin)) {
+                                unlink($ancienChemin);
+                            }
+                        }
+                        $nouvelleImage = $newFileName;
+                    }
+                }
+            }
+
+            $ok = $model->update($id_article, $titre, $contenu, $nouvelleImage, $video_url);
 
             $message = $ok ? "Article modifié." : "Erreur lors de la modification.";
             $this->mesArticlesAvecMessage($message);

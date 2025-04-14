@@ -23,14 +23,14 @@ class Utilisateur
     }
 
     /**
-     * Récupère un utilisateur actif par son email
+     * Récupère un utilisateur par son email (qu’il soit actif ou non)
      * → utilisé pour la connexion
      */
     public function getByEmail(string $email): array|false
     {
         $db = Database::getInstance();
 
-        $sql = "SELECT * FROM utilisateur WHERE email = ? AND actif = 1";
+        $sql = "SELECT * FROM utilisateur WHERE email = ?";
         $stmt = $db->prepare($sql);
         $stmt->execute([$email]);
 

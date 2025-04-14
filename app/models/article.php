@@ -170,22 +170,33 @@ class Article
         return (int) $db->query($sql)->fetchColumn();
     }
 
-    public function deleteById($id)
+    public function deleteById($id): bool
     {
         $db = Database::getInstance();
 
-        // Supprimer d'abord les commentaires associés à l'article
-        $sql = "DELETE FROM commentaire WHERE id_article = :id";
-        $stmt = $db->prepare($sql);
+        // 1. Récupérer l'image liée à l'article avant suppression
+        $stmt = $db->prepare("SELECT image FROM article WHERE id_article = :id");
+        $stmt->execute([':id' => $id]);
+        $image = $stmt->fetchColumn();
+
+        // 2. Supprimer les commentaires associés
+        $stmt = $db->prepare("DELETE FROM commentaire WHERE id_article = :id");
         $stmt->execute([':id' => $id]);
 
-        // Maintenant, supprimer l'article
-        $sql = "DELETE FROM article WHERE id_article = :id";
-        $stmt = $db->prepare($sql);
+        // 3. Supprimer l'article
+        $stmt = $db->prepare("DELETE FROM article WHERE id_article = :id");
+        $success = $stmt->execute([':id' => $id]);
 
-        return $stmt->execute([':id' => $id]);
+        // 4. Supprimer l’image du disque si elle existe et n’est pas une URL externe
+        if ($success && $image && !filter_var($image, FILTER_VALIDATE_URL)) {
+            $chemin = ROOT . '/public/upload/' . $image;
+            if (file_exists($chemin)) {
+                unlink($chemin); // 🧹 Suppression propre
+            }
+        }
+
+        return $success;
     }
-
 
     public function update(int $id_article, string $titre, string $contenu, ?string $image, ?string $video_url): bool
     {

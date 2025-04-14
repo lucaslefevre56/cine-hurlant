@@ -146,10 +146,25 @@ class Oeuvre
         return (int) $db->query($sql)->fetchColumn();
     }
 
-    public function deleteById($id)
+    public function deleteById($id): bool
     {
-        $db = \App\Core\Database::getInstance();
+        $db = Database::getInstance();
 
+        // 1. Récupérer les infos de l’œuvre (notamment le champ 'media')
+        $sql = "SELECT media FROM oeuvre WHERE id_oeuvre = :id";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $oeuvre = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // 2. Supprimer le fichier image local s’il existe
+        if ($oeuvre && !empty($oeuvre['media']) && !filter_var($oeuvre['media'], FILTER_VALIDATE_URL)) {
+            $imagePath = ROOT . '/public/upload/' . $oeuvre['media'];
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        // 3. Supprimer l’œuvre de la base
         $sql = "DELETE FROM oeuvre WHERE id_oeuvre = :id";
         $stmt = $db->prepare($sql);
         return $stmt->execute([':id' => $id]);

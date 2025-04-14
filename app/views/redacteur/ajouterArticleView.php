@@ -1,3 +1,5 @@
+<!-- app/views/redacteur/ajouterArticleView.php -->
+
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <!-- Affichage d’un éventuel message d’erreur -->
