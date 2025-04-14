@@ -1,101 +1,64 @@
 <?php
 // app/Models/Commentaire.php
 
-// Je définis le namespace pour l’autoload PSR-4
 namespace App\Models;
 
-// J’importe la classe PDO et ma classe Database (singleton)
 use PDO;
-use App\Core\Database;
+use App\Core\BaseModel;
 
-class Commentaire
+class Commentaire extends BaseModel
 {
     /**
      * J’ajoute un nouveau commentaire lié à un article
-     * → utilisé lorsqu’un utilisateur commente un article via formulaire AJAX
      */
-    public function add($contenu, $id_article, $id_utilisateur)
+    public function add(string $contenu, int $id_article, int $id_utilisateur): int|false
     {
-        // Je récupère la connexion à la base de données
-        $db = Database::getInstance();
-
-        // Requête SQL d’insertion du commentaire
         $sql = "INSERT INTO commentaire (contenu, id_article, id_utilisateur)
                 VALUES (:contenu, :id_article, :id_utilisateur)";
-
-        // Je prépare la requête pour éviter les injections SQL
-        $stmt = $db->prepare($sql);
-
-        // J’exécute la requête avec les valeurs sécurisées
-        $success = $stmt->execute([
+        
+        $stmt = $this->safeExecute($sql, [
             ':contenu' => $contenu,
-            ':id_article' => (int) $id_article,
-            ':id_utilisateur' => (int) $id_utilisateur
+            ':id_article' => $id_article,
+            ':id_utilisateur' => $id_utilisateur
         ]);
 
-        // Si tout s’est bien passé, je retourne l’ID du nouveau commentaire
-        if ($success) {
-            $id_commentaire = $db->lastInsertId();
-            return $id_commentaire;
-        } else {
-            // Sinon je retourne false
-            return false;
-        }
+        return $stmt ? (int) $this->db->lastInsertId() : false;
     }
 
     /**
-     * Je récupère tous les commentaires liés à un article
-     * → utilisé pour les afficher sous un article
+     * Je récupère tous les commentaires validés d’un article
      */
-    public function getByArticle($id_article)
+    public function getByArticle(int $id_article): array
     {
-        $db = Database::getInstance();
-
-        // Je récupère les commentaires avec le nom de l’auteur
         $sql = "SELECT commentaire.*, utilisateur.nom AS auteur
                 FROM commentaire
                 JOIN utilisateur ON commentaire.id_utilisateur = utilisateur.id_utilisateur
-                WHERE commentaire.id_article = :id_article
-                AND valider = 1
+                WHERE commentaire.id_article = :id_article AND valider = 1
                 ORDER BY date_redaction ASC";
 
-        $stmt = $db->prepare($sql);
-        $stmt->execute([':id_article' => $id_article]);
-
-        // Je retourne tous les commentaires validés, triés par ancienneté
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->safeExecute($sql, [':id_article' => $id_article]);
+        return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     }
 
     /**
-     * Je récupère un commentaire précis grâce à son ID
-     * → utilisé pour vérifier les droits avant suppression
+     * Je récupère un commentaire par son ID
      */
-    public function getById($id_commentaire)
+    public function getById(int $id_commentaire): array|false
     {
-        $db = Database::getInstance();
-
-        // Je récupère le commentaire avec le nom de l’auteur
         $sql = "SELECT commentaire.*, utilisateur.nom AS auteur
                 FROM commentaire
                 JOIN utilisateur ON commentaire.id_utilisateur = utilisateur.id_utilisateur
-                WHERE commentaire.id_commentaire = :id_commentaire
-                AND valider = 1";
+                WHERE commentaire.id_commentaire = :id_commentaire AND valider = 1";
 
-        $stmt = $db->prepare($sql);
-        $stmt->execute([':id_commentaire' => $id_commentaire]);
-
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $this->safeExecute($sql, [':id_commentaire' => $id_commentaire]);
+        return $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : false;
     }
 
     /**
-     * Je récupère tous les commentaires du site, avec le titre de l’article associé
-     * → utilisé pour une éventuelle interface admin
+     * Je récupère tous les commentaires du site
      */
-    public function getAll()
+    public function getAll(): array
     {
-        $db = Database::getInstance();
-
-        // Jointure avec utilisateur (auteur) et article (titre)
         $sql = "SELECT commentaire.*, utilisateur.nom AS auteur, article.titre AS article
                 FROM commentaire
                 JOIN utilisateur ON commentaire.id_utilisateur = utilisateur.id_utilisateur
@@ -103,42 +66,34 @@ class Commentaire
                 WHERE valider = 1
                 ORDER BY date_redaction DESC";
 
-        $stmt = $db->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->safeQuery($sql);
+        return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     }
 
     /**
-     * Je supprime un commentaire en base par son ID
-     * → utilisé après vérification des droits dans l’API ou le contrôleur
+     * Je supprime un commentaire en base
      */
-    public function deleteById($id_commentaire)
+    public function deleteById(int $id_commentaire): bool
     {
-        $db = Database::getInstance();
-
         $sql = "DELETE FROM commentaire WHERE id_commentaire = :id";
-        $stmt = $db->prepare($sql);
-        $ok = $stmt->execute([':id' => $id_commentaire]);
-
-        return $ok;
+        $stmt = $this->safeExecute($sql, [':id' => $id_commentaire]);
+        return (bool) $stmt;
     }
 
-      /**
-     * Je mets à jour le contenu d’un commentaire existant
-     * → uniquement utilisé si l’utilisateur est l’auteur du commentaire
-     * → met aussi à jour la date de rédaction avec NOW()
+    /**
+     * Je mets à jour le contenu d’un commentaire
      */
-    public function updateContenu($id_commentaire, $nouveau_contenu)
+    public function updateContenu(int $id_commentaire, string $nouveau_contenu): bool
     {
-        $db = Database::getInstance();
-
         $sql = "UPDATE commentaire
                 SET contenu = :contenu, date_redaction = NOW()
                 WHERE id_commentaire = :id";
 
-        $stmt = $db->prepare($sql);
-        return $stmt->execute([
+        $stmt = $this->safeExecute($sql, [
             ':contenu' => $nouveau_contenu,
             ':id' => $id_commentaire
         ]);
+
+        return (bool) $stmt;
     }
 }

@@ -1,56 +1,40 @@
 <?php
 // app/Models/Article.php
 
-// Nécessaire pour l'autoload PSR-4 avec Composer
 namespace App\Models;
 
-// J’importe la classe Database pour pouvoir l’utiliser dans mes méthodes
-use App\Core\Database;
+use PDO;
+use App\Core\BaseModel;
 
-class Article
+class Article extends BaseModel
 {
     /**
      * J’ajoute un nouvel article en base, avec un lien facultatif vers une ou plusieurs œuvres
      * et un champ pour l'upload d'image et d'URL vidéo
      */
-    public function add($titre, $contenu, $image, $video_url, $id_utilisateur, $oeuvres = [])
+    public function add(string $titre, string $contenu, ?string $image, ?string $video_url, int $id_utilisateur, array $oeuvres = []): bool
     {
-        // Je sécurise les champs facultatifs
-        $image = empty($image) ? null : $image;
-        $video_url = empty($video_url) ? null : $video_url;
-
-        // Connexion BDD
-        $db = Database::getInstance();
-
-        // Étape 1 : insertion dans la table article
         $sql = "INSERT INTO article (titre, contenu, image, video_url, id_utilisateur)
-            VALUES (:titre, :contenu, :image, :video_url, :id_utilisateur)";
-        $stmt = $db->prepare($sql);
+                VALUES (:titre, :contenu, :image, :video_url, :id_utilisateur)";
 
-        $success = $stmt->execute([
+        $stmt = $this->safeExecute($sql, [
             ':titre' => $titre,
             ':contenu' => $contenu,
-            ':image' => $image,
-            ':video_url' => $video_url,
-            ':id_utilisateur' => (int) $id_utilisateur
+            ':image' => $image ?: null,
+            ':video_url' => $video_url ?: null,
+            ':id_utilisateur' => $id_utilisateur
         ]);
 
-        if ($success) {
-            // Récupération de l'ID de l'article
-            $id_article = $db->lastInsertId();
+        if ($stmt) {
+            $id_article = $this->db->lastInsertId();
 
-            // Étape 2 : lier les œuvres dans la table "analyser"
             foreach ($oeuvres as $id_oeuvre) {
-                $sqlOeuvre = "INSERT INTO analyser (id_article, id_oeuvre) VALUES (:id_article, :id_oeuvre)";
-                $stmtOeuvre = $db->prepare($sqlOeuvre);
-                $ok = $stmtOeuvre->execute([
-                    ':id_article' => $id_article,
-                    ':id_oeuvre' => (int) $id_oeuvre
-                ]);
+                $ok = $this->safeExecute(
+                    "INSERT INTO analyser (id_article, id_oeuvre) VALUES (:id_article, :id_oeuvre)",
+                    [':id_article' => $id_article, ':id_oeuvre' => (int)$id_oeuvre]
+                );
 
-                if (!$ok) {
-                    return false;
-                }
+                if (!$ok) return false;
             }
 
             return true;
@@ -59,170 +43,143 @@ class Article
         return false;
     }
 
-
     /**
      * Je récupère tous les articles avec leur auteur
      * → utilisé pour afficher la liste
      */
-    public function getAll()
+    public function getAll(): array
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT article.*, utilisateur.nom AS auteur
                 FROM article
                 JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
                 ORDER BY article.date_redaction DESC";
 
-        $stmt = $db->query($sql);
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt = $this->safeQuery($sql);
+        return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     }
 
     /**
      * Je récupère un article par son ID avec son auteur
      * → utilisé pour afficher la fiche
      */
-    public function getById($id)
+    public function getById(int $id): array|false
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT article.*, utilisateur.nom AS auteur
                 FROM article
                 JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
                 WHERE article.id_article = :id";
 
-        $stmt = $db->prepare($sql);
-        $stmt->execute([':id' => $id]);
-
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt = $this->safeExecute($sql, [':id' => $id]);
+        return $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : false;
     }
 
     /**
      * Je récupère tous les articles publiés par un utilisateur
      */
-    public function getByAuteur($id_utilisateur)
+    public function getByAuteur(int $id_utilisateur): array
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT article.*, utilisateur.nom AS auteur
                 FROM article
                 JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
                 WHERE article.id_utilisateur = :id_utilisateur
                 ORDER BY article.date_redaction DESC";
 
-        $stmt = $db->prepare($sql);
-        $stmt->execute([':id_utilisateur' => $id_utilisateur]);
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt = $this->safeExecute($sql, [':id_utilisateur' => $id_utilisateur]);
+        return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     }
 
     /**
      * Je récupère toutes les œuvres liées à un article donné
      * → utilisé dans la fiche article pour afficher les œuvres analysées
      */
-    public function getOeuvresByArticle($id_article)
+    public function getOeuvresByArticle(int $id_article): array
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT oeuvre.id_oeuvre, oeuvre.titre, type.nom AS type
                 FROM analyser
                 JOIN oeuvre ON analyser.id_oeuvre = oeuvre.id_oeuvre
                 JOIN type ON oeuvre.id_type = type.id_type
                 WHERE analyser.id_article = :id";
 
-        $stmt = $db->prepare($sql);
-        $stmt->execute([':id' => $id_article]);
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt = $this->safeExecute($sql, [':id' => $id_article]);
+        return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     }
 
     /**
      * Je récupère une portion paginée des articles
      * → utilisée pour afficher la liste avec pagination
      */
-    public function getPaginated($limit, $offset)
+    public function getPaginated(int $limit, int $offset): array
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT article.*, utilisateur.nom AS auteur
-            FROM article
-            JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
-            ORDER BY date_redaction DESC
-            LIMIT :limit OFFSET :offset";
+                FROM article
+                JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
+                ORDER BY date_redaction DESC
+                LIMIT :limit OFFSET :offset";
 
-        $stmt = $db->prepare($sql);
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
-
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     /**
      * Je compte combien d’articles existent en base
      * → utilisé pour calculer le nombre total de pages
      */
-    public function countAll()
+    public function countAll(): int
     {
-        $db = Database::getInstance();
-
-        $sql = "SELECT COUNT(*) FROM article";
-        return (int) $db->query($sql)->fetchColumn();
+        $stmt = $this->safeQuery("SELECT COUNT(*) FROM article");
+        return (int) ($stmt ? $stmt->fetchColumn() : 0);
     }
 
-    public function deleteById($id): bool
+    /**
+     * Je supprime un article et son image locale
+     */
+    public function deleteById(int $id): bool
     {
-        $db = Database::getInstance();
+        $stmt = $this->safeExecute("SELECT image FROM article WHERE id_article = :id", [':id' => $id]);
+        $image = $stmt ? $stmt->fetchColumn() : null;
 
-        // 1. Récupérer l'image liée à l'article avant suppression
-        $stmt = $db->prepare("SELECT image FROM article WHERE id_article = :id");
-        $stmt->execute([':id' => $id]);
-        $image = $stmt->fetchColumn();
+        $this->safeExecute("DELETE FROM commentaire WHERE id_article = :id", [':id' => $id]);
+        $success = $this->safeExecute("DELETE FROM article WHERE id_article = :id", [':id' => $id]);
 
-        // 2. Supprimer les commentaires associés
-        $stmt = $db->prepare("DELETE FROM commentaire WHERE id_article = :id");
-        $stmt->execute([':id' => $id]);
-
-        // 3. Supprimer l'article
-        $stmt = $db->prepare("DELETE FROM article WHERE id_article = :id");
-        $success = $stmt->execute([':id' => $id]);
-
-        // 4. Supprimer l’image du disque si elle existe et n’est pas une URL externe
         if ($success && $image && !filter_var($image, FILTER_VALIDATE_URL)) {
             $chemin = ROOT . '/public/upload/' . $image;
-            if (file_exists($chemin)) {
-                unlink($chemin); // 🧹 Suppression propre
-            }
+            if (file_exists($chemin)) unlink($chemin);
         }
 
-        return $success;
+        return (bool) $success;
     }
 
+    /**
+     * Je mets à jour un article existant
+     */
     public function update(int $id_article, string $titre, string $contenu, ?string $image, ?string $video_url): bool
     {
-        $db = Database::getInstance();
-
-        // Préparer la requête de mise à jour
         $sql = "UPDATE article SET titre = ?, contenu = ?, image = ?, video_url = ? WHERE id_article = ?";
-        $stmt = $db->prepare($sql);
+        $stmt = $this->safeExecute($sql, [$titre, $contenu, $image, $video_url, $id_article]);
 
-        // Exécuter la requête avec les valeurs passées
-        return $stmt->execute([$titre, $contenu, $image, $video_url, $id_article]);
+        return (bool) $stmt;
     }
 
+    /**
+     * Recherche un article par titre ou nom d’auteur
+     */
     public static function searchByTitleOrAuthor(string $query): array
     {
         $db = \App\Core\Database::getInstance();
 
         $sql = "SELECT article.*, utilisateur.nom AS auteur
-            FROM article
-            JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
-            WHERE article.titre LIKE :query OR utilisateur.nom LIKE :query
-            ORDER BY date_redaction DESC";
+                FROM article
+                JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
+                WHERE article.titre LIKE :query OR utilisateur.nom LIKE :query
+                ORDER BY date_redaction DESC";
 
         $stmt = $db->prepare($sql);
         $stmt->execute([':query' => '%' . $query . '%']);
 
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -3,81 +3,43 @@
 
 namespace App\Models;
 
+use App\Core\BaseModel;
 use PDO;
-use App\Core\Database;
 
-class Utilisateur
+class Utilisateur extends BaseModel
 {
-    /**
-     * Récupère un utilisateur par son ID
-     */
     public function getById(int $id): array|false
     {
-        $db = Database::getInstance();
-
-        $sql = "SELECT * FROM Utilisateur WHERE id_utilisateur = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$id]);
-
+        $sql = "SELECT * FROM utilisateur WHERE id_utilisateur = ?";
+        $stmt = $this->safeExecute($sql, [$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Récupère un utilisateur par son email (qu’il soit actif ou non)
-     * → utilisé pour la connexion
-     */
     public function getByEmail(string $email): array|false
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT * FROM utilisateur WHERE email = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$email]);
-
+        $stmt = $this->safeExecute($sql, [$email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Ajoute un nouvel utilisateur en base (mot de passe déjà hashé)
-     */
     public function add(string $nom, string $email, string $hashedPassword): bool
     {
-        $db = Database::getInstance();
-
-        $sql = "INSERT INTO Utilisateur (nom, email, password) VALUES (?, ?, ?)";
-        $stmt = $db->prepare($sql);
-
-        return $stmt->execute([$nom, $email, $hashedPassword]);
+        $sql = "INSERT INTO utilisateur (nom, email, password) VALUES (?, ?, ?)";
+        return $this->safeExecute($sql, [$nom, $email, $hashedPassword]) !== false;
     }
 
     public function deleteById(int $id): bool
     {
-        $db = Database::getInstance();
-
-        $sql = "DELETE FROM Utilisateur WHERE id_utilisateur = ?";
-        $stmt = $db->prepare($sql);
-
-        return $stmt->execute([$id]);
+        $sql = "DELETE FROM utilisateur WHERE id_utilisateur = ?";
+        return $this->safeExecute($sql, [$id]) !== false;
     }
 
     public function updatePassword(int $id, string $hashedPassword): bool
     {
-        $db = Database::getInstance();
-
-        $sql = "UPDATE Utilisateur SET password = ? WHERE id_utilisateur = ?";
-        $stmt = $db->prepare($sql);
-
-        return $stmt->execute([$hashedPassword, $id]);
+        $sql = "UPDATE utilisateur SET password = ? WHERE id_utilisateur = ?";
+        return $this->safeExecute($sql, [$hashedPassword, $id]) !== false;
     }
 
-
-    // ----------------------------------------
-    // RÔLES & DROITS
-    // ----------------------------------------
-
-    /**
-     * Vérifie si un utilisateur a un rôle donné
-     */
     public function hasRole(int $id, string $role): bool
     {
         $user = $this->getById($id);
@@ -100,101 +62,55 @@ class Utilisateur
         return $this->hasRole($id, 'utilisateur');
     }
 
-    /**
-     * Change le rôle d’un utilisateur
-     */
     public function updateRole(int $id, string $newRole): bool
     {
-        $db = Database::getInstance();
-
-        $sql = "UPDATE Utilisateur SET role = ? WHERE id_utilisateur = ?";
-        $stmt = $db->prepare($sql);
-
-        return $stmt->execute([$newRole, $id]);
+        $sql = "UPDATE utilisateur SET role = ? WHERE id_utilisateur = ?";
+        return $this->safeExecute($sql, [$newRole, $id]) !== false;
     }
 
-    /**
-     * Récupère tous les utilisateurs (id, nom, email, rôle)
-     */
     public function getAll(): array
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT id_utilisateur, nom, email, role, actif FROM utilisateur ORDER BY nom ASC";
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-
+        $stmt = $this->safeQuery($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
     public function desactiver(int $id): bool
     {
-        $db = Database::getInstance();
-
-        $sql = "UPDATE utilisateur SET actif = 0 WHERE id_utilisateur = :id";
-
-        $stmt = $db->prepare($sql);
-        return $stmt->execute([':id' => $id]);
+        $sql = "UPDATE utilisateur SET actif = 0 WHERE id_utilisateur = ?";
+        return $this->safeExecute($sql, [$id]) !== false;
     }
 
     public function reactiver(int $id): bool
     {
-        $db = Database::getInstance();
-
-        $sql = "UPDATE utilisateur SET actif = 1 WHERE id_utilisateur = :id";
-        $stmt = $db->prepare($sql);
-        return $stmt->execute([':id' => $id]);
+        $sql = "UPDATE utilisateur SET actif = 1 WHERE id_utilisateur = ?";
+        return $this->safeExecute($sql, [$id]) !== false;
     }
-
-    // ----------------------------------------
-    // COMMENTAIRES
-    // ----------------------------------------
 
     public function getCommentaires(int $id_utilisateur): array
     {
-        $db = Database::getInstance();
-
-        $sql = "SELECT * FROM Commentaire WHERE id_utilisateur = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$id_utilisateur]);
-
+        $sql = "SELECT * FROM commentaire WHERE id_utilisateur = ?";
+        $stmt = $this->safeExecute($sql, [$id_utilisateur]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function deleteCommentaire(int $id_commentaire): bool
     {
-        $db = Database::getInstance();
-
-        $sql = "DELETE FROM Commentaire WHERE id_commentaire = ?";
-        $stmt = $db->prepare($sql);
-
-        return $stmt->execute([$id_commentaire]);
+        $sql = "DELETE FROM commentaire WHERE id_commentaire = ?";
+        return $this->safeExecute($sql, [$id_commentaire]) !== false;
     }
-
-    // ----------------------------------------
-    // PUBLICATIONS
-    // ----------------------------------------
 
     public function getOeuvres(int $id_utilisateur): array
     {
-        $db = Database::getInstance();
-
-        $sql = "SELECT * FROM Oeuvre WHERE id_utilisateur = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$id_utilisateur]);
-
+        $sql = "SELECT * FROM oeuvre WHERE id_utilisateur = ?";
+        $stmt = $this->safeExecute($sql, [$id_utilisateur]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getArticles(int $id_utilisateur): array
     {
-        $db = Database::getInstance();
-
-        $sql = "SELECT * FROM Article WHERE id_utilisateur = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$id_utilisateur]);
-
+        $sql = "SELECT * FROM article WHERE id_utilisateur = ?";
+        $stmt = $this->safeExecute($sql, [$id_utilisateur]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

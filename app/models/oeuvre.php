@@ -4,12 +4,12 @@
 namespace App\Models;
 
 use PDO;
-use App\Core\Database;
+use App\Core\BaseModel;
 
-class Oeuvre
+class Oeuvre extends BaseModel
 {
     /**
-     * Ajoute une nouvelle œuvre en base avec ses genres associés
+     * J’ajoute une œuvre avec ses genres associés
      */
     public function add(
         string $titre,
@@ -22,13 +22,10 @@ class Oeuvre
         int $id_utilisateur,
         array $genres = []
     ): bool {
-        $db = Database::getInstance();
-
         $sql = "INSERT INTO oeuvre (titre, auteur, annee, media, video_url, analyse, id_type, id_utilisateur)
                 VALUES (:titre, :auteur, :annee, :media, :video_url, :analyse, :id_type, :id_utilisateur)";
 
-        $stmt = $db->prepare($sql);
-        $success = $stmt->execute([
+        $stmt = $this->safeExecute($sql, [
             ':titre' => $titre,
             ':auteur' => $auteur,
             ':annee' => $annee,
@@ -39,21 +36,17 @@ class Oeuvre
             ':id_utilisateur' => $id_utilisateur
         ]);
 
-        if ($success) {
-            $id_oeuvre = $db->lastInsertId();
+        if ($stmt) {
+            $id_oeuvre = $this->db->lastInsertId();
 
             foreach ($genres as $id_genre) {
                 $sqlGenre = "INSERT INTO appartenir (id_oeuvre, id_genre) VALUES (:id_oeuvre, :id_genre)";
-                $stmtGenre = $db->prepare($sqlGenre);
-
-                $ok = $stmtGenre->execute([
+                $ok = $this->safeExecute($sqlGenre, [
                     ':id_oeuvre' => $id_oeuvre,
                     ':id_genre' => (int)$id_genre
                 ]);
 
-                if (!$ok) {
-                    return false;
-                }
+                if (!$ok) return false;
             }
 
             return true;
@@ -63,157 +56,116 @@ class Oeuvre
     }
 
     /**
-     * Récupère toutes les œuvres avec leur type
+     * Je récupère toutes les œuvres avec leur type
      */
     public function getAll(): array
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT oeuvre.*, type.nom
                 FROM oeuvre
                 JOIN type ON oeuvre.id_type = type.id_type
                 ORDER BY oeuvre.titre ASC";
 
-        $stmt = $db->query($sql);
+        $stmt = $this->safeQuery($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Récupère une œuvre par son ID
-     */
     public function getById(int $id): array|false
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT oeuvre.*, type.nom 
                 FROM oeuvre 
                 JOIN type ON oeuvre.id_type = type.id_type
                 WHERE oeuvre.id_oeuvre = :id";
 
-        $stmt = $db->prepare($sql);
-        $stmt->execute([':id' => $id]);
-
+        $stmt = $this->safeExecute($sql, [':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Récupère les genres associés à une œuvre
-     */
     public function getGenresByOeuvre(int $id_oeuvre): array
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT genre.nom 
                 FROM appartenir 
                 JOIN genre ON appartenir.id_genre = genre.id_genre 
                 WHERE appartenir.id_oeuvre = :id";
 
-        $stmt = $db->prepare($sql);
-        $stmt->execute([':id' => $id_oeuvre]);
-
+        $stmt = $this->safeExecute($sql, [':id' => $id_oeuvre]);
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    /**
-     * Récupère les œuvres avec pagination
-     */
     public function getPaginated(int $limit, int $offset): array
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT oeuvre.*, type.nom
                 FROM oeuvre
                 JOIN type ON oeuvre.id_type = type.id_type
                 ORDER BY oeuvre.titre ASC
                 LIMIT :limit OFFSET :offset";
 
-        $stmt = $db->prepare($sql);
+        $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-
         $stmt->execute();
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Compte le nombre total d'œuvres
-     */
     public function countAll(): int
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT COUNT(*) FROM oeuvre";
-        return (int) $db->query($sql)->fetchColumn();
+        $stmt = $this->safeQuery($sql);
+        return (int) $stmt->fetchColumn();
     }
 
     public function deleteById($id): bool
     {
-        $db = Database::getInstance();
-
-        // 1. Récupérer les infos de l’œuvre (notamment le champ 'media')
-        $sql = "SELECT media FROM oeuvre WHERE id_oeuvre = :id";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([':id' => $id]);
+        // Je récupère le nom de l’image pour la supprimer du disque
+        $stmt = $this->safeExecute("SELECT media FROM oeuvre WHERE id_oeuvre = :id", [':id' => $id]);
         $oeuvre = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // 2. Supprimer le fichier image local s’il existe
         if ($oeuvre && !empty($oeuvre['media']) && !filter_var($oeuvre['media'], FILTER_VALIDATE_URL)) {
-            $imagePath = ROOT . '/public/upload/' . $oeuvre['media'];
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
+            $chemin = ROOT . '/public/upload/' . $oeuvre['media'];
+            if (file_exists($chemin)) unlink($chemin);
         }
 
-        // 3. Supprimer l’œuvre de la base
-        $sql = "DELETE FROM oeuvre WHERE id_oeuvre = :id";
-        $stmt = $db->prepare($sql);
-        return $stmt->execute([':id' => $id]);
+        // Je supprime ensuite l’œuvre
+        return $this->safeExecute("DELETE FROM oeuvre WHERE id_oeuvre = :id", [':id' => $id]) !== false;
     }
 
-    public function update(int $id_oeuvre, string $titre, string $auteur, int $annee, string $media, string $video_url, string $analyse, int $id_type): bool
-    {
-        $db = Database::getInstance();
-
-        // Préparer la requête de mise à jour
+    public function update(
+        int $id_oeuvre,
+        string $titre,
+        string $auteur,
+        int $annee,
+        string $media,
+        string $video_url,
+        string $analyse,
+        int $id_type
+    ): bool {
         $sql = "UPDATE oeuvre SET titre = ?, auteur = ?, annee = ?, media = ?, video_url = ?, analyse = ?, id_type = ? WHERE id_oeuvre = ?";
-        $stmt = $db->prepare($sql);
-
-        // Exécuter la requête avec les valeurs passées
-        return $stmt->execute([$titre, $auteur, $annee, $media, $video_url, $analyse, $id_type, $id_oeuvre]);
+        return $this->safeExecute($sql, [$titre, $auteur, $annee, $media, $video_url, $analyse, $id_type, $id_oeuvre]) !== false;
     }
 
-    /**
-     * Récupère toutes les œuvres ajoutées par un utilisateur donné
-     */
     public function getByAuteur(int $id_utilisateur): array
     {
-        $db = Database::getInstance();
-
         $sql = "SELECT oeuvre.*, type.nom
-            FROM oeuvre
-            JOIN type ON oeuvre.id_type = type.id_type
-            WHERE oeuvre.id_utilisateur = :id_utilisateur
-            ORDER BY oeuvre.titre ASC";
+                FROM oeuvre
+                JOIN type ON oeuvre.id_type = type.id_type
+                WHERE oeuvre.id_utilisateur = :id_utilisateur
+                ORDER BY oeuvre.titre ASC";
 
-        $stmt = $db->prepare($sql);
-        $stmt->execute([':id_utilisateur' => $id_utilisateur]);
-
+        $stmt = $this->safeExecute($sql, [':id_utilisateur' => $id_utilisateur]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function searchByTitleOrAuthor(string $query): array
     {
         $db = \App\Core\Database::getInstance();
-
         $sql = "SELECT oeuvre.*, type.nom AS type
-            FROM oeuvre
-            JOIN type ON oeuvre.id_type = type.id_type
-            WHERE oeuvre.titre LIKE :query OR oeuvre.auteur LIKE :query
-            ORDER BY titre ASC";
+                FROM oeuvre
+                JOIN type ON oeuvre.id_type = type.id_type
+                WHERE oeuvre.titre LIKE :query OR oeuvre.auteur LIKE :query
+                ORDER BY titre ASC";
 
         $stmt = $db->prepare($sql);
         $stmt->execute([':query' => '%' . $query . '%']);
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
