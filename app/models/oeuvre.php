@@ -185,4 +185,20 @@ class Oeuvre
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public static function searchByTitleOrAuthor(string $query): array
+    {
+        $db = \App\Core\Database::getInstance();
+
+        $sql = "SELECT oeuvre.*, type.nom AS type
+            FROM oeuvre
+            JOIN type ON oeuvre.id_type = type.id_type
+            WHERE oeuvre.titre LIKE :query OR oeuvre.auteur LIKE :query
+            ORDER BY titre ASC";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute([':query' => '%' . $query . '%']);
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

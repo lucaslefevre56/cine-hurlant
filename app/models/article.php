@@ -172,7 +172,7 @@ class Article
 
     public function deleteById($id)
     {
-        $db = \App\Core\Database::getInstance();
+        $db = Database::getInstance();
 
         // Supprimer d'abord les commentaires associés à l'article
         $sql = "DELETE FROM commentaire WHERE id_article = :id";
@@ -197,5 +197,21 @@ class Article
 
         // Exécuter la requête avec les valeurs passées
         return $stmt->execute([$titre, $contenu, $image, $video_url, $id_article]);
+    }
+
+    public static function searchByTitleOrAuthor(string $query): array
+    {
+        $db = \App\Core\Database::getInstance();
+
+        $sql = "SELECT article.*, utilisateur.nom AS auteur
+            FROM article
+            JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
+            WHERE article.titre LIKE :query OR utilisateur.nom LIKE :query
+            ORDER BY date_redaction DESC";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute([':query' => '%' . $query . '%']);
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

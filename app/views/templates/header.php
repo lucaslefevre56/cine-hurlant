@@ -14,10 +14,6 @@ use App\Helpers\AuthHelper;
 
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/style.css">
 
-    <script>
-        const BASE_URL = "<?= BASE_URL ?>";
-    </script>
-
 
 </head>
 
@@ -75,4 +71,33 @@ use App\Helpers\AuthHelper;
 
             </nav>
         <?php endif; ?>
+
+        <!-- Formulaire de recherche principal -->
+
+        <!-- Ce formulaire permet à l’utilisateur de rechercher une œuvre ou un article -->
+        <form id="form-recherche" method="GET" action="<?= BASE_URL ?>/recherche" style="margin-top: 1rem;">
+
+            <!-- Zone de saisie libre : titre ou auteur 
+             name = q, c'est une convention standard sur le web pour querry (on le voit
+         notamment dans l'url en faisant une recherche google par exemple)-->
+            <label for="recherche" style="display: none;">Recherche :</label>
+            <input type="text" id="recherche" name="q" placeholder="Rechercher un titre ou un auteur..." required>
+
+            <!-- Menu déroulant pour filtrer le type (œuvre, article ou tout) -->
+            <select name="type" id="type-recherche">
+                <option value="">Tout</option>
+                <option value="oeuvre">Œuvres</option>
+                <option value="article">Articles</option>
+            </select>
+
+            <!-- Bouton de validation classique (au cas où JS est désactivé) -->
+            <button type="submit">🔍</button>
+
+            <!-- Zone où s’afficheront les résultats dynamiques en AJAX -->
+            <div id="resultats-recherche" class="resultats-recherche" style="display: none;">
+                <!-- Résultats injectés ici dynamiquement par JS -->
+            </div>
+        </form>
+
+
     </header>

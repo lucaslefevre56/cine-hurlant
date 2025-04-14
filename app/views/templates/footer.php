@@ -1,5 +1,3 @@
-
-
 <footer style="margin-top: 2rem; text-align: center;">
     <p>&copy; 2025 - Ciné-Hurlant</p>
 </footer>
@@ -11,26 +9,21 @@
     <button onclick="refuseCookies()" style="margin-left: 5px;">Refuser</button>
 </div>
 
+<!-- Variables JavaScript accessibles globalement -->
+<script>
+  const BASE_URL = "<?= BASE_URL ?>";
+  const userId = <?= isset($_SESSION['user']) ? (int) $_SESSION['user']['id'] : 'null' ?>;
+  const userRole = "<?= isset($_SESSION['user']) ? htmlspecialchars($_SESSION['user']['role']) : '' ?>";
+</script>
+
 <!-- JS personnalisés -->
 <?php if (!empty($loadCommentairesJs)) : ?>
   <script src="<?= BASE_URL ?>/public/js/commentaires.js"></script>
 <?php endif; ?>
 
+<script src="<?= BASE_URL ?>/public/js/recherche.js" defer></script>
 <script src="<?= BASE_URL ?>/public/js/script.js"></script>
 <script src="<?= BASE_URL ?>/public/js/cookieConsentement.js"></script>
-
-<!-- Variables utilisateur JS -->
-<?php if (isset($_SESSION['user'])): ?>
-  <script>
-    const userId = <?= (int) $_SESSION['user']['id'] ?>;
-    const userRole = "<?= htmlspecialchars($_SESSION['user']['role']) ?>";
-  </script>
-<?php else: ?>
-  <script>
-    const userId = null;
-    const userRole = "";
-  </script>
-<?php endif; ?>
 
 </body>
 </html>
