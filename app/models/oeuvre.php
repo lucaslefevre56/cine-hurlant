@@ -168,4 +168,17 @@ class Oeuvre extends BaseModel
         $stmt->execute([':query' => '%' . $query . '%']);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getRandom(int $nb): array
+    {
+        $sql = "SELECT oeuvre.*, type.nom AS type
+            FROM oeuvre
+            JOIN type ON oeuvre.id_type = type.id_type
+            ORDER BY RAND() LIMIT :nb";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':nb', $nb, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

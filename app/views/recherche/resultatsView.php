@@ -1,3 +1,5 @@
+<!-- app/views/recherche/resultatsView.php -->
+
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <!-- Titre principal -->

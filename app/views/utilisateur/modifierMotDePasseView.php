@@ -1,3 +1,5 @@
+<!-- app/views/utilisateur/modifierMotDePasseView.php -->
+
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <h2>Modifier mon mot de passe</h2>

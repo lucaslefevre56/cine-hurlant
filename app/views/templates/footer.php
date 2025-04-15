@@ -1,15 +1,37 @@
-<footer style="margin-top: 2rem; text-align: center;">
-    <p>&copy; 2025 - Ciné-Hurlant</p>
+<!-- app/views/templates/footer.php -->
+
+<footer class="site-footer">
+  <div class="footer-container">
+
+    <!-- Colonne gauche : Copyright -->
+    <div class="footer-left">
+      <p>&copy; 2025 ciné-hurlant</p>
+    </div>
+
+    <!-- Colonne centrale : Logo -->
+    <div class="footer-center">
+      <a href="<?= BASE_URL ?>/">
+        <img src="<?= BASE_URL ?>/public/images/logo-footer.jpg" alt="Logo Ciné-Hurlant" class="footer-logo">
+      </a>
+    </div>
+
+    <!-- Colonne droite : Mentions légales -->
+    <div class="footer-right">
+      <a href="<?= BASE_URL ?>/static/mentionsLegales">Mentions légales</a>
+      <a href="<?= BASE_URL ?>/static/confidentialite">Politique de confidentialité</a>
+    </div>
+
+  </div>
 </footer>
 
 <!-- Bandeau cookie RGPD -->
-<div id="cookie-banner" style="display: none; background: #f2f2f2; padding: 15px; border-top: 1px solid #ccc; position: fixed; bottom: 0; width: 100%; z-index: 9999; text-align: center;">
-    <span>Ce site utilise des cookies pour améliorer votre expérience.</span>
-    <button onclick="acceptCookies()" style="margin-left: 10px;">Accepter</button>
-    <button onclick="refuseCookies()" style="margin-left: 5px;">Refuser</button>
+<div id="cookie-banner" style="display: none;" class="cookie-banner">
+  <span>Ce site utilise des cookies pour améliorer votre expérience.</span>
+  <button onclick="acceptCookies()">Accepter</button>
+  <button onclick="refuseCookies()">Refuser</button>
 </div>
 
-<!-- Variables JavaScript accessibles globalement -->
+<!-- Variables JavaScript globales -->
 <script>
   const BASE_URL = "<?= BASE_URL ?>";
   const userId = <?= isset($_SESSION['user']) ? (int) $_SESSION['user']['id'] : 'null' ?>;

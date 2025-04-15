@@ -49,7 +49,9 @@ class AuthController
                 'role' => $user['role']
             ];
 
-            View::render('accueil/indexView');
+            // Appelle l'accueil via son contrôleur pour avoir les variables
+            $accueil = new \App\Controllers\AccueilController();
+            $accueil->index();
             exit;
         }
 
@@ -58,11 +60,14 @@ class AuthController
 
     public function logout(): void
     {
-        $_SESSION = [];
-        session_unset();
-        session_destroy();
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_unset();
+            session_destroy();
+        }        
 
-        View::render('accueil/indexView');
+        // Recharge l'accueil proprement
+        $accueil = new \App\Controllers\AccueilController();
+        $accueil->index();
         exit;
     }
 

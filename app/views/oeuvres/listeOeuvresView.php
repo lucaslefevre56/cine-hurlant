@@ -1,3 +1,5 @@
+<!-- app/views/oeuvres/listeOeuvreView.php -->
+*
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <!-- Titre principal de la page -->

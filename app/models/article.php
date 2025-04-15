@@ -182,4 +182,31 @@ class Article extends BaseModel
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Récupère les 3 derniers articles (page d’accueil)
+     */
+    public function getDerniersArticles(int $limite = 3): array
+    {
+        $sql = "SELECT article.*, utilisateur.nom AS auteur
+            FROM article
+            JOIN utilisateur ON article.id_utilisateur = utilisateur.id_utilisateur
+            ORDER BY article.date_redaction DESC
+            LIMIT :limite";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getRandom(int $nb): array
+    {
+        $sql = "SELECT * FROM article ORDER BY RAND() LIMIT :nb";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':nb', $nb, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

@@ -1,103 +1,79 @@
 <?php
 // app/views/templates/header.php
 
-// Je charge la classe AuthHelper (isLoggedIn, isUserRedacteur, etc.)
 use App\Helpers\AuthHelper;
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <title>Ciné-Hurlant</title>
 
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/style.css">
 
-
+    <!-- Typographies -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-    <header style="background: #222; color: white; padding: 1rem;">
-        <h1>
-            <a href="<?= BASE_URL ?>/" style="color: white; text-decoration: none;">
-                Ciné-Hurlant
+<header class="site-header">
+
+    <!-- Haut de page : Logo à gauche, infos utilisateur à droite -->
+    <div class="header-top">
+        <div class="logo">
+            <a href="<?= BASE_URL ?>/">
+                <img src="<?= BASE_URL ?>/public/images/logo-footer.jpg" alt="Logo Ciné-Hurlant" class="logo-img">
             </a>
-        </h1>
+        </div>
 
-        <nav style="margin-top: 0.5rem;">
-            <a href="<?= BASE_URL ?>/oeuvre/liste" style="color: white; margin-right: 1rem;">Les œuvres</a>
-            <a href="<?= BASE_URL ?>/article/liste" style="color: white; margin-right: 1rem;">Les articles</a>
-
+        <div class="utilisateur">
             <?php if (AuthHelper::isLoggedIn()) : ?>
-                <span style="margin-right: 1rem;">|</span>
-                <a href="<?= BASE_URL ?>/auth/logout" style="color: #faa;">Se déconnecter</a>
+                <p>
+                    Bienvenue <strong><?= htmlspecialchars($_SESSION['user']['nom']) ?></strong> |
+                    <a href="<?= BASE_URL ?>/utilisateur/profil">Mon profil</a>
+                    <span class="connecte">✔</span> |
+                    <a href="<?= BASE_URL ?>/auth/logout" class="btn-deconnexion">Déconnexion</a>
+                </p>
             <?php else : ?>
-                <a href="<?= BASE_URL ?>/auth/login" style="color: #0af;">Se connecter</a> |
-                <a href="<?= BASE_URL ?>/auth/register" style="color: #0af;">S'inscrire</a>
+                <a href="<?= BASE_URL ?>/auth/login" class="btn-login">Connexion</a>
+                <a href="<?= BASE_URL ?>/auth/register" class="btn-inscription">Inscription</a>
             <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Navigation principale + barre de recherche -->
+    <div class="nav-recherche">
+        <nav class="menu-principal">
+            <a href="<?= BASE_URL ?>/">Accueil</a>
+            <a href="<?= BASE_URL ?>/oeuvre/liste">Oeuvres</a>
+            <a href="<?= BASE_URL ?>/article/liste">Articles</a>
         </nav>
 
-        <?php if (AuthHelper::isLoggedIn()) : ?>
-            <p style="margin-top: 0.5rem;">
-                Bienvenue <strong><?= htmlspecialchars($_SESSION['user']['nom']) ?></strong> !
-
-                <a href="<?= BASE_URL ?>/utilisateur/profil" style="color: #0af; margin-left: 1rem;">
-                    Mon profil
-                </a>
-
-                <span style="color: lime; margin-left: 1rem;">Connecté ✔</span>
-            </p>
-
-            <nav style="margin-top: 0.5rem;">
-                <?php if (AuthHelper::isUserAdmin()) : ?>
-                    <a href="<?= BASE_URL ?>/admin" style="color: orange; margin-right: 1rem;">
-                        Admin Panel
-                    </a>
-                <?php endif; ?>
-
-                <?php if (AuthHelper::hasAnyRole(['admin', 'redacteur'])) : ?>
-                    <a href="<?= BASE_URL ?>/redacteur" style="color: lightgreen; margin-right: 1rem;">
-                        Rédacteur Panel
-                    </a>
-                    <a href="<?= BASE_URL ?>/redacteur/ajouterOeuvre" style="color: lightgreen; margin-right: 1rem;">
-                        Ajouter une œuvre
-                    </a>
-                    <a href="<?= BASE_URL ?>/redacteur/ajouterArticle" style="color: lightgreen;">
-                        Ajouter un article
-                    </a>
-                <?php endif; ?>
-
-            </nav>
-        <?php endif; ?>
-
-        <!-- Formulaire de recherche principal -->
-
-        <!-- Ce formulaire permet à l’utilisateur de rechercher une œuvre ou un article -->
-        <form id="form-recherche" method="GET" action="<?= BASE_URL ?>/recherche" style="margin-top: 1rem;">
-
-            <!-- Zone de saisie libre : titre ou auteur 
-             name = q, c'est une convention standard sur le web pour querry (on le voit
-         notamment dans l'url en faisant une recherche google par exemple)-->
-            <label for="recherche" style="display: none;">Recherche :</label>
-            <input type="text" id="recherche" name="q" placeholder="Rechercher un titre ou un auteur..." required>
-
-            <!-- Menu déroulant pour filtrer le type (œuvre, article ou tout) -->
+        <!-- Barre de recherche -->
+        <form id="form-recherche" method="GET" action="<?= BASE_URL ?>/recherche" class="form-recherche">
+            <input type="text" id="recherche" name="q" placeholder="Recherche film ou BD..." required>
             <select name="type" id="type-recherche">
                 <option value="">Tout</option>
                 <option value="oeuvre">Œuvres</option>
                 <option value="article">Articles</option>
             </select>
-
-            <!-- Bouton de validation classique (au cas où JS est désactivé) -->
             <button type="submit">🔍</button>
-
-            <!-- Zone où s’afficheront les résultats dynamiques en AJAX -->
-            <div id="resultats-recherche" class="resultats-recherche" style="display: none;">
-                <!-- Résultats injectés ici dynamiquement par JS -->
-            </div>
+            <div id="resultats-recherche" class="resultats-recherche" style="display: none;"></div>
         </form>
+    </div>
 
+    <!-- Liens admin/rédacteur -->
+    <?php if (AuthHelper::hasAnyRole(['admin', 'redacteur'])) : ?>
+        <nav class="menu-redacteur">
+            <?php if (AuthHelper::isUserAdmin()) : ?>
+                <a href="<?= BASE_URL ?>/admin">Admin Panel</a>
+            <?php endif; ?>
+            <a href="<?= BASE_URL ?>/redacteur">Rédacteur Panel</a>
+            <a href="<?= BASE_URL ?>/redacteur/ajouterOeuvre">➕ Ajouter une œuvre</a>
+            <a href="<?= BASE_URL ?>/redacteur/ajouterArticle">➕ Ajouter un article</a>
+        </nav>
+    <?php endif; ?>
 
-    </header>
+</header>
