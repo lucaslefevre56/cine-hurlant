@@ -26,9 +26,9 @@
                 <td><?= nl2br(htmlspecialchars($c['contenu'])) ?></td>
                 <td><?= date('d/m/Y', strtotime($c['date_redaction'])) ?></td>
                 <td>
-                    <form action="<?= BASE_URL ?>/admin/commentaires" method="POST" onsubmit="return confirm('Supprimer ce commentaire ?');">
+                    <form action="<?= BASE_URL ?>/admin/commentaires" method="POST">
                         <input type="hidden" name="id_commentaire" value="<?= $c['id_commentaire'] ?>">
-                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                        <button type="submit" class="btn btn-danger btn-supprimer">Supprimer</button>
                     </form>
                 </td>
             </tr>

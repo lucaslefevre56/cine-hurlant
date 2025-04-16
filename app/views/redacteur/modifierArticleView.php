@@ -32,6 +32,11 @@
     <input type="url" name="video_url" id="video_url" value="<?= htmlspecialchars($article['video_url']) ?>">
 
     <button type="submit">Modifier</button>
+
+    <a href="<?= BASE_URL ?>/redacteur/mesArticles" class="btn-annuler">Annuler</a>
+
 </form>
+
+<script src="<?= BASE_URL ?>/public/js/annuler.js" defer></script>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

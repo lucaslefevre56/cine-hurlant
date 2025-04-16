@@ -30,11 +30,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Recherche classique à la soumission (Enter ou bouton)
     form.addEventListener("submit", (e) => {
-        e.preventDefault();
         const query = input.value.trim();
-        const type = select.value;
-        lancerRecherche(query, type);
+        if (query.length < 2) {
+            e.preventDefault();
+            return;
+        }
+    
+        // Ne pas bloquer le submit → il redirigera vers /recherche?q=...&type=...
     });
+    
 
     async function lancerRecherche(query, type) {
         try {

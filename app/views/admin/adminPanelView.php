@@ -19,5 +19,6 @@
 </div>
 
 <script src="<?= BASE_URL ?>/public/js/admin.js"></script>
+<script src="<?= BASE_URL ?>/public/js/supprimer.js" defer></script>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

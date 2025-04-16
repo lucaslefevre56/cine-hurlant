@@ -39,8 +39,8 @@
                         <td><a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>" target="_blank">Voir</a></td>
                         <td><a href="<?= BASE_URL ?>/redacteur/modifierOeuvre/<?= $oeuvre['id_oeuvre'] ?>">Modifier</a></td>
                         <td>
-                            <form action="<?= BASE_URL ?>/redacteur/supprimerOeuvre/<?= $oeuvre['id_oeuvre'] ?>" method="POST" onsubmit="return confirm('Supprimer cette œuvre ?');">
-                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            <form action="<?= BASE_URL ?>/redacteur/supprimerOeuvre/<?= $oeuvre['id_oeuvre'] ?>" method="POST">
+                                <button type="submit" class="btn btn-danger btn-supprimer">Supprimer</button>
                             </form>
                         </td>
                     </tr>
@@ -79,8 +79,8 @@
                         <td><a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>" target="_blank">Voir</a></td>
                         <td><a href="<?= BASE_URL ?>/redacteur/modifierOeuvre/<?= $oeuvre['id_oeuvre'] ?>">Modifier</a></td>
                         <td>
-                            <form action="<?= BASE_URL ?>/redacteur/supprimerOeuvre/<?= $oeuvre['id_oeuvre'] ?>" method="POST" onsubmit="return confirm('Supprimer cette œuvre ?');">
-                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            <form action="<?= BASE_URL ?>/redacteur/supprimerOeuvre/<?= $oeuvre['id_oeuvre'] ?>" method="POST">
+                                <button type="submit" class="btn btn-danger btn-supprimer">Supprimer</button>
                             </form>
                         </td>
                     </tr>

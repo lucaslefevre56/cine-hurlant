@@ -12,7 +12,7 @@
         <?php foreach ($oeuvres as $oeuvre) : ?>
             <li>
                 <strong><?= htmlspecialchars($oeuvre['titre']) ?></strong>
-                par <?= htmlspecialchars($oeuvre['auteur']) ?> (<?= htmlspecialchars($oeuvre['nom']) ?>)
+                par <?= htmlspecialchars($oeuvre['auteur']) ?> (<?= htmlspecialchars($oeuvre['type']) ?>)
                 - <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">Voir la fiche</a>
             </li>
         <?php endforeach; ?>

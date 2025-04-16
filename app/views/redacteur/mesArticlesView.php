@@ -31,8 +31,8 @@
                         <a href="<?= BASE_URL ?>/redacteur/modifierArticle/<?= $article['id_article'] ?>">Modifier</a>
                     </td>
                     <td>
-                        <form action="<?= BASE_URL ?>/redacteur/supprimerArticle/<?= $article['id_article'] ?>" method="POST" onsubmit="return confirm('Supprimer cet article ?');">
-                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        <form action="<?= BASE_URL ?>/redacteur/supprimerArticle/<?= $article['id_article'] ?>" method="POST">
+                            <button type="submit" class="btn btn-danger btn-supprimer">Supprimer</button>
                         </form>
                     </td>
                 </tr>

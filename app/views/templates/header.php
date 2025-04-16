@@ -76,4 +76,8 @@ use App\Helpers\AuthHelper;
         </nav>
     <?php endif; ?>
 
+    <script>
+  const BASE_URL = "<?= BASE_URL ?>";
+</script>
+
 </header>

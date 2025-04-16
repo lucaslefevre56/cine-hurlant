@@ -44,6 +44,11 @@
     </select><br><br>
 
     <button type="submit">Modifier l'œuvre</button>
+
+    <a href="<?= BASE_URL ?>/redacteur/mesOeuvres" class="btn-annuler">Annuler</a>
+
 </form>
+
+<script src="<?= BASE_URL ?>/public/js/annuler.js" defer></script>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

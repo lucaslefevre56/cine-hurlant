@@ -25,8 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .then(html => {
                     conteneur.innerHTML = html;
-                    initSubtabs(); // Réactive les sous-onglets si présents
-                    autoDismissMessages(); // Laisse les messages disparaître
+                    initSubtabs();               // Réactive les sous-onglets
+                    autoDismissMessages();       // Réactive la disparition des messages
+                    activerConfirmationSuppression(); // 🆕 Confirmation suppression
                 })
                 .catch(error => {
                     conteneur.innerHTML = `<p style="color:red;">${error.message}</p>`;
@@ -44,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 btn.addEventListener("click", () => {
                     const cible = btn.dataset.subtab;
 
-                    // Sauvegarde dans le localStorage pour garder actif après chargement
                     localStorage.setItem("redacteurOngletActif", cible);
 
                     sousOnglets.forEach(b => b.classList.remove("active"));
@@ -56,15 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
 
-            // Restauration de l'onglet actif s'il existe
             const actif = localStorage.getItem("redacteurOngletActif");
             const boutonActif = document.querySelector(`.subtab-btn[data-subtab="${actif}"]`);
+            const boutonDefaut = document.querySelector('.subtab-btn[data-subtab="films"]');
 
             if (boutonActif) {
                 boutonActif.click();
-            } else {
-                const boutonDefaut = document.querySelector('.subtab-btn[data-subtab="films"]');
-                if (boutonDefaut) boutonDefaut.click();
+            } else if (boutonDefaut) {
+                boutonDefaut.click();
             }
         }
     }
@@ -84,4 +83,5 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialisation immédiate au chargement
     initSubtabs();
     autoDismissMessages();
+    activerConfirmationSuppression(); // pour les suppressions visibles dès le chargement
 });

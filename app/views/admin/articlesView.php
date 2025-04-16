@@ -32,9 +32,9 @@
                     <a href="<?= BASE_URL ?>/admin/modifierArticle/<?= $article['id_article'] ?>">Modifier</a>
                 </td>
                 <td>
-                    <form action="<?= BASE_URL ?>/admin/articles" method="POST" onsubmit="return confirm('Supprimer cet article ?');">
+                    <form action="<?= BASE_URL ?>/admin/articles" method="POST">
                         <input type="hidden" name="id_article" value="<?= $article['id_article'] ?>">
-                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                        <button type="submit" class="btn btn-danger btn-supprimer">Supprimer</button>
                     </form>
 
                 </td>

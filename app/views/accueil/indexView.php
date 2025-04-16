@@ -43,7 +43,7 @@
     <section class="articles-recents">
       <div class="navigation-articles">
         <button id="prev-article">Précédent</button>
-        <h3>Article</h3>
+        <h3>Articles Récents</h3>
         <button id="next-article">Suivant</button>
       </div>
 
@@ -67,7 +67,7 @@
 
 
     <aside class="suggestions">
-  <h4>Suggestions</h4>
+  <h4>Suggestions de l'équipe</h4>
   <?php foreach ($suggestions as $s) : ?>
     <div class="carte-suggestion">
       <?php

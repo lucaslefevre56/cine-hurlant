@@ -33,7 +33,6 @@
 
 <!-- Variables JavaScript globales -->
 <script>
-  const BASE_URL = "<?= BASE_URL ?>";
   const userId = <?= isset($_SESSION['user']) ? (int) $_SESSION['user']['id'] : 'null' ?>;
   const userRole = "<?= isset($_SESSION['user']) ? htmlspecialchars($_SESSION['user']['role']) : '' ?>";
 </script>
@@ -47,5 +46,40 @@
 <script src="<?= BASE_URL ?>/public/js/script.js"></script>
 <script src="<?= BASE_URL ?>/public/js/cookieConsentement.js"></script>
 
+<!-- Modal de confirmation "Annuler" -->
+<div id="annuler-confirm-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <p>Les modifications non enregistrées seront perdues.<br>Voulez-vous vraiment annuler ?</p>
+    <div class="modal-actions">
+      <button id="confirm-annuler" class="btn-danger">Oui, annuler</button>
+      <button id="cancel-annuler" class="btn-secondary">Continuer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmation suppression -->
+<div id="supprimer-confirm-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <p>Cette action est irréversible. <br>Voulez-vous vraiment supprimer cet élément ?</p>
+    <div class="modal-actions">
+      <button id="confirm-supprimer" class="btn-danger">Oui, supprimer</button>
+      <button id="cancel-supprimer" class="btn-secondary">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmation suppression commentaire -->
+<div id="commentaire-confirm-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <p>Supprimer ce commentaire ?</p>
+    <div class="modal-actions">
+      <button id="confirm-commentaire-suppression" class="btn-danger">Oui, supprimer</button>
+      <button id="cancel-commentaire-suppression" class="btn-secondary">Annuler</button>
+    </div>
+  </div>
+</div>
+
+
 </body>
+
 </html>

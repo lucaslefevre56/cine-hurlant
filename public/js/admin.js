@@ -25,8 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .then(html => {
                     contentContainer.innerHTML = html;
-                    initSubtabs(); // Réactive les sous-onglets (films/BD) si présents
-                    autoDismissMessages(); // Réactive l’auto-disparition après chargement dynamique
+                    initSubtabs();            // Réactive les sous-onglets
+                    autoDismissMessages();    // Réactive les messages
+                    activerConfirmationSuppression(); // 🔥 Confirmation suppression AJAX
                 })
                 .catch(error => {
                     contentContainer.innerHTML = `<p style="color:red;">Erreur : ${error.message}</p>`;
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 2. Activer les sous-onglets (films / BD) si présents dans la vue des œuvres
+    // 2. Activer les sous-onglets (films / BD)
     function initSubtabs() {
         const sousOnglets = document.querySelectorAll(".subtab-btn");
         const contenus = document.querySelectorAll(".subtab-content");
@@ -43,8 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
             sousOnglets.forEach(btn => {
                 btn.addEventListener("click", () => {
                     const cible = btn.dataset.subtab;
-
-                    // 🔐 On mémorise le sous-onglet actif
                     localStorage.setItem("ongletOeuvreActif", cible);
 
                     sousOnglets.forEach(b => b.classList.remove("active"));
@@ -56,15 +55,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
 
-            // ✅ Restauration de l’onglet actif après reload
             const ongletSauvegarde = localStorage.getItem("ongletOeuvreActif");
             const boutonCible = document.querySelector(`.subtab-btn[data-subtab="${ongletSauvegarde}"]`);
+            const boutonDefaut = document.querySelector('.subtab-btn[data-subtab="films"]');
 
             if (boutonCible) {
                 boutonCible.click();
-            } else {
-                const boutonDefaut = document.querySelector('.subtab-btn[data-subtab="films"]');
-                if (boutonDefaut) boutonDefaut.click();
+            } else if (boutonDefaut) {
+                boutonDefaut.click();
             }
         }
     }
@@ -79,11 +77,10 @@ document.addEventListener("DOMContentLoaded", () => {
             messages.forEach(msg => {
                 msg.style.transition = "opacity 0.5s ease";
                 msg.style.opacity = "0";
-                setTimeout(() => msg.remove(), 500); // Suppression après fade-out
+                setTimeout(() => msg.remove(), 500);
             });
         }, 5000);
     }
 
-    // Lancer la disparition si un message est déjà présent au premier chargement
     autoDismissMessages();
 });

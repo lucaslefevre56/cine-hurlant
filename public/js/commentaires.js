@@ -51,24 +51,50 @@ function ajouterBoutonSuppression(divCommentaire, id_commentaire) {
   boutonSupprimer.textContent = 'Supprimer';
   boutonSupprimer.className = 'btn-supprimer';
 
+  // ⚠️ Modal custom
   boutonSupprimer.addEventListener('click', () => {
-    if (!confirm("Supprimer ce commentaire ?")) return;
+    const modal = document.getElementById("commentaire-confirm-modal");
+    const confirmBtn = document.getElementById("confirm-commentaire-suppression");
+    const cancelBtn = document.getElementById("cancel-commentaire-suppression");
 
-    fetch(`${BASE_URL}/public/api/commentaires.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'delete', id_commentaire })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          divCommentaire.remove();
-          afficherMessage("Commentaire supprimé", "success");
-        } else {
-          afficherMessage(data.error || "Échec de la suppression", "error");
-        }
+    if (!modal || !confirmBtn || !cancelBtn) {
+      console.error("Modale de suppression commentaire introuvable.");
+      return;
+    }
+
+    modal.style.display = "flex";
+
+    const onConfirm = () => {
+      fetch(`${BASE_URL}/public/api/commentaires.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id_commentaire })
       })
-      .catch(() => afficherMessage("Erreur de connexion au serveur", "error"));
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            divCommentaire.remove();
+            afficherMessage("Commentaire supprimé", "success");
+          } else {
+            afficherMessage(data.error || "Échec de la suppression", "error");
+          }
+        })
+        .catch(() => afficherMessage("Erreur de connexion au serveur", "error"))
+        .finally(() => {
+          modal.style.display = "none";
+          confirmBtn.removeEventListener("click", onConfirm);
+          cancelBtn.removeEventListener("click", onCancel);
+        });
+    };
+
+    const onCancel = () => {
+      modal.style.display = "none";
+      confirmBtn.removeEventListener("click", onConfirm);
+      cancelBtn.removeEventListener("click", onCancel);
+    };
+
+    confirmBtn.addEventListener("click", onConfirm);
+    cancelBtn.addEventListener("click", onCancel);
   });
 
   divCommentaire.appendChild(boutonSupprimer);
