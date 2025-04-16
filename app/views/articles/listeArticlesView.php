@@ -5,6 +5,15 @@
 <!-- Titre principal de la page -->
 <h2>Les articles</h2>
 
+<!-- Bloc de pagination -->
+<div class="pagination">
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="<?= BASE_URL ?>/article/liste?page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </div>
+
 <!-- Je vérifie qu’il y a bien des articles à afficher -->
 <?php if (!empty($articles)) : ?>
 
@@ -61,6 +70,7 @@
         <?php endfor; ?>
     </div>
 
+    <p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
 
     <!-- Si aucun article n’est présent, j’affiche un message d’attente -->
 <?php else : ?>

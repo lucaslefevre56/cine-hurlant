@@ -6,8 +6,8 @@
 <h2>Ajout réussi</h2>
 
 <!-- Message de succès si présent -->
-<?php if (!empty($message)): ?>
-    <p style="color: green;"><?= htmlspecialchars($message) ?></p>
+<?php if (!empty($message)) : ?>
+    <div class="message-success"><?= htmlspecialchars($message) ?></div>
 <?php endif; ?>
 
 <!-- Liens de navigation -->

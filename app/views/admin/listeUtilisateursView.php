@@ -38,7 +38,7 @@
                 </td>
                 <td>
                     <form action="<?= BASE_URL ?>/admin/supprimerUtilisateur/<?= $u['id_utilisateur'] ?>" method="POST">
-                        <button type="submit" class="btn btn-danger btn-supprimer">Désactiver</button>
+                        <button type="submit" class="btn btn-danger btn-desactiver">Désactiver</button>
                     </form>
                 </td>
                 <td>

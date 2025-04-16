@@ -1,18 +1,32 @@
-// Fonction utilitaire pour afficher un message dans la zone prévue
+// Affiche un message dans la zone prévue avec classe stylée
 function afficherMessage(message, type = "info") {
   const msgDiv = document.getElementById("message-commentaire");
   if (!msgDiv) return;
 
+  // Nettoyage : on stoppe les transitions précédentes
+  msgDiv.className = `message-flash message-${type}`;
   msgDiv.textContent = message;
-  msgDiv.className = `message-flash ${type}`;
+  msgDiv.style.opacity = "1";
+  msgDiv.style.display = "block";
 
-  setTimeout(() => {
-    msgDiv.textContent = "";
-    msgDiv.className = "message-flash";
-  }, 5000);
+  // Réinitialise tout
+  if (msgDiv._timeoutId) clearTimeout(msgDiv._timeoutId);
+  if (msgDiv._fadeId) clearTimeout(msgDiv._fadeId);
+
+  // Disparition progressive après 4s
+  msgDiv._timeoutId = setTimeout(() => {
+    msgDiv.style.transition = "opacity 0.5s ease";
+    msgDiv.style.opacity = "0";
+
+    msgDiv._fadeId = setTimeout(() => {
+      msgDiv.style.display = "none";
+      msgDiv.textContent = "";
+      msgDiv.className = "";
+    }, 500); // après fondu
+  }, 4000);
 }
 
-// Sécurité contre le XSS
+// Sécurité XSS
 function escapeHtml(unsafe) {
   return unsafe
     .replace(/&/g, "&amp;")
@@ -22,9 +36,8 @@ function escapeHtml(unsafe) {
     .replace(/'/g, "&#039;");
 }
 
-// Ajoute un commentaire dans le DOM
+// Affiche un commentaire dans le DOM
 function renderCommentaire(commentaire) {
-  // Vérifie s'il existe déjà
   if (document.querySelector(`.commentaire[data-id="${commentaire.id_commentaire}"]`)) return;
 
   const div = document.createElement('div');
@@ -45,13 +58,12 @@ function renderCommentaire(commentaire) {
   document.getElementById('commentaires-liste').appendChild(div);
 }
 
-// Supprimer un commentaire
+// Bouton suppression + modale
 function ajouterBoutonSuppression(divCommentaire, id_commentaire) {
   const boutonSupprimer = document.createElement('button');
   boutonSupprimer.textContent = 'Supprimer';
   boutonSupprimer.className = 'btn-supprimer';
 
-  // ⚠️ Modal custom
   boutonSupprimer.addEventListener('click', () => {
     const modal = document.getElementById("commentaire-confirm-modal");
     const confirmBtn = document.getElementById("confirm-commentaire-suppression");
@@ -100,7 +112,7 @@ function ajouterBoutonSuppression(divCommentaire, id_commentaire) {
   divCommentaire.appendChild(boutonSupprimer);
 }
 
-// Modifier un commentaire
+// Bouton modification
 function ajouterBoutonModification(divCommentaire, id_commentaire) {
   const boutonModifier = document.createElement('button');
   boutonModifier.textContent = 'Modifier';
@@ -183,11 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!idArticleInput || !zoneCommentaires) return;
 
   const id_article = idArticleInput.value;
-
-  // Nettoie les anciens commentaires pour éviter les doublons
   zoneCommentaires.innerHTML = "";
 
-  // Chargement initial
   fetch(`${BASE_URL}/public/api/commentaires.php?id_article=${id_article}`)
     .then(res => res.json())
     .then(data => {
@@ -195,7 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(() => afficherMessage("Erreur lors du chargement des commentaires", "error"));
 
-  // Envoi d’un nouveau commentaire
   if (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();

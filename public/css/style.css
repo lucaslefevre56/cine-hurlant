@@ -185,7 +185,7 @@ h4 {
     text-decoration: underline;
 }
 
-/* === MESSAGES DE SUCCÈS === */
+/* === MESSAGES DE SUCCÈS OU D'ERREUR === */
 .message-success {
     background-color: #d4edda;
     color: #155724;
@@ -197,27 +197,35 @@ h4 {
     font-size: 1rem;
 }
 
-/* === FIL D’ARIANE === */
-.fil-ariane {
-    display: flex;
-    align-items: center;
-    padding: 10px 2rem;
-    background-color: var(--beige);
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: var(--brun);
-    text-transform: uppercase;
-    gap: 1rem;
+.message-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 1rem;
 }
 
-/* Trait qui suit le texte */
-.fil-ariane::after {
-    content: "";
-    flex: 1;
-    height: 2px;
-    background-color: var(--brun);
+.message-flash.message-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 1rem;
 }
 
+.message-flash.message-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
 
 /* === CAROUSEL === */
 .carousel {
@@ -318,6 +326,9 @@ h4 {
 /* === ARTICLES RÉCENTS === */
 .articles-recents {
     flex: 2;
+    max-width: 100%;
+    width: 100%;
+    overflow-wrap: break-word; /* permet de couper les mots trop longs */
 }
 
 .navigation-articles {
@@ -329,16 +340,22 @@ h4 {
 
 .carte-article {
     background-color: var(--jaune-pale);
-    padding: 1em;
+    padding: 1.5rem;
     border-radius: 8px;
     margin-top: 1em;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
-.carte-article a {
-    color: var(--orange);
-    font-weight: bold;
-    text-decoration: none;
-}
+#slider-articles { /* adapte selon ton design */
+    width: 100%;
+    margin: 0 auto;
+  }
 
 /* === SUGGESTIONS === */
 .suggestions {
@@ -524,6 +541,29 @@ footer {
     background-color: #e35f29;
 }
 
+/* === PAGE D'ACCUEIL === */
+.accueil h1,
+.accueil h2 {
+  text-align: center;
+  margin: 0 auto 10px;
+  max-width: 90%;
+}
+
+.titre-centre, .soustitre-centre {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .presentation-site {
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    text-align: center;
+    color: #333;
+  }  
+
 /* === SLIDER ARTICLES === */
 .img-article-slider {
     width: 200px;
@@ -532,14 +572,6 @@ footer {
     border-radius: 6px;
     margin-bottom: 0.5rem;
   }
-
-  .carte-article {
-    background-color: var(--jaune-pale);
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-top: 1em;
-    text-align: center; /* centre le contenu à l'intérieur, sans réduire la largeur */
-}
 
 .carte-article img {
     display: block;
@@ -557,6 +589,9 @@ footer {
 
 .carte-article p {
     margin-bottom: 1rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .carte-article a {
@@ -566,6 +601,8 @@ footer {
     display: inline-block;
     margin-top: 0.5rem;
 }
+
+/* === MODALES DE CONFIRMATIONS === */
 
 .modal-overlay {
     position: fixed;
@@ -613,6 +650,68 @@ footer {
     cursor: pointer;
 }
 
+/* === RESULTATS RECHERCHE === */
+
+.resultats-recherche {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background-color: #fefefe;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 1rem;
+    z-index: 1000;
+    font-size: 0.95rem;
+  }
+  
+  .bloc-suggestions h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .bloc-suggestions span {
+    font-weight: bold;
+    color: #3a506b;
+  }
+  
+  .bloc-resultat {
+    margin-bottom: 1rem;
+  }
+  
+  .bloc-resultat h4 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.2rem;
+  }
+  
+  .bloc-resultat ul {
+    list-style: none;
+    padding-left: 1rem;
+  }
+  
+  .bloc-resultat li {
+    margin-bottom: 0.3rem;
+  }
+  
+  .bloc-resultat a {
+    color: #5c3d8d;
+    text-decoration: none;
+  }
+  
+  .bloc-resultat a:hover {
+    text-decoration: underline;
+  }
+
+  .bloc-recherche {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+}
+
+  
 
   
   

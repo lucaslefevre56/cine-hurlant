@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     initSubtabs();            // Réactive les sous-onglets
                     autoDismissMessages();    // Réactive les messages
                     activerConfirmationSuppression(); // 🔥 Confirmation suppression AJAX
+                    activerConfirmationDesactivation(); // 🆕 Confirmation désactivation AJAX
                 })
                 .catch(error => {
                     contentContainer.innerHTML = `<p style="color:red;">Erreur : ${error.message}</p>`;

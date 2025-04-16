@@ -11,6 +11,15 @@
     <button class="subtab-btn" data-subtab="bd">Bandes dessinées</button>
 </div>
 
+<!-- Bloc de pagination -->
+<div class="pagination">
+    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+        <a href="<?= BASE_URL ?>/oeuvre/liste?page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>">
+            <?= $i ?>
+        </a>
+    <?php endfor; ?>
+</div>
+
 <!-- Contenu : Films -->
 <div id="films" class="subtab-content">
     <!-- Je vérifie qu’il y a bien des œuvres à afficher -->
@@ -85,6 +94,8 @@
         </a>
     <?php endfor; ?>
 </div>
+
+<p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
 
 <script src="<?= BASE_URL ?>/public/js/listeOeuvres.js"></script>
 

@@ -58,25 +58,29 @@ class UtilisateurController
         if ($role === 'admin') {
             View::render('utilisateur/profilView', [
                 'utilisateur' => $utilisateurModel->getById($id),
-                'erreur' => "Un compte administrateur ne peut pas se supprimer lui-même pour éviter de bloquer l'accès à l'administration."
+                'erreur' => "Un compte administrateur ne peut pas se désactiver lui-même pour éviter de bloquer l'accès à l'administration."
             ]);
             return;
         }
 
-        $utilisateurModel->deleteById($id);
+        // ❌ Ancienne suppression physique (à éviter)
+        // $utilisateurModel->deleteById($id);
 
-        // On garde uniquement le message flash
-        $message = "Votre compte a été supprimé avec succès.";
+        // ✅ Nouvelle désactivation logique
+        $ok = $utilisateurModel->desactiver($id);
+
+        $message = $ok
+            ? "Votre compte a été désactivé avec succès. Vous pouvez le réactiver en contactant l’administrateur."
+            : "Une erreur est survenue lors de la désactivation du compte.";
 
         // Nettoyage complet de la session
         $_SESSION = [];
         session_destroy();
 
-        // Redémarrage d'une session pour stocker le message flash
+        // Redémarrage de session pour message flash
         session_start();
         $_SESSION['message_suppression'] = $message;
 
-        // Redirection propre vers l’accueil
         header("Location: " . BASE_URL . "/accueil/index");
         exit;
     }

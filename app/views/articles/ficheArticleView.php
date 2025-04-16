@@ -55,7 +55,7 @@ $bds   = array_filter($oeuvres, fn($o) => strtolower($o['type']) === 'bd');
     <ul>
         <?php foreach ($films as $oeuvre) : ?>
             <li>
-            <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">
+                <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">
                     <?= htmlspecialchars($oeuvre['titre']) ?>
                 </a>
             </li>
@@ -69,7 +69,7 @@ $bds   = array_filter($oeuvres, fn($o) => strtolower($o['type']) === 'bd');
     <ul>
         <?php foreach ($bds as $oeuvre) : ?>
             <li>
-            <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">
+                <a href="<?= BASE_URL ?>/oeuvre/fiche/<?= $oeuvre['id_oeuvre'] ?>">
                     <?= htmlspecialchars($oeuvre['titre']) ?>
                 </a>
             </li>
@@ -127,8 +127,8 @@ $bds   = array_filter($oeuvres, fn($o) => strtolower($o['type']) === 'bd');
 
 
 <!-- Lien de retour vers la liste complète des articles -->
-<p>
-    <a href="<?= BASE_URL ?>/article/liste">← Retour à la liste des articles</a>
-</p>
+<p><a href="<?= BASE_URL ?>/article/liste">← Retour à la liste des articles</a></p>
+<p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
+
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

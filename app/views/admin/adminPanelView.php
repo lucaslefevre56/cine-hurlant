@@ -18,6 +18,8 @@
     ?>
 </div>
 
+<p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
+
 <script src="<?= BASE_URL ?>/public/js/admin.js"></script>
 <script src="<?= BASE_URL ?>/public/js/supprimer.js" defer></script>
 

@@ -15,30 +15,32 @@ document.addEventListener("DOMContentLoaded", () => {
         const query = input.value.trim();
         const type = select.value;
 
-        clearTimeout(timer); // réinitialise le délai
+        clearTimeout(timer);
 
         if (query.length < 2) {
             resultatsDiv.style.display = "none";
             return;
         }
 
-        // Attend 300ms après la dernière frappe
         timer = setTimeout(() => {
             lancerRecherche(query, type);
         }, 300);
     });
 
-    // Recherche classique à la soumission (Enter ou bouton)
+    // Recherche classique
     form.addEventListener("submit", (e) => {
         const query = input.value.trim();
         if (query.length < 2) {
             e.preventDefault();
-            return;
         }
-    
-        // Ne pas bloquer le submit → il redirigera vers /recherche?q=...&type=...
     });
-    
+
+    // Ferme les résultats si on clique en dehors
+    document.addEventListener("click", (e) => {
+        if (!form.contains(e.target) && !resultatsDiv.contains(e.target)) {
+            resultatsDiv.style.display = "none";
+        }
+    });
 
     async function lancerRecherche(query, type) {
         try {
@@ -53,29 +55,56 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            let html = `<p>Résultats pour : <strong>${escapeHtml(data.query)}</strong></p>`;
+            let html = `
+                <section class="bloc-suggestions">
+                    <h3>Résultats pour : <span>${escapeHtml(data.query)}</span></h3>
+            `;
 
             if (data.oeuvres.length > 0) {
-                html += `<h2>Œuvres</h2><ul>`;
+                html += `
+                    <div class="bloc-resultat">
+                        <h4>Œuvres</h4>
+                        <ul>`;
                 data.oeuvres.forEach(o => {
                     html += `<li><a href="${BASE_URL}/oeuvre/fiche/${o.id_oeuvre}">${escapeHtml(o.titre)}</a> (${escapeHtml(o.type)})</li>`;
                 });
-                html += `</ul>`;
+                html += `</ul>
+                    </div>`;
             }
 
             if (data.articles.length > 0) {
-                html += `<h2>Articles</h2><ul>`;
+                html += `
+                    <div class="bloc-resultat">
+                        <h4>Articles</h4>
+                        <ul>`;
                 data.articles.forEach(a => {
                     html += `<li><a href="${BASE_URL}/article/fiche/${a.id_article}">${escapeHtml(a.titre)}</a> par ${escapeHtml(a.auteur)}</li>`;
                 });
-                html += `</ul>`;
+                html += `</ul>
+                    </div>`;
             }
 
             if (data.oeuvres.length === 0 && data.articles.length === 0) {
                 html += `<p>Aucun résultat trouvé.</p>`;
             }
 
+            html += `
+                    <div style="text-align:right; margin-top: 0.5rem;">
+                        <button id="fermer-resultats"
+                            style="background:none;border:none;color:#999;font-size:1.2rem;cursor:pointer;"
+                            aria-label="Fermer les résultats">✖️</button>
+                    </div>
+                </section>
+            `;
+
             resultatsDiv.innerHTML = html;
+
+            const btnFermer = document.getElementById("fermer-resultats");
+            if (btnFermer) {
+                btnFermer.addEventListener("click", () => {
+                    resultatsDiv.style.display = "none";
+                });
+            }
 
         } catch (error) {
             console.error("Erreur AJAX recherche :", error);

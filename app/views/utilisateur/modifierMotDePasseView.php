@@ -4,15 +4,12 @@
 
 <h2>Modifier mon mot de passe</h2>
 
-<?php if (!empty($erreur)) : ?>
-    <div style="color: red;">
-        <?= $erreur ?>
-    </div>
+<?php if (!empty($confirmation)) : ?>
+    <div class="message-success"><?= htmlspecialchars($confirmation) ?></div>
 <?php endif; ?>
 
-
-<?php if (!empty($confirmation)) : ?>
-    <p style="color: green;"><?= htmlspecialchars($confirmation) ?></p>
+<?php if (!empty($erreur)) : ?>
+    <div class="message-error"><?= htmlspecialchars($erreur) ?></div>
 <?php endif; ?>
 
 <form method="POST" action="">

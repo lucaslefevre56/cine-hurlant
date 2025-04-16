@@ -53,5 +53,6 @@
 
 <!-- Bouton pour revenir à la liste complète des œuvres -->
 <p><a href="<?= BASE_URL ?>/oeuvre/liste">Retour à la liste des œuvres</a></p>
+<p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

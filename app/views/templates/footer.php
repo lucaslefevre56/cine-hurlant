@@ -79,6 +79,16 @@
   </div>
 </div>
 
+<!-- Modal de confirmation désactivation de compte -->
+<div id="desactivation-confirm-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-box">
+    <p>Le compte sera désactivé et l’utilisateur ne pourra plus se connecter.<br>Voulez-vous vraiment désactiver ce compte ?</p>
+    <div class="modal-actions">
+      <button id="confirm-desactivation" class="btn-danger">Oui, désactiver</button>
+      <button id="cancel-desactivation" class="btn-secondary">Annuler</button>
+    </div>
+  </div>
+</div>
 
 </body>
 

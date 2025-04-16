@@ -44,14 +44,15 @@ use App\Helpers\AuthHelper;
     </div>
 
     <!-- Navigation principale + barre de recherche -->
-    <div class="nav-recherche">
-        <nav class="menu-principal">
-            <a href="<?= BASE_URL ?>/">Accueil</a>
-            <a href="<?= BASE_URL ?>/oeuvre/liste">Oeuvres</a>
-            <a href="<?= BASE_URL ?>/article/liste">Articles</a>
-        </nav>
+<div class="nav-recherche">
+    <nav class="menu-principal">
+        <a href="<?= BASE_URL ?>/">Accueil</a>
+        <a href="<?= BASE_URL ?>/oeuvre/liste">Oeuvres</a>
+        <a href="<?= BASE_URL ?>/article/liste">Articles</a>
+    </nav>
 
-        <!-- Barre de recherche -->
+    <!-- Formulaire + résultats dynamiques -->
+    <div class="bloc-recherche">
         <form id="form-recherche" method="GET" action="<?= BASE_URL ?>/recherche" class="form-recherche">
             <input type="text" id="recherche" name="q" placeholder="Recherche film ou BD..." required>
             <select name="type" id="type-recherche">
@@ -60,9 +61,13 @@ use App\Helpers\AuthHelper;
                 <option value="article">Articles</option>
             </select>
             <button type="submit">🔍</button>
-            <div id="resultats-recherche" class="resultats-recherche" style="display: none;"></div>
         </form>
+
+        <!-- Résultats affichés dynamiquement -->
+        <div id="resultats-recherche" class="resultats-recherche" style="display: none;"></div>
     </div>
+</div>
+
 
     <!-- Liens admin/rédacteur -->
     <?php if (AuthHelper::hasAnyRole(['admin', 'redacteur'])) : ?>

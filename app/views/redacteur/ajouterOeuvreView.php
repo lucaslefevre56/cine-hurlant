@@ -2,8 +2,8 @@
 
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
-<?php if (!empty($erreur)): ?>
-    <p style="color: red;"><?= htmlspecialchars($erreur) ?></p>
+<?php if (!empty($erreur)) : ?>
+    <div class="message-error"><?= htmlspecialchars($erreur) ?></div>
 <?php endif; ?>
 
 <h2>Ajouter une œuvre</h2>
@@ -74,5 +74,8 @@
     <button type="submit">Ajouter l'œuvre</button>
 
 </form>
+
+<p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
+
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

@@ -3,8 +3,8 @@
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <!-- Affichage d’un éventuel message d’erreur -->
-<?php if (!empty($erreur)): ?>
-    <p style="color: red;"><?= htmlspecialchars($erreur) ?></p>
+<?php if (!empty($erreur)) : ?>
+    <div class="message-error"><?= htmlspecialchars($erreur) ?></div>
 <?php endif; ?>
 
 <!-- Titre principal -->
@@ -75,5 +75,7 @@
     <button type="submit">Ajouter l’article</button>
 
 </form>
+
+<p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

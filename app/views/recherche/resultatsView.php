@@ -38,4 +38,6 @@
     <p>Aucun résultat ne correspond à votre recherche.</p>
 <?php endif; ?>
 
+<p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
+
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

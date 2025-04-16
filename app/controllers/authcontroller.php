@@ -30,7 +30,7 @@ class AuthController
             // Si utilisateur trouvé mais inactif
             if ((int)$user['actif'] !== 1) {
                 View::render('authentification/loginView', [
-                    'erreur' => "Ce compte a été désactivé par un administrateur."
+                    'erreur' => "Ce compte a été désactivé, contactez l'administrateur pour demander à le réactiver."
                 ]);
                 return;
             }

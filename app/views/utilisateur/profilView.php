@@ -17,8 +17,14 @@
 <p><a href="<?= BASE_URL ?>/utilisateur/modifierMotDePasse">🔑 Modifier mon mot de passe</a></p>
 
 <!-- Bouton de suppression -->
-<form action="<?= BASE_URL ?>/utilisateur/supprimer" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')">
-    <button type="submit" class="btn btn-danger">🗑️ Supprimer mon compte</button>
+<form action="<?= BASE_URL ?>/utilisateur/supprimer" method="post">
+    <button type="submit" class="btn btn-danger btn-desactiver">Désactiver mon compte</button>
 </form>
+
+<p>INFO : Un compte désactivé peut-être restauré sur demande à l'administrateur</p>
+
+<p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
+
+<script src="<?= BASE_URL ?>/public/js/supprimer.js" defer></script>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>
