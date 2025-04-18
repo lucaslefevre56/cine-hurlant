@@ -1,0 +1,14 @@
+{
+  "name": "cine-hurlant",
+  "version": "1.0.0",
+  "description": "Voici mon projet pour le site ciné-hurlant",
+  "main": "index.js",
+  "scripts": {
+    "sass": "sass public/sass/style.scss public/css/style.css --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sass": "^1.86.3"
+  }
+}
