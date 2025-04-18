@@ -1,0 +1,222 @@
+// === PAGE D'ACCUEIL ===
+
+.accueil {
+    h1,
+    h2 {
+      text-align: center;
+      margin: 0 auto 10px;
+      max-width: 90%;
+    }
+  }
+
+  h1 {
+    padding-top: 1rem;
+  }
+  
+  .titre-centre,
+  .soustitre-centre {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .presentation-site {
+    max-width: 850px;
+    margin: 2.5rem auto;
+    padding: 0 1rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    text-align: center;
+    color: #333;
+  }
+  
+  // === CONTENU PAGE ACCUEIL ===
+  
+  .contenu-accueil {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem 1rem;
+  }
+  
+  // === ARTICLES RÉCENTS ===
+  
+  .articles-recents {
+    width: 100%;
+    overflow-wrap: break-word;
+  
+    .navigation-articles {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+  
+      button {
+        max-width: 120px;
+        padding: 0.5rem 1rem;
+        font-weight: bold;
+        border-radius: 5px;
+        background-color: $orange;
+        color: white;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+  
+        &:hover {
+          background-color: $orange-dark;
+        }
+      }
+  
+      h2 {
+        font-size: 1.3rem;
+        margin: 0;
+        text-align: center;
+      }
+    }
+  
+    #slider-articles {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  
+    .carte-article {
+      background-color: $jaune-pale;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+      margin-left: auto;
+      margin-right: auto;
+  
+      img {
+        display: block;
+        margin: 0 auto 1rem auto;
+        max-width: 100%;
+        border-radius: 6px;
+      }
+  
+      h4,
+      p,
+      a {
+        text-align: center;
+      }
+  
+      p {
+        margin-bottom: 1rem;
+        word-break: break-word;
+        white-space: normal;
+      }
+  
+      a {
+        color: $orange;
+        font-weight: bold;
+        display: inline-block;
+        margin-top: 0.5rem;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  
+    .img-article-slider {
+      width: 100%;
+      max-width: 300px;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  // === SUGGESTIONS ===
+  
+  .suggestions {
+    width: 100%;
+    text-align: center;
+  
+    h2 {
+      text-align: center;
+      font-size: 1.2rem;
+      margin: 1rem 0;
+      margin-left: 15px;
+    }
+  
+    .carte-suggestion {
+      background-color: $jaune-pale;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      text-align: center;
+  
+      img {
+        width: 100%;
+        max-width: 160px;
+        height: auto;
+        display: block;
+        margin: 0 auto 0.5rem auto;
+        border-radius: 5px;
+      }
+  
+      a {
+        color: $orange;
+        font-weight: bold;
+        font-size: 1rem;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+  
+      p {
+        font-size: 0.85rem;
+        color: $brun;
+        margin-top: 0.5rem;
+        line-height: 1.4;
+      }
+    }
+  }
+  
+  // === VERSION DESKTOP (≥ 768px) ===
+  
+  @media screen and (min-width: 768px) {
+    .contenu-accueil {
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 2rem;
+      gap: 2rem;
+    }
+  
+    .articles-recents {
+      flex: 2;
+  
+      .navigation-articles {
+        display: flex;
+        justify-content: center;
+        flex-wrap: nowrap;
+        gap: 2rem;
+  
+        h2 {
+          font-size: 1.5rem;
+        }
+  
+        button {
+          max-width: none;
+        }
+      }
+  
+      .img-article-slider {
+        width: 200px;
+      }
+    }
+  
+    .suggestions {
+      flex: 1;
+    }
+  }
+  

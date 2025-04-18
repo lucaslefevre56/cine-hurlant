@@ -29,18 +29,31 @@ function autoDismissMessages() {
 }
 
 function initBurgerMenu() {
-    // Je sélectionne les deux éléments essentiels : le bouton burger et le menu mobile
     const burger = document.querySelector('.burger-menu');
     const menuMobile = document.querySelector('.menu-mobile');
 
-    // Si les deux sont présents dans le DOM, je lance la magie
     if (burger && menuMobile) {
-        burger.addEventListener('click', () => {
-            // J’alterne l’état actif du menu (affiché / masqué)
+        // Gestion ouverture/fermeture
+        burger.addEventListener('click', (e) => {
+            e.stopPropagation(); // Empêche que ça se propage au document
             menuMobile.classList.toggle('active');
-
-            // Et j’ajoute aussi une classe au bouton burger pour pouvoir le styliser (croix, rotation, couleur…)
             burger.classList.toggle('open');
+        });
+
+        // Clic en dehors du menu → fermeture
+        document.addEventListener('click', (e) => {
+            const isClickInsideMenu = menuMobile.contains(e.target);
+            const isClickOnBurger = burger.contains(e.target);
+
+            if (!isClickInsideMenu && !isClickOnBurger) {
+                menuMobile.classList.remove('active');
+                burger.classList.remove('open');
+            }
+        });
+
+        // Clic à l'intérieur du menu → ne ferme pas
+        menuMobile.addEventListener('click', (e) => {
+            e.stopPropagation();
         });
     }
 }

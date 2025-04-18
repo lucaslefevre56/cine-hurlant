@@ -1,0 +1,117 @@
+// === CAROUSEL ===
+
+.carousel {
+    position: relative;
+    background: $jaune-pale;
+    text-align: center;
+    padding: 1rem 1rem 1.5rem;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    .carousel-inner {
+        position: relative;
+        height: 160px; // ✅ Hauteur fixe mobile
+    }
+
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%; // 🔒 Slide prend toute la hauteur fixe
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        z-index: 0;
+
+        &.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        img {
+            height: 100%; // ✅ Hauteur uniforme
+            width: 100%; // ✅ Largeur forcée
+            object-fit: cover; // 🔒 Coupe proprement pour ne pas déformer
+            display: block;
+            border-radius: 8px;
+        }
+    }
+
+    .dots {
+        margin-top: 0.8rem;
+
+        .dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: #ccc;
+            border-radius: 50%;
+            margin: 0 4px;
+            cursor: pointer;
+            opacity: 0.5;
+
+            &.active {
+                background-color: $orange;
+                opacity: 1;
+            }
+        }
+    }
+
+    .prev,
+    .next {
+        display: none;
+    }
+}
+
+// === VERSION DESKTOP ===
+
+@media screen and (min-width: 768px) {
+    .carousel {
+        padding: 2rem;
+        max-width: 1000px; // ✅ Largeur max contrôlée en desktop
+
+        .carousel-inner {
+            height: 280px; // ✅ Hauteur desktop stable et réduite
+        }
+
+        .slide img {
+            height: 100%;
+            width: 100%;
+            max-width: 600px; // ✅ On limite la largeur réelle de l'image
+            object-fit: cover;
+            margin: 0 auto; // ✅ Centre l’image
+            display: block;
+            border-radius: 8px;
+        }
+
+        .prev,
+        .next {
+            display: block;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: $brun;
+            font-size: 2rem;
+            padding: 0 12px;
+            cursor: pointer;
+            z-index: 2;
+
+            &:hover {
+                color: $orange;
+            }
+        }
+
+        .prev {
+            left: 10px;
+        }
+
+        .next {
+            right: 10px;
+        }
+    }
+}
