@@ -8,26 +8,27 @@ use App\Core\View;
 use App\Core\Database;
 use App\Helpers\PasswordHelper;
 
-
 class AuthController
 {
+    // Connexion d’un utilisateur existant
     public function login(): void
     {
+        // Si le formulaire est soumis
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = trim($_POST['email'] ?? '');
             $password = trim($_POST['password'] ?? '');
 
-            // Cherche l'utilisateur par email (qu’il soit actif ou non)
+            // Je cherche un utilisateur correspondant à l’email
             $utilisateur = new Utilisateur();
             $user = $utilisateur->getByEmail($email);
 
-            // Si aucun utilisateur trouvé
+            // Aucun utilisateur avec cet email
             if (!$user) {
                 View::render('authentification/loginView', ['erreur' => "Email ou mot de passe incorrect."]);
                 return;
             }
 
-            // Si utilisateur trouvé mais inactif
+            // Si l’utilisateur existe mais que son compte est désactivé
             if ((int)$user['actif'] !== 1) {
                 View::render('authentification/loginView', [
                     'erreur' => "Ce compte a été désactivé, contactez l'administrateur pour demander à le réactiver."
@@ -35,13 +36,13 @@ class AuthController
                 return;
             }
 
-            // Vérification du mot de passe
+            // Si l’utilisateur est actif, je vérifie le mot de passe
             if (!password_verify($password, $user['password'])) {
                 View::render('authentification/loginView', ['erreur' => "Email ou mot de passe incorrect."]);
                 return;
             }
 
-            // Connexion réussie : création de la session
+            // Tout est bon, je connecte l’utilisateur et je stocke ses infos en session
             $_SESSION['user'] = [
                 'id' => $user['id_utilisateur'],
                 'nom' => $user['nom'],
@@ -49,28 +50,33 @@ class AuthController
                 'role' => $user['role']
             ];
 
-            // Appelle l'accueil via son contrôleur pour avoir les variables
+            // Je redirige vers l’accueil, mais en appelant le contrôleur directement
+            // pour avoir les variables attendues
             $accueil = new \App\Controllers\AccueilController();
             $accueil->index();
             exit;
         }
 
+        // Si on arrive ici sans POST, on affiche simplement le formulaire de connexion vide
         View::render('authentification/loginView', ['erreur' => null]);
     }
 
+    // Déconnexion complète de l’utilisateur
     public function logout(): void
     {
+        // Je vérifie que la session est active, puis je la détruis
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_unset();
             session_destroy();
-        }        
+        }
 
-        // Recharge l'accueil proprement
+        // Ensuite, je redirige vers l’accueil
         $accueil = new \App\Controllers\AccueilController();
         $accueil->index();
         exit;
     }
 
+    // Inscription d’un nouvel utilisateur
     public function register(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -79,7 +85,7 @@ class AuthController
             $password = $_POST['password'] ?? '';
             $confirm = $_POST['confirm'] ?? '';
 
-            // Vérif confirmation
+            // Si les mots de passe ne correspondent pas, je bloque
             if ($password !== $confirm) {
                 View::render('authentification/registerView', [
                     'erreur' => "Les mots de passe ne correspondent pas.",
@@ -89,7 +95,7 @@ class AuthController
                 return;
             }
 
-            // Vérif sécurité du mot de passe
+            // Je valide la sécurité du mot de passe
             $erreurs = PasswordHelper::isValid($password);
             if (!empty($erreurs)) {
                 View::render('authentification/registerView', [
@@ -100,6 +106,7 @@ class AuthController
                 return;
             }
 
+            // Je vérifie si l'email est déjà utilisé
             $utilisateur = new Utilisateur();
             $existant = $utilisateur->getByEmail($email);
 
@@ -112,12 +119,17 @@ class AuthController
                 return;
             }
 
+            // Hash du mot de passe
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            // Ajout en base
             $ajout = $utilisateur->add($nom, $email, $hashedPassword);
 
             if ($ajout) {
+                // Je récupère l’ID nouvellement inséré
                 $id = Database::getInstance()->lastInsertId();
 
+                // Connexion immédiate après inscription
                 $_SESSION['user'] = [
                     'id' => $id,
                     'nom' => $nom,
@@ -125,9 +137,11 @@ class AuthController
                     'role' => 'utilisateur'
                 ];
 
+                // Affiche la page d’accueil directement
                 View::render('accueil/indexView');
                 exit;
             } else {
+                // En cas d’échec à l’insertion
                 View::render('authentification/registerView', [
                     'erreur' => "Erreur lors de l'inscription.",
                     'nom' => $nom,
@@ -137,6 +151,7 @@ class AuthController
             }
         }
 
+        // Si la méthode est GET → j’affiche un formulaire d’inscription vide
         View::render('authentification/registerView', [
             'erreur' => null,
             'nom' => '',
@@ -144,6 +159,7 @@ class AuthController
         ]);
     }
 
+    // Simple redirection vers la page de connexion
     public function index(): void
     {
         View::render('authentification/loginView', ['erreur' => null]);

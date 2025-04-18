@@ -1,17 +1,19 @@
+// public/js/admin.js
+
 document.addEventListener("DOMContentLoaded", () => {
     const buttons = document.querySelectorAll(".tab-btn");
     const contentContainer = document.getElementById("admin-content");
 
-    // 1. Gestion du clic utilisateur sur les onglets principaux
+    // Je gère le clic sur les onglets principaux du panneau admin
     buttons.forEach(button => {
         button.addEventListener("click", () => {
-            const tab = button.dataset.tab;
+            const tab = button.dataset.tab; // Je récupère l’identifiant de l’onglet cliqué
 
-            // Mise à jour de l'onglet actif visuellement
+            // Je mets à jour visuellement l’onglet actif
             buttons.forEach(btn => btn.classList.remove("active"));
             button.classList.add("active");
 
-            // Chargement dynamique du contenu de l’onglet via fetch() avec header AJAX
+            // Je charge dynamiquement le contenu de l’onglet via fetch, avec un header AJAX
             fetch(`${BASE_URL}/admin/${tab}`, {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -24,19 +26,23 @@ document.addEventListener("DOMContentLoaded", () => {
                     return response.text();
                 })
                 .then(html => {
+                    // J’injecte le contenu HTML dans la zone principale
                     contentContainer.innerHTML = html;
-                    initSubtabs();            // Réactive les sous-onglets
-                    autoDismissMessages();    // Réactive les messages
-                    activerConfirmationSuppression(); // 🔥 Confirmation suppression AJAX
-                    activerConfirmationDesactivation(); // 🆕 Confirmation désactivation AJAX
+
+                    // Je relance les fonctions nécessaires après chargement
+                    initSubtabs();                     // Pour réactiver les sous-onglets (films/BD)
+                    autoDismissMessages();             // Pour faire disparaître les messages
+                    activerConfirmationSuppression();  // Pour gérer la modale de suppression AJAX
+                    activerConfirmationDesactivation(); // Pour gérer la modale de désactivation AJAX
                 })
                 .catch(error => {
+                    // En cas d’erreur, j’affiche un message visible dans le container
                     contentContainer.innerHTML = `<p style="color:red;">Erreur : ${error.message}</p>`;
                 });
         });
     });
 
-    // 2. Activer les sous-onglets (films / BD)
+    // Je gère les sous-onglets présents dans certains onglets (par exemple : films / BD)
     function initSubtabs() {
         const sousOnglets = document.querySelectorAll(".subtab-btn");
         const contenus = document.querySelectorAll(".subtab-content");
@@ -45,17 +51,22 @@ document.addEventListener("DOMContentLoaded", () => {
             sousOnglets.forEach(btn => {
                 btn.addEventListener("click", () => {
                     const cible = btn.dataset.subtab;
+
+                    // Je mémorise le dernier sous-onglet actif dans le localStorage
                     localStorage.setItem("ongletOeuvreActif", cible);
 
+                    // Je mets à jour l’état actif visuellement
                     sousOnglets.forEach(b => b.classList.remove("active"));
                     btn.classList.add("active");
 
+                    // Je masque/affiche dynamiquement les blocs de contenu
                     contenus.forEach(div => {
                         div.style.display = div.id === cible ? "block" : "none";
                     });
                 });
             });
 
+            // Je relis le dernier sous-onglet consulté, ou je prends "films" par défaut
             const ongletSauvegarde = localStorage.getItem("ongletOeuvreActif");
             const boutonCible = document.querySelector(`.subtab-btn[data-subtab="${ongletSauvegarde}"]`);
             const boutonDefaut = document.querySelector('.subtab-btn[data-subtab="films"]');
@@ -68,20 +79,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 3. Activation automatique des sous-onglets après chargement complet
+    // Je déclenche une première activation des sous-onglets au chargement initial
     initSubtabs();
 
-    // 4. Suppression auto des messages après 5 secondes (avec fondu)
+    // Je fais disparaître automatiquement les messages de confirmation ou d’erreur
     function autoDismissMessages() {
         setTimeout(() => {
             const messages = document.querySelectorAll('.message-success, .message-error');
             messages.forEach(msg => {
                 msg.style.transition = "opacity 0.5s ease";
                 msg.style.opacity = "0";
-                setTimeout(() => msg.remove(), 500);
+                setTimeout(() => msg.remove(), 500); // Je supprime le message après le fondu
             });
         }, 5000);
     }
 
+    // Je déclenche la suppression auto au démarrage
     autoDismissMessages();
 });

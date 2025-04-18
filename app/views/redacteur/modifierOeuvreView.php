@@ -4,7 +4,7 @@
 
 <h2>Modifier l'œuvre</h2>
 
-<form action="<?= BASE_URL ?>/redacteur/modifierOeuvre/<?= $oeuvre['id_oeuvre'] ?>" method="POST" enctype="multipart/form-data">
+<form id="form-ajout-modif" action="<?= BASE_URL ?>/redacteur/modifierOeuvre/<?= $oeuvre['id_oeuvre'] ?>" method="POST" enctype="multipart/form-data">
 
     <label for="titre">Titre :</label>
     <input type="text" id="titre" name="titre" value="<?= htmlspecialchars($oeuvre['titre']) ?>" required><br><br>
@@ -18,6 +18,9 @@
     <!-- 📷 Upload facultatif d'une nouvelle image -->
     <label for="media">Nouvelle image (facultatif) :</label>
     <input type="file" name="media" id="media" accept="image/*"><br><br>
+
+    <!-- Bloc JS pour message d’erreur image -->
+    <div id="erreur-upload" class="message-error" style="display: none;"></div>
 
     <!-- Champ caché avec l'image actuelle -->
     <input type="hidden" name="media_actuelle" value="<?= htmlspecialchars($oeuvre['media']) ?>">
@@ -50,5 +53,6 @@
 </form>
 
 <script src="<?= BASE_URL ?>/public/js/annuler.js" defer></script>
+<script src="<?= BASE_URL ?>/public/js/verifierUpload.js" defer></script>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

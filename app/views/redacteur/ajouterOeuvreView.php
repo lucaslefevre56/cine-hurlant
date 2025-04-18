@@ -9,7 +9,7 @@
 <h2>Ajouter une œuvre</h2>
 
 <!-- Formulaire avec enctype pour permettre l'upload de fichiers -->
-<form method="POST" action="<?= BASE_URL ?>/redacteur/ajouterOeuvre" enctype="multipart/form-data">
+<form id="form-ajout-modif" method="POST" action="<?= BASE_URL ?>/redacteur/ajouterOeuvre" enctype="multipart/form-data">
 
     <!-- Titre -->
     <label for="titre">Titre</label>
@@ -65,10 +65,14 @@
     <label for="image">Image</label>
     <input type="file" name="media" id="image" accept="image/*" required>
 
+    <!-- Bloc JS pour message d’erreur image -->
+    <div id="erreur-upload" class="message-error" style="display: none;"></div>
+
+
     <!-- Lien vidéo (facultatif, exemple : YouTube) -->
     <label for="video_url">Lien vidéo (facultatif)</label>
     <input type="url" name="video_url" id="video_url" value="<?= htmlspecialchars($_POST['video_url'] ?? '') ?>"
-           placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX">
+        placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX">
 
     <!-- Bouton -->
     <button type="submit">Ajouter l'œuvre</button>
@@ -77,5 +81,6 @@
 
 <p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
 
+<script src="<?= BASE_URL ?>/public/js/verifierUpload.js" defer></script>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

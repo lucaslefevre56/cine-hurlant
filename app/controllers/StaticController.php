@@ -1,4 +1,6 @@
 <?php
+// app/Controllers/StaticController.php
+
 namespace App\Controllers;
 
 use App\Core\View;

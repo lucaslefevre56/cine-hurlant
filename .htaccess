@@ -1,30 +1,31 @@
-# ==========================================
-# .htaccess — Réécriture d’URL moderne
-# Projet : Ciné-Hurlant
-# ==========================================
+# ================================
+# Fichier .htaccess de mon projet
+# Objectif : activer les URL propres
+# ================================
 
-# 🔁 Active le moteur de réécriture d'Apache
+# J’active le moteur de réécriture d’Apache (obligatoire pour que tout ce qui suit fonctionne)
 RewriteEngine On
 
-# 📁 Spécifie le chemin de base (à adapter selon ton dossier projet)
+# Je définis le dossier de base pour que les URL se comprennent bien
+# À adapter si le projet est ailleurs que dans /cine-hurlant/
 RewriteBase /cine-hurlant/
 
-# 🚫 Si la ressource demandée N’EST PAS un fichier...
+# Si ce qu’on cherche à afficher n’est pas un fichier réel…
 RewriteCond %{REQUEST_FILENAME} !-f
 
-# ...et N’EST PAS non plus un dossier...
+# …et si ce n’est pas non plus un dossier…
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# 👉 ...alors je redirige tout vers index.php
-# QSA = garde les paramètres GET éventuels (ex: ?page=2)
-# L = stoppe les règles ici si celle-ci est appliquée
+# Alors je redirige tout vers index.php
+# QSA garde les paramètres GET (genre ?page=2), L dit à Apache de s’arrêter là si la règle est bonne
 RewriteRule ^ index.php [QSA,L]
 
-# 🛡️ Protection des fichiers sensibles (ex: .env, .gitignore, .sql...)
+# Je protège l’accès aux fichiers sensibles, genre .env ou les fichiers SQL, logs, config, etc.
 <FilesMatch "^(\.env|\.gitignore|\.htaccess|.*\.(ini|log|sql|bak|md|json))$">
   Require all denied
 </FilesMatch>
 
-# 🔐 Redirection automatique vers HTTPS si besoin
+# Et pour être propre : je force la redirection vers HTTPS si on n’y est pas
+# Comme ça, le site est toujours en version sécurisée
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

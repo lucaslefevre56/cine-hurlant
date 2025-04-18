@@ -8,9 +8,8 @@ use App\Core\BaseModel;
 
 class Commentaire extends BaseModel
 {
-    /**
-     * J’ajoute un nouveau commentaire lié à un article
-     */
+    // J’ajoute un commentaire lié à un article et un utilisateur
+    // Si tout se passe bien, je retourne l'ID du commentaire inséré
     public function add(string $contenu, int $id_article, int $id_utilisateur): int|false
     {
         $sql = "INSERT INTO commentaire (contenu, id_article, id_utilisateur)
@@ -25,9 +24,7 @@ class Commentaire extends BaseModel
         return $stmt ? (int) $this->db->lastInsertId() : false;
     }
 
-    /**
-     * Je récupère tous les commentaires validés d’un article
-     */
+    // Je récupère tous les commentaires validés pour un article donné
     public function getByArticle(int $id_article): array
     {
         $sql = "SELECT commentaire.*, utilisateur.nom AS auteur
@@ -40,9 +37,7 @@ class Commentaire extends BaseModel
         return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     }
 
-    /**
-     * Je récupère un commentaire par son ID
-     */
+    // Je récupère un commentaire précis, s’il est validé
     public function getById(int $id_commentaire): array|false
     {
         $sql = "SELECT commentaire.*, utilisateur.nom AS auteur
@@ -54,9 +49,7 @@ class Commentaire extends BaseModel
         return $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : false;
     }
 
-    /**
-     * Je récupère tous les commentaires du site
-     */
+    // Je récupère tous les commentaires du site (pour l’admin par exemple)
     public function getAll(): array
     {
         $sql = "SELECT commentaire.*, utilisateur.nom AS auteur, article.titre AS article
@@ -70,9 +63,7 @@ class Commentaire extends BaseModel
         return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     }
 
-    /**
-     * Je supprime un commentaire en base
-     */
+    // Je supprime un commentaire en base (accessible si droits suffisants côté contrôleur)
     public function deleteById(int $id_commentaire): bool
     {
         $sql = "DELETE FROM commentaire WHERE id_commentaire = :id";
@@ -80,9 +71,7 @@ class Commentaire extends BaseModel
         return (bool) $stmt;
     }
 
-    /**
-     * Je mets à jour le contenu d’un commentaire
-     */
+    // Je modifie un commentaire (mise à jour + date actualisée automatiquement)
     public function updateContenu(int $id_commentaire, string $nouveau_contenu): bool
     {
         $sql = "UPDATE commentaire

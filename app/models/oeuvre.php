@@ -8,9 +8,7 @@ use App\Core\BaseModel;
 
 class Oeuvre extends BaseModel
 {
-    /**
-     * J’ajoute une œuvre avec ses genres associés
-     */
+    // J’ajoute une œuvre et je lie les genres sélectionnés
     public function add(
         string $titre,
         string $auteur,
@@ -37,8 +35,10 @@ class Oeuvre extends BaseModel
         ]);
 
         if ($stmt) {
+            // Je récupère l’ID de l’œuvre pour lier les genres
             $id_oeuvre = $this->db->lastInsertId();
 
+            // J’insère chaque genre dans la table de liaison
             foreach ($genres as $id_genre) {
                 $sqlGenre = "INSERT INTO appartenir (id_oeuvre, id_genre) VALUES (:id_oeuvre, :id_genre)";
                 $ok = $this->safeExecute($sqlGenre, [
@@ -55,9 +55,7 @@ class Oeuvre extends BaseModel
         return false;
     }
 
-    /**
-     * Je récupère toutes les œuvres avec leur type
-     */
+    // Récupère toutes les œuvres, triées par titre, avec leur type
     public function getAll(): array
     {
         $sql = "SELECT oeuvre.*, type.nom
@@ -69,6 +67,7 @@ class Oeuvre extends BaseModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Récupère une œuvre spécifique par son ID
     public function getById(int $id): array|false
     {
         $sql = "SELECT oeuvre.*, type.nom 
@@ -80,6 +79,7 @@ class Oeuvre extends BaseModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Je récupère les genres associés à une œuvre (pour affichage ou modification)
     public function getGenresByOeuvre(int $id_oeuvre): array
     {
         $sql = "SELECT genre.nom 
@@ -91,6 +91,7 @@ class Oeuvre extends BaseModel
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    // Pagination simple des œuvres avec leur type
     public function getPaginated(int $limit, int $offset): array
     {
         $sql = "SELECT oeuvre.*, type.nom
@@ -107,6 +108,7 @@ class Oeuvre extends BaseModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Nombre total d’œuvres pour la pagination
     public function countAll(): int
     {
         $sql = "SELECT COUNT(*) FROM oeuvre";
@@ -114,21 +116,23 @@ class Oeuvre extends BaseModel
         return (int) $stmt->fetchColumn();
     }
 
+    // Suppression d'une œuvre + suppression du fichier image s’il existe
     public function deleteById($id): bool
     {
-        // Je récupère le nom de l’image pour la supprimer du disque
         $stmt = $this->safeExecute("SELECT media FROM oeuvre WHERE id_oeuvre = :id", [':id' => $id]);
         $oeuvre = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // Je supprime l’image locale uniquement si ce n’est pas une URL
         if ($oeuvre && !empty($oeuvre['media']) && !filter_var($oeuvre['media'], FILTER_VALIDATE_URL)) {
             $chemin = ROOT . '/public/upload/' . $oeuvre['media'];
             if (file_exists($chemin)) unlink($chemin);
         }
 
-        // Je supprime ensuite l’œuvre
+        // Puis je supprime l’œuvre de la base
         return $this->safeExecute("DELETE FROM oeuvre WHERE id_oeuvre = :id", [':id' => $id]) !== false;
     }
 
+    // Mise à jour des infos d’une œuvre (hors genres, gérés ailleurs)
     public function update(
         int $id_oeuvre,
         string $titre,
@@ -143,6 +147,7 @@ class Oeuvre extends BaseModel
         return $this->safeExecute($sql, [$titre, $auteur, $annee, $media, $video_url, $analyse, $id_type, $id_oeuvre]) !== false;
     }
 
+    // Je récupère toutes les œuvres créées par un utilisateur
     public function getByAuteur(int $id_utilisateur): array
     {
         $sql = "SELECT oeuvre.*, type.nom
@@ -155,6 +160,7 @@ class Oeuvre extends BaseModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Recherche dans les titres ou auteurs (moteur de recherche)
     public static function searchByTitleOrAuthor(string $query): array
     {
         $db = \App\Core\Database::getInstance();
@@ -169,6 +175,7 @@ class Oeuvre extends BaseModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Suggestions aléatoires pour la page d’accueil
     public function getRandom(int $nb): array
     {
         $sql = "SELECT oeuvre.*, type.nom AS type

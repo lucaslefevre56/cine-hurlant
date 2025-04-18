@@ -5,8 +5,8 @@
 <h2>Inscription</h2>
 
 <?php if (!empty($erreur)) : ?>
-    <div style="color: red;">
-        <?= $erreur ?>
+    <div class="message-error">
+        <?= htmlspecialchars($erreur) ?>
     </div>
 <?php endif; ?>
 

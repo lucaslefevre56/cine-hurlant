@@ -13,15 +13,19 @@ use App\Helpers\AuthHelper;
 
 class AdminController
 {
+    // Cette méthode affiche la page principale du panneau d'administration
     public function index(): void
     {
+        // Je vérifie que l'utilisateur est bien un administrateur
         if (!AuthHelper::isUserAdmin()) {
             ErrorHandler::render404("Accès interdit : réservé aux administrateurs.");
         }
 
+        // Si tout va bien, j'affiche la vue principale de l'admin
         View::render('admin/adminPanelView');
     }
 
+    // Cette méthode affiche la liste des utilisateurs
     public function utilisateurs(): void
     {
         $utilisateurModel = new Utilisateur();
@@ -32,12 +36,15 @@ class AdminController
         ]);
     }
 
+    // Cette méthode permet de supprimer (désactiver) un utilisateur
     public function supprimerUtilisateur($id_utilisateur): void
     {
+        // Vérification des droits admin obligatoire
         if (!AuthHelper::isUserAdmin()) {
             ErrorHandler::render404("Accès interdit.");
         }
 
+        // Par sécurité, je m'empêche de supprimer mon propre compte admin
         if ($id_utilisateur == $_SESSION['user']['id']) {
             $this->utilisateursAvecMessage("Vous ne pouvez pas supprimer votre propre compte.");
             return;
@@ -53,6 +60,7 @@ class AdminController
         $this->utilisateursAvecMessage($message);
     }
 
+    // Cette méthode permet de restaurer un utilisateur désactivé
     public function restaurerUtilisateur($id_utilisateur): void
     {
         if (!AuthHelper::isUserAdmin()) {
@@ -69,6 +77,7 @@ class AdminController
         $this->utilisateursAvecMessage($message);
     }
 
+    // Cette méthode permet à l'admin de changer le rôle d'un utilisateur
     public function changerRole(): void
     {
         if (!AuthHelper::isUserAdmin()) {
@@ -88,6 +97,7 @@ class AdminController
             return;
         }
 
+        // Je vérifie que le rôle fait bien partie des rôles autorisés
         $roles = ['utilisateur', 'redacteur', 'admin'];
         if (!in_array($role, $roles)) {
             $this->utilisateursAvecMessage("Rôle invalide.");
@@ -101,6 +111,7 @@ class AdminController
         $this->utilisateursAvecMessage($message);
     }
 
+    // Gestion des articles : affichage et suppression
     public function articles(): void
     {
         if (!AuthHelper::isUserAdmin()) {
@@ -117,6 +128,7 @@ class AdminController
         $this->articlesAvecMessage();
     }
 
+    // Édition d'un article avec gestion d'image
     public function modifierArticle(int $id_article): void
     {
         if (!AuthHelper::isUserAdmin()) {
@@ -134,7 +146,7 @@ class AdminController
             $imageActuelle = $_POST['image_actuelle'] ?? '';
             $nouvelleImage = $imageActuelle;
 
-            // ⚠️ Traitement de l’upload si un fichier est envoyé
+            // Si une nouvelle image est envoyée, je la traite
             if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === 0) {
                 $tmpName = $_FILES['image']['tmp_name'];
                 $fileName = $_FILES['image']['name'];
@@ -148,7 +160,7 @@ class AdminController
                     if (move_uploaded_file($tmpName, $cheminUpload)) {
                         $nouvelleImage = $nouveauNom;
 
-                        // 🧹 Si ancienne image locale → suppression
+                        // Je supprime l'ancienne image si c'était un fichier local
                         if (!empty($imageActuelle) && !filter_var($imageActuelle, FILTER_VALIDATE_URL)) {
                             $ancienFichier = ROOT . '/public/upload/' . $imageActuelle;
                             if (file_exists($ancienFichier)) {
@@ -159,7 +171,7 @@ class AdminController
                 }
             }
 
-            // 🔄 Mise à jour finale
+            // Mise à jour finale de l'article
             $ok = $model->update($id_article, $titre, $contenu, $nouvelleImage, $video_url);
 
             $message = $ok
@@ -172,6 +184,7 @@ class AdminController
         View::render('admin/modifierArticleView', ['article' => $article]);
     }
 
+    // Gestion des oeuvres : suppression ou affichage
     public function oeuvres(): void
     {
         if (!AuthHelper::isUserAdmin()) {
@@ -188,6 +201,7 @@ class AdminController
         $this->oeuvresAvecMessage();
     }
 
+    // Edition d'une œuvre avec image
     public function modifierOeuvre(int $id_oeuvre): void
     {
         if (!AuthHelper::isUserAdmin()) {
@@ -208,7 +222,6 @@ class AdminController
             $ancienneImage = $_POST['media_actuelle'] ?? '';
             $nouvelleImage = $ancienneImage;
 
-            // Si une nouvelle image a été uploadée
             if (!empty($_FILES['media']['name']) && $_FILES['media']['error'] === UPLOAD_ERR_OK) {
                 $tmpName = $_FILES['media']['tmp_name'];
                 $originalName = $_FILES['media']['name'];
@@ -222,7 +235,6 @@ class AdminController
                     if (move_uploaded_file($tmpName, $dest)) {
                         $nouvelleImage = $newName;
 
-                        // Suppression de l'ancienne image si locale
                         if (!filter_var($ancienneImage, FILTER_VALIDATE_URL)) {
                             $cheminAncien = ROOT . '/public/upload/' . $ancienneImage;
                             if (file_exists($cheminAncien)) {
@@ -233,7 +245,6 @@ class AdminController
                 }
             }
 
-            // Mise à jour de l’œuvre
             $ok = $model->update(
                 $id_oeuvre,
                 $titre,
@@ -253,6 +264,7 @@ class AdminController
         View::render('admin/modifierOeuvreView', ['oeuvre' => $oeuvre]);
     }
 
+    // Affichage ou suppression des commentaires
     public function commentaires(): void
     {
         if (!AuthHelper::isUserAdmin()) {
@@ -269,8 +281,7 @@ class AdminController
         $this->commentairesAvecMessage();
     }
 
-    // 🔁 Affichages factorisés avec vue partielle ou complète
-
+    // Fonctions internes pour centraliser l'affichage des vues avec messages
     private function utilisateursAvecMessage(string $message = ''): void
     {
         $utilisateurs = (new Utilisateur())->getAll();
@@ -311,14 +322,14 @@ class AdminController
         ]);
     }
 
-    // ✅ Inclusion propre d’une méthode AJAX check
+    // Je détecte si la requête est faite en AJAX pour afficher une vue partielle
     private function isAjaxRequest(): bool
     {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
             strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
 
-    // 🧩 Méthode centrale pour éviter les répétitions de render/renderPartial
+    // Méthode centrale pour afficher les vues admin, complètes ou partielles
     private function rendreVue(string $vue, array $data = []): void
     {
         if ($this->isAjaxRequest()) {

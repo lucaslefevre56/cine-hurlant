@@ -4,7 +4,7 @@
 
 <h2>Modifier l'article : <?= htmlspecialchars($article['titre']) ?></h2>
 
-<form action="" method="POST" enctype="multipart/form-data">
+<form id="form-ajout-modif" action="" method="POST" enctype="multipart/form-data">
     <label for="titre">Titre</label>
     <input type="text" name="titre" id="titre" value="<?= htmlspecialchars($article['titre']) ?>" required>
 
@@ -14,6 +14,9 @@
     <!-- Champ pour uploader une nouvelle image -->
     <label for="image">Nouvelle image (facultatif)</label>
     <input type="file" name="image" id="image" accept="image/*"><br><br>
+
+    <!-- Bloc JS pour message d’erreur image -->
+    <div id="erreur-upload" class="message-error" style="display: none;"></div>
 
     <!-- Affichage de l’image actuelle -->
     <?php if (!empty($article['image']) && !filter_var($article['image'], FILTER_VALIDATE_URL)) : ?>
@@ -36,5 +39,6 @@
 </form>
 
 <script src="<?= BASE_URL ?>/public/js/annuler.js" defer></script>
+<script src="<?= BASE_URL ?>/public/js/verifierUpload.js" defer></script>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>
