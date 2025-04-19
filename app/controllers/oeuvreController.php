@@ -34,38 +34,51 @@ class OeuvreController
         ]);
     }
 
-    // Cette méthode permet d'afficher toutes les œuvres, avec pagination
+    // Cette méthode permet d'afficher toutes les œuvres avec double pagination
     public function liste(): void
     {
-        // Je détermine la page actuelle (au minimum 1)
-        $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+        // Je récupère les numéros de page des deux onglets (films et BD)
+        $pageFilms = isset($_GET['pageFilms']) ? max(1, (int) $_GET['pageFilms']) : 1;
+        $pageBD    = isset($_GET['pageBD'])    ? max(1, (int) $_GET['pageBD'])    : 1;
 
-        // Je fixe le nombre d'œuvres par page
         $parPage = 6;
-        $offset = ($page - 1) * $parPage;
+
+        $offsetFilms = ($pageFilms - 1) * $parPage;
+        $offsetBD    = ($pageBD - 1) * $parPage;
 
         $modele = new Oeuvre();
-        $oeuvres = $modele->getPaginated($parPage, $offset);
-        $total = $modele->countAll();
-        $totalPages = ceil($total / $parPage);
 
-        // Je sépare les œuvres en deux catégories : films et BD, pour les onglets
-        $films = array_filter($oeuvres, fn($o) => strtolower($o['nom']) === 'film');
-        $bds   = array_filter($oeuvres, fn($o) => strtolower($o['nom']) === 'bd');
+        // Je récupère les œuvres de chaque type avec pagination dédiée
+        $films = $modele->getPaginatedByType('film', $parPage, $offsetFilms);
+        $bds   = $modele->getPaginatedByType('bd', $parPage, $offsetBD);
 
-        // Et j'affiche la vue avec toutes les données nécessaires
+        // J’ajoute les genres à chaque œuvre
+        foreach ($films as &$oeuvre) {
+            $oeuvre['genres'] = $modele->getGenresByOeuvre($oeuvre['id_oeuvre']);
+        }
+        foreach ($bds as &$oeuvre) {
+            $oeuvre['genres'] = $modele->getGenresByOeuvre($oeuvre['id_oeuvre']);
+        }
+        unset($oeuvre);
+
+        // Je calcule le nombre total de pages pour chaque catégorie
+        $totalPagesFilms = ceil($modele->countByType('film') / $parPage);
+        $totalPagesBD    = ceil($modele->countByType('bd') / $parPage);
+
+        // Et je rends la vue avec toutes les données nécessaires
         View::render('oeuvres/listeOeuvresView', [
             'films' => $films,
             'bds' => $bds,
-            'page' => $page,
-            'totalPages' => $totalPages
+            'pageFilms' => $pageFilms,
+            'pageBD' => $pageBD,
+            'totalPagesFilms' => $totalPagesFilms,
+            'totalPagesBD' => $totalPagesBD
         ]);
     }
 
     // Cette méthode est l'entrée principale du contrôleur : elle redirige vers la liste
     public function index(): void
     {
-        // Pratique pour garder une route propre type /oeuvre
         $this->liste();
     }
 }

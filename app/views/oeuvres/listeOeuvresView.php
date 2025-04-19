@@ -1,5 +1,3 @@
-<!-- app/views/oeuvres/listeOeuvreView.php -->
-*
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
 <!-- Titre principal de la page -->
@@ -11,24 +9,21 @@
     <button class="subtab-btn" data-subtab="bd">Bandes dessinées</button>
 </div>
 
-<!-- Bloc de pagination -->
-<div class="pagination">
-    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-        <a href="<?= BASE_URL ?>/oeuvre/liste?page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>">
-            <?= $i ?>
-        </a>
-    <?php endfor; ?>
-</div>
-
 <!-- Contenu : Films -->
 <div id="films" class="subtab-content">
+    <!-- Bloc de pagination des films (haut) -->
+    <div class="pagination">
+        <?php for ($i = 1; $i <= $totalPagesFilms; $i++): ?>
+            <a href="<?= BASE_URL ?>/oeuvre/liste?pageFilms=<?= $i ?>&pageBD=<?= $pageBD ?>" class="<?= $i === $pageFilms ? 'active' : '' ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </div>
+
     <!-- Je vérifie qu’il y a bien des œuvres à afficher -->
     <?php if (!empty($films)) : ?>
-
         <!-- J’affiche un conteneur pour toutes les cartes d’œuvres -->
         <div class="liste-oeuvres">
-
-            <!-- Je parcours chaque œuvre pour créer une carte individuelle -->
             <?php foreach ($films as $oeuvre) : ?>
                 <div class="carte-oeuvre">
                     <h3><?= htmlspecialchars($oeuvre['titre']) ?></h3>
@@ -50,14 +45,31 @@
                 </div>
             <?php endforeach; ?>
         </div>
-
     <?php else : ?>
         <p>Aucun film enregistré pour le moment</p>
     <?php endif; ?>
+
+    <!-- Bloc de pagination des films (bas) -->
+    <div class="pagination">
+        <?php for ($i = 1; $i <= $totalPagesFilms; $i++): ?>
+            <a href="<?= BASE_URL ?>/oeuvre/liste?pageFilms=<?= $i ?>&pageBD=<?= $pageBD ?>" class="<?= $i === $pageFilms ? 'active' : '' ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </div>
 </div>
 
 <!-- Contenu : BD -->
 <div id="bd" class="subtab-content" style="display: none;">
+    <!-- Bloc de pagination des BD (haut) -->
+    <div class="pagination">
+        <?php for ($i = 1; $i <= $totalPagesBD; $i++): ?>
+            <a href="<?= BASE_URL ?>/oeuvre/liste?pageFilms=<?= $pageFilms ?>&pageBD=<?= $i ?>" class="<?= $i === $pageBD ? 'active' : '' ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </div>
+
     <?php if (!empty($bds)) : ?>
         <div class="liste-oeuvres">
             <?php foreach ($bds as $oeuvre) : ?>
@@ -84,15 +96,15 @@
     <?php else : ?>
         <p>Aucune BD enregistrée pour le moment</p>
     <?php endif; ?>
-</div>
 
-<!-- Bloc de pagination -->
-<div class="pagination">
-    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-        <a href="<?= BASE_URL ?>/oeuvre/liste?page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>">
-            <?= $i ?>
-        </a>
-    <?php endfor; ?>
+    <!-- Bloc de pagination des BD (bas) -->
+    <div class="pagination">
+        <?php for ($i = 1; $i <= $totalPagesBD; $i++): ?>
+            <a href="<?= BASE_URL ?>/oeuvre/liste?pageFilms=<?= $pageFilms ?>&pageBD=<?= $i ?>" class="<?= $i === $pageBD ? 'active' : '' ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </div>
 </div>
 
 <p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>

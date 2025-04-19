@@ -155,3 +155,11 @@ WHERE NOT EXISTS (SELECT 1 FROM genre WHERE nom = 'Western');
 INSERT INTO genre (id_genre, nom) 
 SELECT 4, 'Cyberpunk'
 WHERE NOT EXISTS (SELECT 1 FROM genre WHERE nom = 'Cyberpunk');
+
+INSERT INTO genre (id_genre, nom) 
+SELECT 5, 'Horreur'
+WHERE NOT EXISTS (SELECT 1 FROM genre WHERE nom = 'Horreur');
+
+INSERT INTO genre (id_genre, nom) 
+SELECT 6, 'Comédie'
+WHERE NOT EXISTS (SELECT 1 FROM genre WHERE nom = 'Comédie');

@@ -108,6 +108,38 @@ class Oeuvre extends BaseModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Je récupère les œuvres paginées selon leur type (film ou bd)
+    public function getPaginatedByType(string $type, int $limit, int $offset): array
+    {
+        $sql = "SELECT oeuvre.*, type.nom
+                FROM oeuvre
+                JOIN type ON oeuvre.id_type = type.id_type
+                WHERE LOWER(type.nom) = :type
+                ORDER BY oeuvre.titre ASC
+                LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':type', strtolower($type), PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Je compte le nombre total d’œuvres d’un type donné (film ou bd)
+    public function countByType(string $type): int
+    {
+        $sql = "SELECT COUNT(*) 
+                FROM oeuvre
+                JOIN type ON oeuvre.id_type = type.id_type
+                WHERE LOWER(type.nom) = :type";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':type' => strtolower($type)]);
+        return (int) $stmt->fetchColumn();
+    }
+
     // Nombre total d’œuvres pour la pagination
     public function countAll(): int
     {

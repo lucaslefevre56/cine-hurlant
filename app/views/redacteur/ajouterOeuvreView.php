@@ -50,6 +50,16 @@
             <input type="checkbox" name="genres[]" value="4"
                 <?= in_array('4', $_POST['genres'] ?? []) ? 'checked' : '' ?>> Cyberpunk
         </label><br>
+
+        <label>
+            <input type="checkbox" name="genres[]" value="5"
+                <?= in_array('5', $_POST['genres'] ?? []) ? 'checked' : '' ?>> Horreur
+        </label><br>
+
+        <label>
+            <input type="checkbox" name="genres[]" value="6"
+                <?= in_array('6', $_POST['genres'] ?? []) ? 'checked' : '' ?>> Comédie
+        </label><br>
     </fieldset>
 
     <!-- Année -->

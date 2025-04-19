@@ -23,6 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Je gère la restauration du scroll sur la pagination
+    const paginationLinks = document.querySelectorAll('.pagination a');
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            localStorage.setItem(storageKey, getOngletActuel());
+        });
+    });
+
     // Fonction utilitaire pour afficher le bon contenu et activer le bon bouton
     function activerOnglet(nom) {
         // Je mets à jour visuellement les boutons (seul le bon a la classe "active")
@@ -34,5 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
         contents.forEach(content => {
             content.style.display = content.id === nom ? 'block' : 'none';
         });
+    }
+
+    // Je récupère l’onglet actuellement actif (pour mémoire avant changement de page)
+    function getOngletActuel() {
+        const actif = [...buttons].find(btn => btn.classList.contains('active'));
+        return actif ? actif.dataset.subtab : 'films';
     }
 });
