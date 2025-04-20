@@ -2,6 +2,8 @@
 
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
+<div class="page-resultats">
+
 <!-- Titre principal -->
 <h2>Résultats pour : "<?= htmlspecialchars($q) ?>"</h2>
 
@@ -39,5 +41,7 @@
 <?php endif; ?>
 
 <p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
+
+</div>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

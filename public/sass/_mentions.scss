@@ -1,0 +1,92 @@
+// === PAGE MENTIONS LÉGALES ===
+
+.mentions-legales {
+    max-width: 900px;
+    margin: 4rem auto;
+    padding: 2rem 1rem;
+    line-height: 1.7;
+    background-color: $jaune-pale;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    color: $brun;
+    text-align: center;
+  
+    // Titre principal
+    h1 {
+      font-size: 1.8rem;
+      font-family: $font-titres;
+      color: $brun;
+      margin-bottom: 2rem;
+    }
+  
+    // Sous-titres
+    h2 {
+      font-size: 1.3rem;
+      font-family: $font-titres;
+      color: $brun;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+  
+    // Paragraphes
+    p {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      word-break: break-word;
+  
+      a {
+        color: $orange;
+        font-weight: bold;
+        text-decoration: none; 
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  
+    // Liste d'infos (contact, auteurs…)
+    ul {
+      padding-left: 1.5rem;
+      text-align: left;
+      margin-bottom: 1rem;
+  
+      li {
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        color: $brun;
+  
+        a {
+          color: $orange;
+          font-weight: bold;
+          text-decoration: none;
+  
+          &:hover {
+            color: $orange-dark;
+          }
+        }
+      }
+    }
+  }
+  
+  // === VERSION DESKTOP ===
+  
+  @media screen and (min-width: 768px) {
+    .mentions-legales {
+      padding: 3rem;
+  
+      h1 {
+        font-size: 2.2rem;
+      }
+  
+      h2 {
+        font-size: 1.5rem;
+      }
+  
+      p,
+      li {
+        font-size: 1.05rem;
+      }
+    }
+  }
+  

@@ -1,0 +1,94 @@
+// === PAGE PROFIL UTILISATEUR ===
+
+.page-profil {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 2rem 1rem;
+    background-color: $jaune-pale;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+    // Titre principal
+    h2 {
+      text-align: center;
+      font-size: 1.6rem;
+      font-family: $font-titres;
+      color: $brun;
+      margin-bottom: 2rem;
+    }
+  
+    // Message d’erreur éventuel
+    p[style*="color:red"] {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+  
+    // Informations du profil
+    p {
+      font-size: 1rem;
+      color: $brun;
+      line-height: 1.6;
+      margin-bottom: 0.8rem;
+      text-align: center;
+  
+      strong {
+        font-weight: bold;
+      }
+  
+      a {
+        color: $orange;
+        font-weight: bold;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  
+    // Bouton de désactivation
+    form {
+      text-align: center;
+      margin-top: 2rem;
+  
+      .btn-desactiver {
+        padding: 0.6rem 1.5rem;
+        background-color: $orange;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+  
+        &:hover {
+          background-color: $orange-dark;
+        }
+      }
+    }
+  
+    // Dernier paragraphe d’info
+    p:last-of-type {
+      margin-top: 2rem;
+      font-style: italic;
+      color: $brun;
+      font-size: 0.95rem;
+    }
+  }
+  
+  // === VERSION DESKTOP ===
+  
+  @media screen and (min-width: 768px) {
+    .page-profil {
+      padding: 3rem;
+  
+      h2 {
+        font-size: 2rem;
+      }
+  
+      p {
+        font-size: 1.05rem;
+      }
+    }
+  }
+  

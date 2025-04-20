@@ -1,0 +1,129 @@
+// === LISTE ARTICLES ===
+
+.articles {
+    padding: 2rem 1rem;
+  
+    h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+    }
+  
+    .liste-articles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0;
+      padding-bottom: 3rem;
+    }
+  
+    .carte-article {
+      background-color: $jaune-pale;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      text-align: center;
+      transition: transform 0.3s ease;
+      min-height: 560px;
+  
+      &:hover {
+        transform: translateY(-4px);
+      }
+  
+      img {
+        width: 100%;
+        max-width: 200px;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 6px;
+        margin: 0 auto 1rem;
+        flex-shrink: 0;
+      }
+  
+      h3 {
+        font-size: 1.2rem;
+        font-family: $font-titres;
+        color: $brun;
+        margin-bottom: 1rem; 
+      }
+  
+      p {
+        font-size: 0.95rem;
+        color: $brun;
+        margin: 0 0 0.9rem 0; 
+        line-height: 1.6; 
+        word-break: break-word;
+      }
+  
+      a {
+        margin-top: auto;
+        font-weight: bold;
+        color: $orange;
+        display: inline-block;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  
+    .pagination {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 2rem auto 0;
+      padding-top: 1rem;
+  
+      a {
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        background-color: $orange;
+        color: white;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+  
+        &.active,
+        &:hover {
+          background-color: $orange-dark;
+        }
+      }
+    }
+  
+    .retour-accueil {
+      text-align: center;
+      margin-top: 3rem;
+  
+      a {
+        color: $brun;
+        font-weight: bold;
+        font-size: 1rem;
+        padding-bottom: 2px;
+        transition: color 0.3s ease;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  }
+  
+  // === VERSION DESKTOP ===
+
+  @media screen and (min-width: 768px) {
+    .articles {
+      .liste-articles {
+        grid-template-columns: repeat(3, 1fr);
+      }
+  
+      .carte-article {
+        img {
+          max-width: 220px;
+        }
+      }
+    }
+  }
+  

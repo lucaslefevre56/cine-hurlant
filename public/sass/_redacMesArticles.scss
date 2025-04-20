@@ -1,0 +1,180 @@
+// === TABLEAU DES ARTICLES DU RÉDACTEUR ===
+
+.redacteur-articles {
+    max-width: 1000px;
+    margin: -3.5rem auto -2rem;
+    padding: 1rem;
+  
+    h2 {
+      font-size: 1.6rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-family: $font-titres;
+      color: $brun;
+    }
+  
+    .message-success {
+      text-align: center;
+      font-weight: bold;
+      color: green;
+      margin-bottom: 1rem;
+    }
+  
+    table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      background-color: $jaune-pale;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  
+      th,
+      td {
+        padding: 0.8rem;
+        text-align: center;
+        font-size: 0.95rem;
+        color: $brun;
+        border: 1px solid lighten($brun, 40%);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+      }
+  
+      // Autorise les retours à la ligne sur le titre
+      td:nth-child(2) {
+        white-space: normal;
+      }
+  
+      // Centrage parfait pour la cellule formulaire
+      td:has(form) {
+        padding: 0;
+      }
+  
+      td form {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.8rem;
+      }
+  
+      thead {
+        background-color: $orange;
+  
+        th {
+          font-weight: bold;
+          font-family: $font-titres;
+        }
+      }
+  
+      a {
+        color: $orange;
+        font-weight: bold;
+        transition: color 0.2s ease;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+  
+      .btn-supprimer {
+        background-color: #d9534f;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 0.4rem 0.8rem;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        transition: background-color 0.3s ease;
+  
+        &:hover {
+          background-color: darken(#d9534f, 10%);
+        }
+      }
+    }
+  
+    // === VERSION MOBILE (sous 768px) ===
+    @media screen and (max-width: 767px) {
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+      }
+  
+      thead {
+        display: none;
+      }
+  
+      table {
+        overflow: visible;
+        border: none;
+        box-shadow: none;
+        background-color: transparent;
+      }
+  
+      tr {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background-color: $jaune-pale;
+        border-radius: 8px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+      }
+  
+      td {
+        text-align: left;
+        padding: 0.5rem 0;
+        border: none;
+        position: relative;
+        white-space: normal;
+  
+        &::before {
+          content: attr(data-label);
+          font-weight: bold;
+          display: block;
+          font-family: $font-titres;
+          margin-bottom: 0.3rem;
+        }
+  
+        form {
+          margin-top: 0.5rem;
+          padding: 0;
+          display: block;
+        }
+      }
+  
+      td:empty {
+        display: none;
+      }
+  
+      tr:last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+  
+    // === VERSION DESKTOP ===
+    @media screen and (min-width: 768px) {
+      padding: 2rem;
+  
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+  
+      table {
+        font-size: 1rem;
+  
+        th,
+        td {
+          padding: 1rem;
+        }
+      }
+    }
+  }
+  

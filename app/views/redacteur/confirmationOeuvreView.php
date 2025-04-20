@@ -2,14 +2,17 @@
 
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
-<h2>Ajout réussi</h2>
+<div class="page-confirmation-oeuvre">
 
-<?php if (!empty($message)) : ?>
-    <div class="message-success"><?= htmlspecialchars($message) ?></div>
-<?php endif; ?>
+    <h2>Ajout réussi</h2>
 
-<!-- Liens de navigation -->
-<p><a href="<?= BASE_URL ?>/">Retour à l’accueil</a></p>
-<p><a href="<?= BASE_URL ?>/redacteur/ajouterOeuvre">Ajouter une autre œuvre</a></p>
+    <?php if (!empty($message)) : ?>
+        <div class="message-success"><?= htmlspecialchars($message) ?></div>
+    <?php endif; ?>
+
+    <p><a href="<?= BASE_URL ?>/">Retour à l’accueil</a></p>
+    <p><a href="<?= BASE_URL ?>/redacteur/ajouterOeuvre">Ajouter une autre œuvre</a></p>
+
+</div>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

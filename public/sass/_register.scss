@@ -1,0 +1,115 @@
+// === PAGE INSCRIPTION ===
+
+.page-register {
+    max-width: 500px;
+    margin: 3rem auto;
+    padding: 2rem 1rem;
+    background-color: $jaune-pale;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+    // Titre centré et stylisé
+    h2 {
+      text-align: center;
+      font-size: 1.6rem;
+      font-family: $font-titres;
+      color: $brun;
+      margin-bottom: 1.5rem;
+    }
+  
+    // Message d’erreur éventuel (ex : email déjà utilisé)
+    .message-error {
+      text-align: center;
+      color: red;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+  
+    // Formulaire d'inscription
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+  
+      label {
+        font-weight: bold;
+        color: $brun;
+        margin-bottom: 0.2rem;
+      }
+  
+      input {
+        padding: 0.7rem;
+        border: 1px solid lighten($brun, 40%);
+        border-radius: 6px;
+        font-size: 1rem;
+        background-color: white;
+      }
+  
+      // Liste des règles de mot de passe
+      ul {
+        padding-left: 1.5rem;
+        font-size: 0.9rem;
+        color: $brun;
+        margin-top: -0.5rem;
+        margin-bottom: -0.5rem;
+  
+        li {
+          margin-bottom: 0.3rem;
+          list-style-type: disc;
+        }
+      }
+  
+      // Bouton d’envoi
+      button {
+        align-self: center;
+        margin-top: 1rem;
+        padding: 0.6rem 1.5rem;
+        background-color: $orange;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+  
+        &:hover {
+          background-color: $orange-dark;
+        }
+      }
+    }
+  
+    // Lien retour vers la page de connexion
+    .retour-connexion {
+      text-align: center;
+      margin-top: 2rem;
+  
+      a {
+        font-weight: bold;
+        color: $brun;
+        font-size: 1rem;
+        text-decoration: none;
+  
+        &:hover {
+          color: $orange-dark;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  // === VERSION DESKTOP ===
+  
+  @media screen and (min-width: 768px) {
+    .page-register {
+      padding: 3rem;
+  
+      h2 {
+        font-size: 2rem;
+      }
+  
+      form input {
+        font-size: 1.05rem;
+      }
+    }
+  }
+  

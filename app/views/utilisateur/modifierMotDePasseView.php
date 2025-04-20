@@ -2,6 +2,8 @@
 
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
+<div class="page-modifier-mdp">
+
 <h2>Modifier mon mot de passe</h2>
 
 <?php if (!empty($confirmation)) : ?>
@@ -34,5 +36,7 @@
 </form>
 
 <p><a href="<?= BASE_URL ?>/utilisateur/profil">⬅️ Retour au profil</a></p>
+
+</div>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

@@ -1,0 +1,125 @@
+// === FICHE ŒUVRE ===
+
+.fiche-oeuvre {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+  
+    // Titre de l’œuvre centré et stylisé
+    h2 {
+      font-size: 1.8rem;
+      font-family: $font-titres;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: $brun;
+    }
+  
+    // Sous-titres comme "Analyse" ou "Vidéo associée"
+    h3 {
+      font-size: 1.3rem;
+      font-family: $font-titres;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: $brun;
+      text-align: center;
+    }
+  
+    // Paragraphe d’information (auteur, type, etc.)
+    p {
+      font-size: 1rem;
+      color: $brun;
+      line-height: 1.6;
+      margin-bottom: 0.8rem;
+      text-align: center;
+  
+      // Mots importants
+      strong {
+        font-weight: bold;
+      }
+  
+      // Texte d’information complémentaire
+      em {
+        color: darken($brun, 10%);
+        font-style: italic;
+      }
+  
+      // Lien dans un paragraphe
+      a {
+        color: $orange;
+        font-weight: bold;
+        cursor: pointer;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  
+    // Image principale (affiche ou couverture)
+    img {
+      display: block;
+      width: 100%;
+      max-width: 260px;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border-radius: 6px;
+      margin: 1.5rem auto;
+    }
+  
+    // Vidéo intégrée (YouTube)
+    iframe {
+      display: block;
+      width: 100%;
+      max-width: 560px;
+      aspect-ratio: 16 / 9;
+      border: none;
+      border-radius: 6px;
+      margin: 1.5rem auto;
+    }
+  
+    // Bloc de retour vers la liste ou l’accueil
+    .retour {
+      text-align: center;
+      margin-top: 2rem;
+  
+      a {
+        font-size: 1rem;
+        color: $orange;
+        font-weight: bold;
+        cursor: pointer;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  }
+  
+  // === VERSION DESKTOP ===
+  
+  @media screen and (min-width: 768px) {
+    .fiche-oeuvre {
+      padding: 2rem;
+  
+      h2 {
+        font-size: 2.2rem;
+      }
+  
+      h3 {
+        font-size: 1.5rem;
+      }
+  
+      p {
+        font-size: 1.05rem;
+      }
+  
+      img {
+        max-width: 300px;
+      }
+  
+      iframe {
+        max-width: 640px;
+      }
+    }
+  }
+  

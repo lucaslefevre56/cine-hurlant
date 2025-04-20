@@ -1,0 +1,214 @@
+// === FICHE ARTICLE ===
+
+.fiche-article {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+  
+    // Titre principal
+    h2 {
+      font-size: 1.8rem;
+      font-family: $font-titres;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: $brun;
+    }
+  
+    // Sous-titres (contenu, vidéo, œuvres liées…)
+    h3 {
+      font-size: 1.3rem;
+      font-family: $font-titres;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: $brun;
+      text-align: center;
+    }
+  
+    // Paragraphes d’info ou de contenu
+    p {
+      font-size: 1rem;
+      color: $brun;
+      line-height: 1.6;
+      margin-bottom: 0.8rem;
+      text-align: center;
+  
+      strong {
+        font-weight: bold;
+      }
+  
+      em {
+        color: darken($brun, 10%);
+        font-style: italic;
+      }
+  
+      a {
+        color: $orange;
+        font-weight: bold;
+        cursor: pointer;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  
+    // Image d’illustration
+    .image-article {
+      display: block;
+      width: 100%;
+      max-width: 280px;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 6px;
+      margin: 1.5rem auto;
+    }
+  
+    // Bloc iframe vidéo
+    .video-container {
+      display: flex;
+      justify-content: center;
+      margin: 1.5rem auto;
+  
+      iframe.video-embed {
+        width: 100%;
+        max-width: 560px;
+        aspect-ratio: 16 / 9;
+        border: none;
+        border-radius: 6px;
+      }
+    }
+  
+    // Liste des œuvres liées
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 1rem;
+  
+      li {
+        margin-bottom: 0.5rem;
+        text-align: center;
+  
+        a {
+          color: $orange;
+          font-weight: bold;
+  
+          &:hover {
+            color: $orange-dark;
+          }
+        }
+      }
+    }
+  
+    // Zone commentaires
+    #zone-commentaires {
+      margin-top: 2rem;
+  
+      h2 {
+        font-size: 1.4rem;
+        font-family: $font-titres;
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+  
+      .commentaire {
+        background-color: $jaune-pale;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+  
+        p {
+          text-align: left;
+          margin: 0.3rem 0;
+        }
+      }
+    }
+  
+    // Formulaire de commentaire
+    #form-commentaire {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+  
+      textarea {
+        resize: vertical;
+        padding: 0.8rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+      }
+  
+      button {
+        align-self: center;
+        background-color: $orange;
+        color: white;
+        font-weight: bold;
+        padding: 0.6rem 1.2rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+  
+        &:hover {
+          background-color: $orange-dark;
+        }
+      }
+    }
+  
+    .info-connexion {
+      text-align: center;
+      font-style: italic;
+      color: darken($brun, 10%);
+      margin-top: 2rem;
+    }
+  
+    .message-flash {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  
+    // Lien retour
+    .retour {
+      text-align: center;
+      margin-top: 2rem;
+  
+      a {
+        font-size: 1rem;
+        color: $orange;
+        font-weight: bold;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  }
+  
+  // === VERSION DESKTOP ===
+  
+  @media screen and (min-width: 768px) {
+    .fiche-article {
+      padding: 2rem;
+  
+      h2 {
+        font-size: 2.2rem;
+      }
+  
+      h3 {
+        font-size: 1.5rem;
+      }
+  
+      p {
+        font-size: 1.05rem;
+      }
+  
+      .image-article {
+        max-width: 300px;
+      }
+  
+      iframe.video-embed {
+        max-width: 640px;
+      }
+    }
+  }
+  

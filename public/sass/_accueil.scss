@@ -182,9 +182,13 @@
     }
   }
   
-  // === VERSION DESKTOP (≥ 768px) ===
+  // === VERSION DESKTOP ===
   
   @media screen and (min-width: 768px) {
+    .presentation-site {
+      margin-bottom: 8rem;
+    }
+    
     .contenu-accueil {
       flex-direction: row;
       justify-content: space-between;
@@ -208,6 +212,13 @@
         button {
           max-width: none;
         }
+      }
+  
+      .carte-article {
+        min-height: 480px; 
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
   
       .img-article-slider {

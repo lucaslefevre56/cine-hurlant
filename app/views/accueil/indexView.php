@@ -25,7 +25,7 @@
         <img src="<?= BASE_URL ?>/public/images/robot-love.png" alt="Slide 2">
       </div>
       <div class="slide">
-        <img src="<?= BASE_URL ?>/public/images/robot-mousse.png" alt="Slide 3">
+        <img src="<?= BASE_URL ?>/public/images/hybrides.webp" alt="Slide 3">
       </div>
     </div>
 
@@ -81,7 +81,7 @@
                   class="img-article-slider">
               <?php endif; ?>
               <h4><?= htmlspecialchars($article['titre']) ?></h4>
-              <p><?= htmlspecialchars(mb_strimwidth(strip_tags($article['contenu']), 0, 120, '...')) ?></p>
+              <p><?= htmlspecialchars(mb_strimwidth(strip_tags($article['contenu']), 0, 1000, '...')) ?></p>
               <a href="<?= BASE_URL ?>/article/fiche/<?= $article['id_article'] ?>">Lire l’article</a>
             </article>
           <?php endforeach; ?>

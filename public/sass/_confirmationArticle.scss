@@ -1,0 +1,58 @@
+// === CONFIRMATION AJOUT ARTICLE (rédacteur) ===
+
+.page-confirmation-article {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    text-align: center;
+  
+    h2 {
+      font-family: $font-titres;
+      font-size: 1.8rem;
+      color: $brun;
+      margin-bottom: 1rem;
+    }
+  
+    .message-success {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: green;
+      margin-bottom: 1.5rem;
+      font-family: $font-texte;
+    }
+  
+    p {
+      margin-bottom: 0.7rem;
+  
+      a {
+        color: $orange;
+        font-weight: bold;
+        text-decoration: none;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  }
+  
+  // === VERSION DESKTOP ===
+  
+  @media screen and (min-width: 768px) {
+    .page-confirmation-article {
+      padding: 3rem 2rem;
+  
+      h2 {
+        font-size: 2rem;
+      }
+  
+      .message-success {
+        font-size: 1.2rem;
+      }
+  
+      p {
+        font-size: 1.05rem;
+      }
+    }
+  }
+  

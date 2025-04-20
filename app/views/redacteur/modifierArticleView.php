@@ -2,41 +2,45 @@
 
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
-<h2>Modifier l'article : <?= htmlspecialchars($article['titre']) ?></h2>
+<div class="page-modifier-article">
 
-<!-- Formulaire avec enctype pour permettre l'upload -->
-<form id="form-ajout-modif" action="<?= BASE_URL ?>/redacteur/modifierArticle/<?= $article['id_article'] ?>" method="POST" enctype="multipart/form-data">
-    <label for="titre">Titre</label>
-    <input type="text" name="titre" id="titre" value="<?= htmlspecialchars($article['titre']) ?>" required>
+    <h2>Modifier l'article : <?= htmlspecialchars($article['titre']) ?></h2>
 
-    <label for="contenu">Contenu</label>
-    <textarea name="contenu" id="contenu" required><?= htmlspecialchars($article['contenu']) ?></textarea>
+    <!-- Formulaire avec enctype pour permettre l'upload -->
+    <form id="form-ajout-modif" action="<?= BASE_URL ?>/redacteur/modifierArticle/<?= $article['id_article'] ?>" method="POST" enctype="multipart/form-data">
+        <label for="titre">Titre</label>
+        <input type="text" name="titre" id="titre" value="<?= htmlspecialchars($article['titre']) ?>" required>
 
-    <!-- Image actuelle affichée si présente -->
-    <?php if (!empty($article['image']) && !filter_var($article['image'], FILTER_VALIDATE_URL)) : ?>
-        <p>Image actuelle :</p>
-        <img src="<?= BASE_URL ?>/public/upload/<?= htmlspecialchars($article['image']) ?>" width="200" loading="lazy"><br><br>
-    <?php elseif (!empty($article['image'])) : ?>
-        <p>Image actuelle (URL externe) :</p>
-        <img src="<?= htmlspecialchars($article['image']) ?>" width="200" loading="lazy"><br><br>
-    <?php endif; ?>
+        <label for="contenu">Contenu</label>
+        <textarea name="contenu" id="contenu" required><?= htmlspecialchars($article['contenu']) ?></textarea>
 
-    <!-- Champ fichier pour nouvelle image -->
-    <label for="media">Nouvelle image (facultatif) :</label>
-    <input type="file" name="media" id="media" accept="image/*"><br><br>
+        <!-- Image actuelle affichée si présente -->
+        <?php if (!empty($article['image']) && !filter_var($article['image'], FILTER_VALIDATE_URL)) : ?>
+            <p>Image actuelle :</p>
+            <img src="<?= BASE_URL ?>/public/upload/<?= htmlspecialchars($article['image']) ?>" width="200" loading="lazy"><br><br>
+        <?php elseif (!empty($article['image'])) : ?>
+            <p>Image actuelle (URL externe) :</p>
+            <img src="<?= htmlspecialchars($article['image']) ?>" width="200" loading="lazy"><br><br>
+        <?php endif; ?>
 
-    <!-- Bloc JS pour message d’erreur image -->
-    <div id="erreur-upload" class="message-error" style="display: none;"></div>
+        <!-- Champ fichier pour nouvelle image -->
+        <label for="media">Nouvelle image (facultatif) :</label>
+        <input type="file" name="media" id="media" accept="image/*"><br><br>
 
-    <!-- Champ caché pour garder l’image actuelle si aucune nouvelle n’est envoyée -->
-    <input type="hidden" name="media_actuelle" value="<?= htmlspecialchars($article['image']) ?>">
+        <!-- Bloc JS pour message d’erreur image -->
+        <div id="erreur-upload" class="message-error" style="display: none;"></div>
 
-    <label for="video_url">URL vidéo</label>
-    <input type="url" name="video_url" id="video_url" value="<?= htmlspecialchars($article['video_url']) ?>">
+        <!-- Champ caché pour garder l’image actuelle si aucune nouvelle n’est envoyée -->
+        <input type="hidden" name="media_actuelle" value="<?= htmlspecialchars($article['image']) ?>">
 
-    <button type="submit">Modifier</button>
+        <label for="video_url">URL vidéo</label>
+        <input type="url" name="video_url" id="video_url" value="<?= htmlspecialchars($article['video_url']) ?>">
 
-    <a href="<?= BASE_URL ?>/redacteur/mesArticles" class="btn-annuler">Annuler</a>
+        <button type="submit">Modifier</button>
+
+        <a href="<?= BASE_URL ?>/redacteur/mesArticles" class="btn-annuler">Annuler</a>
+
+</div>
 
 </form>
 

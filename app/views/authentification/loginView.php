@@ -2,25 +2,33 @@
 
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
-<?php if (!empty($erreur)) : ?>
-    <p style="color: red;"><?= htmlspecialchars($erreur) ?></p>
-<?php endif; ?>
+<!-- Conteneur principal centré pour la mise en forme -->
+<div class="page-auth">
 
-<h2>Connexion</h2>
+    <!-- Si une erreur existe (ex : mauvais identifiants), je l’affiche ici -->
+    <?php if (!empty($erreur)) : ?>
+        <p class="message-erreur"><?= htmlspecialchars($erreur) ?></p>
+    <?php endif; ?>
 
-<form method="POST" action="">
-    
-    <!-- Champ email -->
-    <label for="email">Email</label>
-    <input type="email" name="email" id="email" autocomplete="email" required>
+    <!-- Titre principal de la page -->
+    <h2>Connexion</h2>
 
-    <!-- Champ mot de passe -->
-    <label for="password">Mot de passe</label>
-    <input type="password" name="password" id="password" autocomplete="current-password" required>
+    <!-- Formulaire de connexion envoyé en POST -->
+    <form method="POST" action="">
 
-    <!-- Bouton de soumission -->
-    <button type="submit">Se connecter</button>
+        <!-- Champ pour l’email avec saisie assistée -->
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" autocomplete="email" required>
 
-</form>
+        <!-- Champ pour le mot de passe (masqué + saisie assistée) -->
+        <label for="password">Mot de passe</label>
+        <input type="password" name="password" id="password" autocomplete="current-password" required>
+
+        <!-- Bouton de soumission du formulaire -->
+        <button type="submit">Se connecter</button>
+
+    </form>
+
+</div>
 
 <?php require_once ROOT . '/app/views/templates/footer.php'; ?>

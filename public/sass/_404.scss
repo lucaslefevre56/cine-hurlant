@@ -1,0 +1,59 @@
+// === PAGE ERREUR 404 ===
+
+.erreur-404 {
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: 2rem 1rem;
+    background-color: $jaune-pale;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    color: $brun;
+  
+    // Titre principal
+    h1 {
+      font-size: 2rem;
+      color: $brun;
+      font-family: $font-titres;
+      margin-bottom: 1.5rem;
+    }
+  
+    // Paragraphes d'information
+    p {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+  
+      strong {
+        font-weight: bold;
+      }
+  
+      // Lien retour
+      a {
+        color: $orange;
+        font-weight: bold;
+        text-decoration: none;
+  
+        &:hover {
+          color: $orange-dark;
+        }
+      }
+    }
+  }
+  
+  // === VERSION DESKTOP ===
+  
+  @media screen and (min-width: 768px) {
+    .erreur-404 {
+      padding: 3rem;
+  
+      h1 {
+        font-size: 2.4rem;
+      }
+  
+      p {
+        font-size: 1.1rem;
+      }
+    }
+  }
+  

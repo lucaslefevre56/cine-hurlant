@@ -2,6 +2,8 @@
 
 <?php require_once ROOT . '/app/views/templates/header.php'; ?>
 
+<div class="page-profil">
+
 <h2>Mon profil</h2>
 
 <?php if (!empty($erreur)) : ?>
@@ -24,6 +26,8 @@
 <p>INFO : Un compte désactivé peut-être restauré sur demande à l'administrateur</p>
 
 <p><a href="<?= BASE_URL ?>/">← Revenir à l’accueil</a></p>
+
+</div>
 
 <script src="<?= BASE_URL ?>/public/js/supprimer.js" defer></script>
 

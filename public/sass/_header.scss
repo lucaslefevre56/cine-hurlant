@@ -13,7 +13,7 @@
 
   // === Logo centré
   .logo {
-    display: inline-block; // ✅ ne prend que la taille du contenu
+    display: inline-block; 
     text-align: center;
 
     .logo-img {
@@ -122,7 +122,7 @@
   }
 }
 
-// === VERSION DESKTOP (≥ 768px)
+// === VERSION DESKTOP ===
 @media screen and (min-width: 768px) {
   .site-header {
     padding: 0;
