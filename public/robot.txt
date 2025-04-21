@@ -1,0 +1,21 @@
+# === Ciné-Hurlant - Projet de fin de formation ===
+
+User-agent 
+Disallow vendor
+Disallow config
+Disallow src
+Disallow app
+Disallow docs-soutenance
+Disallow node_modules
+Disallow .env
+Disallow .htaccess
+Disallow README.md
+Disallow composer.json
+Disallow composer.lock
+Disallow package.json
+Disallow package-lock.json
+
+# On autorise tout ce qui est dans public
+Allow public
+
+Sitemap: https://stagiaires-kercode9.greta-bretagne-sud.org/lucas-lefevre/cine_hurlant/sitemap.xml

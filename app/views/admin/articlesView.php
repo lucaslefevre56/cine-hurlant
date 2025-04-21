@@ -13,7 +13,7 @@
             <tr>
                 <th>ID</th>
                 <th>Titre</th>
-                <th>Auteur</th>
+                <th>Rédacteur</th>
                 <th>Date de rédaction</th>
                 <th>Voir</th>
                 <th>Modifier</th>

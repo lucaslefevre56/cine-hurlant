@@ -1,9 +1,17 @@
-# empêche de suivre le fichier ci-dessous (données sensibles)
+# .gitignore
+
+# ⚠️ Fichier d'environnement avec données sensibles
 .env
 
-# dossier contenant les dépendances installées avec composer
+# 📦 Dépendances installées par Composer
 /vendor/
 
-# configuration spécifique à VS code
+# 🛠️ Config personnelle d'éditeur
 .vscode/
 
+# 📁 Fichiers temporaires
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db

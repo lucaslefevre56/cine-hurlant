@@ -21,7 +21,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Titre</th>
-                    <th>Auteur</th>
+                    <th>Réalisateur</th>
                     <th>Type</th>
                     <th>Année</th>
                     <th>Voir</th>

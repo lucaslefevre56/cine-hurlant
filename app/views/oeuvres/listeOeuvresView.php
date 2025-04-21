@@ -40,7 +40,7 @@
                     <!-- Bloc d'informations principales -->
                     <div class="infos-oeuvre">
                         <h3><?= htmlspecialchars($oeuvre['titre']) ?></h3>
-                        <p><strong>Auteur :</strong> <?= htmlspecialchars($oeuvre['auteur']) ?></p>
+                        <p><strong>Réalisateur :</strong> <?= htmlspecialchars($oeuvre['auteur']) ?></p>
                         <p><strong>Type :</strong> <?= htmlspecialchars($oeuvre['nom']) ?></p>
                         <?php if (!empty($oeuvre['genres'])) : ?>
                             <p><strong>Genres :</strong> <?= implode(', ', array_map('htmlspecialchars', $oeuvre['genres'])) ?></p>
@@ -50,7 +50,7 @@
                         <p><strong>Année :</strong> <?= htmlspecialchars($oeuvre['annee']) ?></p>
 
                         <!-- J’utilise mb_substr pour éviter les caractères cassés -->
-                        <p class="analyse"><strong>Analyse :</strong> <?= htmlspecialchars(mb_substr($oeuvre['analyse'], 0, 150)) ?>...</p>
+                        <p class="analyse"><?= htmlspecialchars(mb_substr($oeuvre['analyse'], 0, 150)) ?>...</p>
                     </div>
 
                     <!-- Lien vers la fiche complète -->
@@ -109,7 +109,7 @@
                         <p><strong>Année :</strong> <?= htmlspecialchars($oeuvre['annee']) ?></p>
 
                         <!-- J’utilise mb_substr pour éviter les caractères cassés -->
-                        <p class="analyse"><strong>Analyse :</strong> <?= htmlspecialchars(mb_substr($oeuvre['analyse'], 0, 150)) ?>...</p>
+                        <p class="analyse"><?= htmlspecialchars(mb_substr($oeuvre['analyse'], 0, 150)) ?>...</p>
                     </div>
 
                     <!-- Lien vers la fiche complète -->

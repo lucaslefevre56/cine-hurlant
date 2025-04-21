@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Accueil -->
+  <url>
+    <loc>https://stagiaires-kercode9.greta-bretagne-sud.org/lucas-lefevre/cine_hurlant/</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Liste des œuvres -->
+  <url>
+    <loc>https://stagiaires-kercode9.greta-bretagne-sud.org/lucas-lefevre/cine_hurlant/oeuvre/liste</loc>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Liste des articles -->
+  <url>
+    <loc>https://stagiaires-kercode9.greta-bretagne-sud.org/lucas-lefevre/cine_hurlant/article/liste</loc>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Mentions légales -->
+  <url>
+    <loc>https://stagiaires-kercode9.greta-bretagne-sud.org/lucas-lefevre/cine_hurlant/mentions-legales</loc>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Politique de confidentialité -->
+  <url>
+    <loc>https://stagiaires-kercode9.greta-bretagne-sud.org/lucas-lefevre/cine_hurlant/politique-confidentialite</loc>
+    <priority>0.5</priority>
+  </url>
+
+</urlset>

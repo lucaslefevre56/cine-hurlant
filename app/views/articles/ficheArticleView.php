@@ -8,7 +8,7 @@
 
     <!-- Je précise le nom de l’auteur et la date de publication -->
     <p>
-        <strong>Auteur :</strong> <?= htmlspecialchars($article['auteur']) ?>,
+        <strong>Rédacteur :</strong> <?= htmlspecialchars($article['auteur']) ?>,
         le <?= date('d/m/Y', strtotime($article['date_redaction'])) ?>
     </p>
 

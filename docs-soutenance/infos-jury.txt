@@ -1,0 +1,26 @@
+Accès de démonstration (Ciné-Hurlant)
+
+🛠️ Compte administrateur
+Email : dioburando@gmail.com
+Mot de passe : Admin22510!
+
+✍️ Compte rédacteur
+Email : dioburando@hotmail.fr
+Mot de passe : Redac22510!
+
+👤 Compte utilisateur classique
+Email : tu-es-lelu@hotmail.fr
+Mot de passe : Utilisateur22510!
+
+Lien vers le site déployé : 
+https://stagiaires-kercode9.greta-bretagne-sud.org/lucas-lefevre/cine_hurlant/
+
+Lien vers projet dans Github : 
+https://github.com/lucaslefevre56/cine-hurlant.git
+
+Lien vers Figma version desktop : 
+https://www.figma.com/design/JnUh3ZgMXjSqhvuYd298rw/Site-Cine-Hurlant-desktop?t=wI64HFUZxGjmAdeR-0
+
+Lien vers figma version mobile :
+https://www.figma.com/design/RJVZW1FAT5DL2AcsYglauP/Site-Cine-Hurlant-mobile?node-id=0-1&p=f&t=LmLSlxdqb6FlrOUV-0
+

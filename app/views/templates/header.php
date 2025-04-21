@@ -60,7 +60,7 @@ use App\Helpers\AuthHelper;
             <!-- Barre de recherche -->
             <div class="bloc-recherche">
                 <form id="form-recherche" method="GET" action="<?= BASE_URL ?>/recherche" class="form-recherche">
-                    <input type="text" id="recherche" name="q" placeholder="Recherche film ou BD..." required>
+                    <input type="text" id="recherche" name="q" placeholder="Recherche film / BD ou article..." required>
                     <select name="type" id="type-recherche">
                         <option value="">Tout</option>
                         <option value="oeuvre">Œuvres</option>

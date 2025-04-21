@@ -22,6 +22,11 @@ class Router
         // Je découpe ce qu’il reste de l’URL en segments (ex: ['oeuvre', 'fiche', '2'])
         $segments = explode('/', trim($url, '/'));
 
+        // Je protege contre les accès directs à /index.php
+        if (!empty($segments[0]) && $segments[0] === 'index.php') {
+            array_shift($segments); // on le supprime
+        }
+
         // Je récupère le nom du contrôleur (par défaut : AccueilController si rien dans l’URL)
         $controllerName = !empty($segments[0]) ? ucfirst($segments[0]) . 'Controller' : 'AccueilController';
 
