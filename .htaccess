@@ -3,6 +3,9 @@
 # Objectif : activer les URL propres
 # ================================
 
+# Je désactive l'affichage du listing des dossiers (Directory Listing)
+Options -Indexes
+
 # J’active le moteur de réécriture d’Apache (obligatoire pour que tout ce qui suit fonctionne)
 RewriteEngine On
 
@@ -24,6 +27,11 @@ RewriteRule ^ index.php [QSA,L]
 <FilesMatch "^(\.env|\.gitignore|\.htaccess|.*\.(ini|log|sql|bak|md|json))$">
   Require all denied
 </FilesMatch>
+
+# J'interdit l'accès aux dossiers sensibles
+RedirectMatch 403 ^/app/
+RedirectMatch 403 ^/vendor/
+RedirectMatch 403 ^/docs-soutenance/
 
 # Et pour être propre : je force la redirection vers HTTPS si on n’y est pas
 # Comme ça, le site est toujours en version sécurisée
