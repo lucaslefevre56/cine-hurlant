@@ -49,3 +49,10 @@ class Database
     private function __construct() {}
     private function __clone() {}
 }
+
+//  Ce fichier Database.php me permet de gérer proprement ma connexion à la base de données avec 
+// le principe du Singleton. Je charge mes identifiants depuis le fichier .env 
+//  pour éviter d'exposer des infos sensibles. Grâce à cette classe, toute mon application 
+// utilise une seule connexion PDO partagée, ce qui est plus sécurisé et performant. 
+//  C’est cette instance que je récupère automatiquement dans mon BaseModel pour exécuter 
+// toutes mes requêtes SQL.

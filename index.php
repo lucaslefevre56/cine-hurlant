@@ -11,6 +11,7 @@ use App\Core\Router;
 define('ROOT', Config::getRoot());
 define('BASE_URL', Config::getBaseUrl());
 
+session_name("cine-hurlant");
 // Démarrage de la session utilisateur (obligatoire pour tout ce qui est connexion, messages flash, etc.)
 session_start();
 

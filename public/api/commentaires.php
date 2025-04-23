@@ -11,6 +11,7 @@ header('Content-Type: application/json');
 require_once ROOT . '/vendor/autoload.php';
 use App\Models\Commentaire;
 
+session_name("cine-hurlant");
 // Je démarre la session pour accéder à l'utilisateur connecté
 session_start();
 
@@ -186,6 +187,7 @@ if ($id_commentaire) {
         'contenu' => $contenu,
         'id_article' => $id_article,
         'auteur' => $_SESSION['user']['nom'], // Je renvoie le nom de l’auteur
+        'id_utilisateur' => $_SESSION['user']['id'],
         'date' => date('Y-m-d H:i:s')         // Je renvoie la date du commentaire
     ]);
 } else {

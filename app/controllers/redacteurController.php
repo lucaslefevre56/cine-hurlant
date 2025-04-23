@@ -32,6 +32,7 @@ class RedacteurController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Je récupère les champs du formulaire (avec fallback vide ou array)
+            //  // L'opérateur "?? '' " permet d'éviter une erreur si la clé n'existe pas
             $titre = $_POST['titre'] ?? '';
             $auteur = $_POST['auteur'] ?? '';
             $annee = $_POST['annee'] ?? '';
@@ -50,8 +51,8 @@ class RedacteurController
 
                 $fileTmpPath = $_FILES['media']['tmp_name'];
                 $fileName = $_FILES['media']['name'];
-                $fileNameCmps = explode(".", $fileName);
-                $fileExtension = strtolower(end($fileNameCmps));
+                $fileNameCmps = explode(".", $fileName); // explode() coupe une chaîne en tableau
+                $fileExtension = strtolower(end($fileNameCmps)); // Je récupère l'extension en minuscule
                 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
                 // Je vérifie l'extension de l'image (filtrage par liste blanche)
@@ -62,7 +63,7 @@ class RedacteurController
 
                     // Je déplace le fichier depuis le dossier temporaire vers notre dossier final
                     if (move_uploaded_file($fileTmpPath, $destPath)) {
-                        $imageName = $newFileName;
+                        $imageName = $newFileName; // Je garde le nouveau nom en mémoire
                     } else {
                         $erreur = "Erreur lors de l'upload de l'image.";
                     }
@@ -79,6 +80,8 @@ class RedacteurController
                 $erreur = "Tous les champs sont obligatoires, y compris l'image.";
 
                 // Je recharge la vue avec les anciennes valeurs pour ne pas faire perdre ce que l’utilisateur a tapé
+                // J’utilise compact() pour transformer ces variables en tableau associatif automatiquement
+                // Cela permet de passer facilement plusieurs variables à la vue sans écrire le tableau à la main
                 View::render('redacteur/ajouterOeuvreView', compact(
                     'titre',
                     'auteur',

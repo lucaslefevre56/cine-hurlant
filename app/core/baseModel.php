@@ -45,3 +45,15 @@ abstract class BaseModel
         }
     }
 }
+
+
+// La classe BaseModel me permet de centraliser la gestion de la base de données pour tous mes modèles. 
+// Grâce à ça, je sécurise toutes mes requêtes SQL avec des requêtes préparées, ce qui protège mon site 
+// contre les injections SQL.
+// J’ai deux méthodes principales :
+
+// safeExecute() : pour les requêtes avec paramètres.
+
+// safeQuery() : pour les requêtes simples.
+// En plus, avec le Singleton de la classe Database, je m’assure de n’avoir qu’une seule 
+// connexion PDO partagée dans tout le projet, ce qui est plus performant. »
